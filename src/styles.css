@@ -1090,7 +1090,8 @@ footer p { margin: 0; max-width: 68ch; color: #7d7d86; font-size: 13px; line-hei
   pointer-events: none;
 }
 .callout-above { transform: translate(-50%, calc(-100% - 8px)); align-items: center; text-align: center; }
-.callout-side { transform: translate(10px, -50%); }
+.callout-side { transform: translate(14px, -50%); align-items: flex-start; text-align: left; }
+.callout-below { transform: translate(-50%, 12px); align-items: center; text-align: center; }
 
 @media (max-width: 860px) {
   .menu-toggle { display: grid; border: 0; background: transparent; }

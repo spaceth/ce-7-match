@@ -299,7 +299,7 @@ function OverviewLabels({ visible }: { visible: boolean }) {
             <Line points={[anchor, label]} color="#ffffff" transparent opacity={0.38} lineWidth={1} />
             <ScreenDot position={anchor} />
             <Html position={label} zIndexRange={[4, 0]} style={{ pointerEvents: 'none' }} wrapperClass="html-label">
-              <div className="callout callout-above">
+              <div className={`callout callout-${callout.align}`}>
                 <span>{callout.kicker}</span>
                 <strong>{callout.title}</strong>
               </div>
@@ -346,7 +346,7 @@ function dimensionLayout() {
   const max = modelToWorld([78.4, 26.043, 109.022])
   const [x0, y0, z0] = min
   const [x1, y1, z1] = max
-  const out = 18
+  const out = 36
   const ox = x0 - out
   const oy = y0 - out
 
@@ -373,7 +373,7 @@ function dimensionLayout() {
         [ox, oy, z0],
         [ox, oy, z1],
       ],
-      label: [ox, oy, z0 + (z1 - z0) * 0.72],
+      label: [ox, oy, z0 + (z1 - z0) * 0.94],
     },
   ]
 
@@ -427,7 +427,7 @@ type Pose = {
 }
 
 function fitPose(pose: Pose, aspect: number): Pose {
-  const factor = aspect >= 0.85 ? 1 : Math.min(0.85 / aspect, 1.85)
+  const factor = aspect >= 0.85 ? 1 : Math.min(1.05 / aspect, 1.85)
   const offset = pose.position.clone().sub(pose.target)
   offset.setLength(offset.length() * factor)
   return {
@@ -441,8 +441,8 @@ function fitPose(pose: Pose, aspect: number): Pose {
 function overviewPose(): Pose {
   const target = new THREE.Vector3(0, -8, 0)
   const direction = new THREE.Vector3(0.86, 0.36, 0.42).normalize()
-  const position = target.clone().add(direction.multiplyScalar(700))
-  return { position, target, min: 280, max: 1400 }
+  const position = target.clone().add(direction.multiplyScalar(1080))
+  return { position, target, min: 420, max: 1800 }
 }
 
 function sectionPose(): Pose {
