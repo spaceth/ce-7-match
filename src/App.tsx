@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import logo from '../spaceth-logo.svg'
 import { Explorer } from './components/Explorer'
 import { FallbackView } from './components/FallbackView'
+import { MissionOverview } from './components/MissionOverview'
 import { OrbitSection } from './components/OrbitSection'
 import { hasWebGL } from './lib/webgl'
 
@@ -75,18 +76,22 @@ export function App() {
     const nodes = CHAPTERS.map((chapter) => document.getElementById(chapter.id)).filter(
       (node): node is HTMLElement => node !== null,
     )
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
-        const id = visible[0]?.target.id
-        if (id) setActive(id as ChapterId)
-      },
-      { rootMargin: '-20% 0px -55% 0px', threshold: [0.15, 0.4, 0.75] },
-    )
+    const markChapter = () => {
+      const mark = window.innerHeight * 0.32
+      const current = nodes.find((node) => {
+        const rect = node.getBoundingClientRect()
+        return rect.top <= mark && rect.bottom >= mark
+      })
+      if (current) setActive(current.id as ChapterId)
+    }
+    markChapter()
+    const observer = new IntersectionObserver(markChapter, { threshold: 0 })
     nodes.forEach((node) => observer.observe(node))
-    return () => observer.disconnect()
+    window.addEventListener('scroll', markChapter, { passive: true })
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('scroll', markChapter)
+    }
   }, [])
 
   useEffect(() => {
@@ -142,8 +147,17 @@ export function App() {
           </ol>
         </nav>
 
+        <div className="content">
+          <section id={CHAPTERS[0].id} className={`chapter chapter-stage voice-${CHAPTERS[0].voice}`} aria-labelledby={`${CHAPTERS[0].id}-title`} tabIndex={-1}>
+            <MissionOverview
+              webgl={webgl}
+              number={CHAPTERS[0].number}
+              title={CHAPTERS[0].title}
+              description={CHAPTERS[0].description}
+            />
+          </section>
         <main className="page">
-          {CHAPTERS.map((chapter) => (
+          {CHAPTERS.slice(1).map((chapter) => (
             <section key={chapter.id} id={chapter.id} className={`chapter voice-${chapter.voice}`} aria-labelledby={`${chapter.id}-title`} tabIndex={-1}>
               <p className="kicker">Chapter {chapter.number}</p>
               <h2 id={`${chapter.id}-title`}>{chapter.title}</h2>
@@ -190,6 +204,7 @@ export function App() {
             </section>
           ))}
         </main>
+        </div>
       </div>
     </div>
   )

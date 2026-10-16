@@ -85,13 +85,18 @@ function useStageScreen(stageRef: RefObject<HTMLDivElement | null>) {
   }
 }
 
-export function StageFrame({ className, children, ...rest }: HTMLAttributes<HTMLDivElement> & { children: ReactNode }) {
+export function StageFrame({
+  className,
+  children,
+  screen = true,
+  ...rest
+}: HTMLAttributes<HTMLDivElement> & { children: ReactNode; screen?: boolean }) {
   const ref = useRef<HTMLDivElement>(null)
-  const screen = useStageScreen(ref)
+  const controls = useStageScreen(ref)
   return (
-    <div ref={ref} className={[className, screen.className].filter(Boolean).join(' ')} {...rest}>
+    <div ref={ref} className={[className, controls.className].filter(Boolean).join(' ')} {...rest}>
       {children}
-      <ScreenButton full={screen.full} onEnter={screen.enter} onExit={screen.exit} />
+      {screen ? <ScreenButton full={controls.full} onEnter={controls.enter} onExit={controls.exit} /> : null}
     </div>
   )
 }
