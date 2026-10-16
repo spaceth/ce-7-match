@@ -122,7 +122,7 @@ export function MissionOverview({
               dpr={[1, 1.6]}
               camera={{ fov: 28, near: 0.5, far: 9000, position: [220, 150, 340] }}
               gl={{ antialias: true, alpha: false, stencil: false, powerPreference: 'default' }}
-              style={{ position: 'absolute', inset: 0, touchAction: 'none' }}
+              style={{ position: 'absolute', inset: 0, touchAction: 'pan-y' }}
               onCreated={({ gl }) => {
                 gl.toneMapping = THREE.ACESFilmicToneMapping
                 gl.toneMappingExposure = 1.12

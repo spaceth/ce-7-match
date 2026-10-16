@@ -1437,6 +1437,11 @@ h1 {
   touch-action: none;
 }
 .stage canvas:active { cursor: grabbing; }
+.stage.mission-stage canvas,
+.stage.mission-stage canvas:active {
+  cursor: default;
+  touch-action: pan-y;
+}
 
 .loader, .overlay {
   position: absolute;
