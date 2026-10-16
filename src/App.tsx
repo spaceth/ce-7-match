@@ -3,6 +3,8 @@ import logo from '../spaceth-logo.svg'
 import { Explorer } from './components/Explorer'
 import { FallbackView } from './components/FallbackView'
 import { ChangE7 } from './components/ChangE7'
+import { Engineering } from './components/Engineering'
+import { People } from './components/People'
 import { CosmicRays } from './components/CosmicRays'
 import { MissionOverview } from './components/MissionOverview'
 import { OrbitSection } from './components/OrbitSection'
@@ -170,6 +172,34 @@ export function App() {
                   <ChangE7 />
                 </div>
               ) : null}
+              {chapter.id === 'engineering' ? (
+                <div className="chapter-body">
+                  <Engineering />
+                </div>
+              ) : null}
+              {chapter.id === 'people' ? (
+                <div className="chapter-body">
+                  <People />
+                </div>
+              ) : null}
+              {chapter.id === 'conclusion' ? (
+                <div className="chapter-body close-copy">
+                  <p>
+                    MATCH is Thailand’s particle detector on the Chang’e-7 orbiter. From about 200 kilometres above the
+                    Moon, one instrument looks two ways: toward space, and toward the lunar surface.
+                  </p>
+                  <p>
+                    Those views let MATCH study energetic particles from the Sun, the galaxy, and Jupiter, and particles
+                    that leave the Moon after striking its surface. As the Moon passes through Earth’s magnetotail, the
+                    particles that can reach the spacecraft change.
+                  </p>
+                  <p>
+                    The measurement depends on the whole system. A light structure, precise detectors, careful readout,
+                    and the people who built MATCH turn arriving particles into information the spacecraft can send back
+                    to Earth.
+                  </p>
+                </div>
+              ) : null}
               {chapter.id === 'cosmic-rays' ? (
                 <div className="chapter-body">
                   <CosmicRays />
@@ -209,13 +239,37 @@ export function App() {
                   </footer>
                 </div>
               ) : null}
-              {chapter.id !== 'orbit' && chapter.id !== 'how-match-works' && chapter.id !== 'cosmic-rays' && chapter.id !== 'change-7' ? (
+              {chapter.id !== 'orbit' && chapter.id !== 'how-match-works' && chapter.id !== 'cosmic-rays' && chapter.id !== 'change-7' && chapter.id !== 'engineering' && chapter.id !== 'people' && chapter.id !== 'conclusion' ? (
                 <div className="chapter-slot">
                   <p>This chapter is ready for the next piece of the story.</p>
                 </div>
               ) : null}
             </section>
           ))}
+          <section className="end-credit" aria-labelledby="end-credit-title">
+            <h2 id="end-credit-title">End Credit</h2>
+            <h3>Story by</h3>
+            <ul>
+              <li>
+                <span>Website and Visualization</span>
+                Nattanon Dungsunenarn
+              </li>
+              <li>
+                <span>Scientific Information</span>
+                Jirasin Aswakool
+              </li>
+            </ul>
+            <h3>Special Thanks to NARIT Communication team</h3>
+            <ul>
+              <li>Piriyaporn Sabhasri</li>
+              <li>Hathaichanok Therdthampaisal</li>
+              <li>Jitraporn Janpeng</li>
+              <li>Matipon Tangmatitham</li>
+            </ul>
+            <h3>In Memory of</h3>
+            <p>Jullada Kaosa-ard (1967-2026)</p>
+            <p className="end-credit-copy">©2026 SPACETH.CO. ALL RIGHTS RESERVED.</p>
+          </section>
         </main>
         </div>
       </div>
