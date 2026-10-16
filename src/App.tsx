@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import logo from '../spaceth-logo.svg'
 import { Explorer } from './components/Explorer'
 import { FallbackView } from './components/FallbackView'
+import { CosmicRays } from './components/CosmicRays'
 import { MissionOverview } from './components/MissionOverview'
 import { OrbitSection } from './components/OrbitSection'
 import { hasWebGL } from './lib/webgl'
@@ -19,7 +20,8 @@ const CHAPTERS = [
     number: '02',
     voice: 'statement',
     title: 'Why Study Cosmic Rays',
-    description: 'Why energetic particles are worth measuring, and what they can reveal.',
+    description:
+      'Cosmic rays are energetic particles traveling through space. Most are protons and atomic nuclei, and electrons travel with them. They are not light. Each particle is a clue to whatever set it moving.',
   },
   {
     id: 'change-7',
@@ -162,6 +164,11 @@ export function App() {
               <p className="kicker">Chapter {chapter.number}</p>
               <h2 id={`${chapter.id}-title`}>{chapter.title}</h2>
               <p className="chapter-lead">{chapter.description}</p>
+              {chapter.id === 'cosmic-rays' ? (
+                <div className="chapter-body">
+                  <CosmicRays />
+                </div>
+              ) : null}
               {chapter.id === 'orbit' ? (
                 <div className="chapter-body">
                   <OrbitSection />
@@ -196,7 +203,7 @@ export function App() {
                   </footer>
                 </div>
               ) : null}
-              {chapter.id !== 'orbit' && chapter.id !== 'how-match-works' ? (
+              {chapter.id !== 'orbit' && chapter.id !== 'how-match-works' && chapter.id !== 'cosmic-rays' ? (
                 <div className="chapter-slot">
                   <p>This chapter is ready for the next piece of the story.</p>
                 </div>
