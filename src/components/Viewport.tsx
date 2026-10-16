@@ -1,6 +1,6 @@
 import { Html, Line, OrbitControls, useGLTF, useProgress } from '@react-three/drei'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { Component, Suspense, useLayoutEffect, useMemo, useRef, type Ref } from 'react'
+import { Component, Suspense, useEffect, useLayoutEffect, useMemo, useRef, type Ref } from 'react'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import * as THREE from 'three'
 import modelUrl from '../../model.glb?url'
@@ -286,29 +286,169 @@ function Hardware({ mode, onReady }: { mode: Mode; onReady: () => void }) {
   return <primitive object={root} />
 }
 
+type SideLabel = {
+  id: string
+  kicker: string
+  title: string
+  side: 'left' | 'right'
+  anchor: THREE.Vector3
+  line: THREE.Line
+  host: THREE.Group | null
+  el: HTMLDivElement | null
+}
+
 function OverviewLabels({ visible }: { visible: boolean }) {
-  const callouts = useMemo(() => overviewCallouts(), [])
+  const labels = useMemo<SideLabel[]>(() => {
+    return overviewCallouts().map((callout) => {
+      const geometry = new THREE.BufferGeometry()
+      geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(6), 3))
+      const material = new THREE.LineBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.38 })
+      const line = new THREE.Line(geometry, material)
+      line.frustumCulled = false
+      line.raycast = () => {}
+      const [x, y, z] = modelToWorld(callout.anchor)
+      return {
+        side: callout.side,
+        anchor: new THREE.Vector3(x, y, z),
+        line,
+        host: null,
+        el: null,
+        kicker: callout.kicker,
+        title: callout.title,
+        id: callout.id,
+      }
+    })
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      for (const label of labels) {
+        label.line.geometry.dispose()
+        ;(label.line.material as THREE.Material).dispose()
+      }
+    }
+  }, [labels])
+
+  useFrame(({ camera, size }) => {
+    if (!visible) return
+    placeSideLabels(labels, camera, size.width, size.height)
+  })
+
   if (!visible) return null
   return (
     <group>
-      {callouts.map((callout) => {
-        const anchor = modelToWorld(callout.anchor)
-        const label = modelToWorld(callout.label)
-        return (
-          <group key={callout.id}>
-            <Line points={[anchor, label]} color="#ffffff" transparent opacity={0.38} lineWidth={1} />
-            <ScreenDot position={anchor} />
-            <Html position={label} zIndexRange={[4, 0]} style={{ pointerEvents: 'none' }} wrapperClass="html-label">
-              <div className={`callout callout-${callout.align}`}>
-                <span>{callout.kicker}</span>
-                <strong>{callout.title}</strong>
+      {labels.map((label) => (
+        <group key={label.id}>
+          <primitive object={label.line} />
+          <ScreenDot position={label.anchor.toArray() as [number, number, number]} />
+          <group ref={(node) => { label.host = node }}>
+            <Html position={[0, 0, 0]} zIndexRange={[4, 0]} style={{ pointerEvents: 'none' }} wrapperClass="html-label">
+              <div
+                ref={(node) => { label.el = node }}
+                className={`callout callout-${label.side}`}
+              >
+                <span>{label.kicker}</span>
+                <strong>{label.title}</strong>
               </div>
             </Html>
           </group>
-        )
-      })}
+        </group>
+      ))}
     </group>
   )
+}
+
+const sideNdc = new THREE.Vector3()
+const sideEnd = new THREE.Vector3()
+const sideLocal = new THREE.Vector3()
+const payloadMin = new THREE.Vector3(...modelToWorld([-69, -227.257, -41.178]))
+const payloadMax = new THREE.Vector3(...modelToWorld([78.4, 26.043, 109.022]))
+const payloadCorner = new THREE.Vector3()
+
+function payloadScreenSpan(camera: THREE.Camera, width: number) {
+  let left = Infinity
+  let right = -Infinity
+  for (const x of [payloadMin.x, payloadMax.x]) {
+    for (const y of [payloadMin.y, payloadMax.y]) {
+      for (const z of [payloadMin.z, payloadMax.z]) {
+        payloadCorner.set(x, y, z)
+        sideLocal.copy(payloadCorner).applyMatrix4(camera.matrixWorldInverse)
+        if (sideLocal.z > -1) continue
+        sideNdc.copy(payloadCorner).project(camera)
+        const sx = (sideNdc.x * 0.5 + 0.5) * width
+        left = Math.min(left, sx)
+        right = Math.max(right, sx)
+      }
+    }
+  }
+  if (!Number.isFinite(left)) return { left: width * 0.3, right: width * 0.7 }
+  return { left, right }
+}
+
+function placeSideLabels(labels: SideLabel[], camera: THREE.Camera, width: number, height: number) {
+  if (width < 2 || height < 2) return
+  const payload = payloadScreenSpan(camera, width)
+  const frames = labels.map((label) => {
+    sideLocal.copy(label.anchor).applyMatrix4(camera.matrixWorldInverse)
+    sideNdc.copy(label.anchor).project(camera)
+    return {
+      label,
+      y: (-sideNdc.y * 0.5 + 0.5) * height,
+      z: sideNdc.z,
+      h: label.el?.offsetHeight || 36,
+      w: label.el?.offsetWidth || 140,
+      behind: sideLocal.z > -1,
+    }
+  })
+
+  for (const side of ['left', 'right'] as const) {
+    const group = frames.filter((frame) => frame.label.side === side).sort((a, b) => a.y - b.y)
+    const limitTop = 28
+    const limitBottom = height - (side === 'right' ? 220 : 56)
+    let cursor = limitTop
+    for (const frame of group) {
+      const half = frame.h / 2
+      frame.y = Math.max(frame.y, cursor + half)
+      cursor = frame.y + half + 16
+    }
+    const last = group[group.length - 1]
+    if (last) {
+      const overflow = last.y + last.h / 2 - limitBottom
+      if (overflow > 0) {
+        for (const frame of group) frame.y -= overflow
+      }
+    }
+  }
+
+  for (const frame of frames) {
+    const label = frame.label
+    const host = label.host
+    if (!host) continue
+    if (frame.behind) {
+      host.visible = false
+      label.line.visible = false
+      continue
+    }
+    const gap = 36
+    const clearsChrome = frame.y - frame.h / 2 < 68 || frame.y + frame.h / 2 > height - 210
+    const edge = label.side === 'right' && clearsChrome ? 76 : 16
+    const beside = label.side === 'left'
+      ? payload.left - gap + 12
+      : payload.right + gap - 12
+    const onScreen = label.side === 'left'
+      ? edge + frame.w + 12
+      : width - edge - frame.w - 12
+    const lineX = label.side === 'left' ? Math.max(beside, onScreen) : Math.min(beside, onScreen)
+    sideEnd.set((lineX / width) * 2 - 1, -(frame.y / height) * 2 + 1, frame.z).unproject(camera)
+    const position = label.line.geometry.getAttribute('position') as THREE.BufferAttribute
+    position.setXYZ(0, label.anchor.x, label.anchor.y, label.anchor.z)
+    position.setXYZ(1, sideEnd.x, sideEnd.y, sideEnd.z)
+    position.needsUpdate = true
+    label.line.geometry.computeBoundingSphere()
+    host.position.copy(sideEnd)
+    host.visible = true
+    label.line.visible = true
+  }
 }
 
 type Point = [number, number, number]

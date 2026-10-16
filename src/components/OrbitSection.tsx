@@ -114,7 +114,6 @@ export function OrbitSection() {
               <span ref={(node) => { tags.current.moon = node }}>Moon</span>
               <span ref={(node) => { tags.current.craft = node }}>Chang’e-7 / MATCH</span>
             </div>
-            <p className="orbit-caption">Illustrative orbit · approximately 200 km altitude · not real-time tracking.</p>
             <div className="orbit-bar">
               <button type="button" onClick={togglePlay} aria-pressed={playing}>
                 {playing ? 'Pause' : 'Play'}
@@ -182,7 +181,6 @@ function OrbitStill() {
         <text x="248" y="520" fill="#f4f4f5" fontSize="14" fontFamily="Poppins, sans-serif">Moon</text>
         <text x="316" y="128" fill="#f4f4f5" fontSize="13" fontFamily="Poppins, sans-serif">Chang’e-7 / MATCH</text>
       </svg>
-      <p className="orbit-caption">Illustrative orbit · approximately 200 km altitude · not real-time tracking.</p>
     </div>
   )
 }

@@ -126,8 +126,7 @@ export type Callout = {
   kicker: string
   title: string
   anchor: [number, number, number]
-  label: [number, number, number]
-  align: 'above' | 'side' | 'below'
+  side: 'left' | 'right'
 }
 
 /** Positions are in the GLB’s original coordinates, before centering. */
@@ -140,32 +139,28 @@ export function overviewCallouts(): Callout[] {
       kicker: 'Window extension',
       title: lowTitle,
       anchor: [0, 30, -20],
-      label: [28, 118, -78],
-      align: 'above',
+      side: 'right',
     },
     {
       id: 'entrance-high-z',
       kicker: 'Window extension',
       title: highTitle,
       anchor: [0, 30, 106],
-      label: [-16, 118, 158],
-      align: 'above',
+      side: 'left',
     },
     {
       id: 'housing',
       kicker: 'Structure',
       title: 'Electrical part',
       anchor: [72, -132, 48],
-      label: [168, -72, -8],
-      align: 'side',
+      side: 'right',
     },
     {
       id: 'base',
       kicker: 'Bottom plate',
       title: 'Mounting structure',
       anchor: [66, -224, 20],
-      label: [48, -268, 36],
-      align: 'below',
+      side: 'left',
     },
   ]
 }
