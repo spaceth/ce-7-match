@@ -250,7 +250,7 @@ function Hardware({ mode, onReady }: { mode: Mode; onReady: () => void }) {
   const material = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: new THREE.Color().setRGB(0.30946892, 0.3662526, 0.70110189, THREE.LinearSRGBColorSpace),
+        color: '#fafafa',
         roughness: 0.56,
         metalness: 0.08,
         side: THREE.DoubleSide,

@@ -11,6 +11,7 @@ import {
 } from '../lib/instrument'
 import { useReducedMotion } from '../lib/useReducedMotion'
 import { FallbackView } from './FallbackView'
+import { StageFrame } from './StageScreen'
 import { LoadState, Viewport, type ViewHandle } from './Viewport'
 
 const MODES: { id: Mode; label: string }[] = [
@@ -276,7 +277,7 @@ export function Explorer() {
           )}
         </div>
 
-        <div className="stage" role="region" aria-label="3D view of MATCH" aria-describedby="viewer-copy">
+        <StageFrame className="stage" role="region" aria-label="3D view of MATCH" aria-describedby="viewer-copy">
           <Viewport
             mode={mode}
             selected={selected}
@@ -325,7 +326,7 @@ export function Explorer() {
               </button>
             )}
           </div>
-        </div>
+        </StageFrame>
       </section>
     </CanvasGuard>
   )
