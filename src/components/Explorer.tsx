@@ -303,8 +303,6 @@ export function Explorer() {
               </button>
             </div>
           )}
-          <p className="hint hint-mouse">Drag to orbit · Scroll to zoom</p>
-          <p className="hint hint-touch">Drag to orbit · Pinch to zoom</p>
           <div className="view-controls">
             <button type="button" aria-label="Zoom in" onClick={() => viewRef.current?.zoom(0.82)}>
               <PlusIcon />

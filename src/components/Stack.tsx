@@ -45,10 +45,13 @@ export function DetectorAssembly({ motion, progressEl, onStep, onEnded }: StackP
   const particle = useRef<THREE.Mesh>(null)
   const spaceTag = useRef<THREE.Group>(null)
   const moonTag = useRef<THREE.Group>(null)
+  const spaceLabel = useRef<HTMLDivElement>(null)
+  const moonLabel = useRef<HTMLDivElement>(null)
+  const sidePoint = useMemo(() => new THREE.Vector3(), [])
   const pathRod = useMemo(() => makeRod(1.05), [])
   const tailRod = useMemo(() => makeRod(0.45), [])
 
-  useFrame((_, delta) => {
+  useFrame(({ camera }, delta) => {
     const state = motion.current
     const follow = 1 - Math.exp(-delta * 3.4)
     state.spread += (state.spreadTarget - state.spread) * follow
@@ -118,6 +121,8 @@ export function DetectorAssembly({ motion, progressEl, onStep, onEnded }: StackP
     const last = placed.find((layer) => layer.id === 'si4')
     if (spaceTag.current && first) spaceTag.current.position.z = first.z - spaceToMoon * 20
     if (moonTag.current && last) moonTag.current.position.z = last.z + spaceToMoon * 20
+    placeEntranceLabel(spaceLabel.current, spaceTag.current, moonTag.current, camera, sidePoint)
+    placeEntranceLabel(moonLabel.current, moonTag.current, spaceTag.current, camera, sidePoint)
   })
 
   return (
@@ -189,7 +194,7 @@ export function DetectorAssembly({ motion, progressEl, onStep, onEnded }: StackP
 
       <group ref={spaceTag} position={[0, 46, -70]}>
         <Html zIndexRange={[4, 0]} style={{ pointerEvents: 'none' }} wrapperClass="html-label">
-          <div className="callout callout-above">
+          <div ref={spaceLabel} className="callout">
             <span>Entrance</span>
             <strong>Space-facing</strong>
           </div>
@@ -197,7 +202,7 @@ export function DetectorAssembly({ motion, progressEl, onStep, onEnded }: StackP
       </group>
       <group ref={moonTag} position={[0, 46, 70]}>
         <Html zIndexRange={[4, 0]} style={{ pointerEvents: 'none' }} wrapperClass="html-label">
-          <div className="callout callout-above">
+          <div ref={moonLabel} className="callout">
             <span>Entrance</span>
             <strong>Moon-facing</strong>
           </div>
@@ -205,6 +210,37 @@ export function DetectorAssembly({ motion, progressEl, onStep, onEnded }: StackP
       </group>
     </group>
   )
+}
+
+function placeEntranceLabel(
+  label: HTMLDivElement | null,
+  tag: THREE.Group | null,
+  other: THREE.Group | null,
+  camera: THREE.Camera,
+  point: THREE.Vector3,
+) {
+  if (!label || !tag || !other) return
+  tag.getWorldPosition(point)
+  const x = point.project(camera).x
+  other.getWorldPosition(point)
+  const otherX = point.project(camera).x
+  const onLeft = x < otherX
+  const outside = 170
+  label.style.alignItems = onLeft ? 'flex-end' : 'flex-start'
+  label.style.textAlign = onLeft ? 'right' : 'left'
+  label.style.transform = onLeft ? `translate(calc(-100% - ${outside}px), -50%)` : `translate(${outside}px, -50%)`
+
+  const canvas = label.closest('.stage')?.getBoundingClientRect()
+  if (!canvas) return
+  const rect = label.getBoundingClientRect()
+  const margin = 16
+  if (onLeft && rect.left < canvas.left + margin) {
+    const nudge = canvas.left + margin - rect.left
+    label.style.transform = `translate(calc(-100% - ${outside}px + ${nudge}px), -50%)`
+  } else if (!onLeft && rect.right > canvas.right - margin) {
+    const nudge = rect.right - (canvas.right - margin)
+    label.style.transform = `translate(${outside - nudge}px, -50%)`
+  }
 }
 
 function Wafer({

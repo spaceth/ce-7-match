@@ -429,7 +429,7 @@ function placeSideLabels(labels: SideLabel[], camera: THREE.Camera, width: numbe
       label.line.visible = false
       continue
     }
-    const gap = 36
+    const gap = 88
     const clearsChrome = frame.y - frame.h / 2 < 68 || frame.y + frame.h / 2 > height - 210
     const edge = label.side === 'right' && clearsChrome ? 76 : 16
     const beside = label.side === 'left'

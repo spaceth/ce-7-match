@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import logo from '../spaceth-logo.svg'
 import { Explorer } from './components/Explorer'
 import { FallbackView } from './components/FallbackView'
+import { ChangE7 } from './components/ChangE7'
 import { CosmicRays } from './components/CosmicRays'
 import { MissionOverview } from './components/MissionOverview'
 import { OrbitSection } from './components/OrbitSection'
@@ -164,6 +165,11 @@ export function App() {
               <p className="kicker">Chapter {chapter.number}</p>
               <h2 id={`${chapter.id}-title`}>{chapter.title}</h2>
               <p className="chapter-lead">{chapter.description}</p>
+              {chapter.id === 'change-7' ? (
+                <div className="chapter-body">
+                  <ChangE7 />
+                </div>
+              ) : null}
               {chapter.id === 'cosmic-rays' ? (
                 <div className="chapter-body">
                   <CosmicRays />
@@ -203,7 +209,7 @@ export function App() {
                   </footer>
                 </div>
               ) : null}
-              {chapter.id !== 'orbit' && chapter.id !== 'how-match-works' && chapter.id !== 'cosmic-rays' ? (
+              {chapter.id !== 'orbit' && chapter.id !== 'how-match-works' && chapter.id !== 'cosmic-rays' && chapter.id !== 'change-7' ? (
                 <div className="chapter-slot">
                   <p>This chapter is ready for the next piece of the story.</p>
                 </div>
