@@ -245,6 +245,22 @@ function CameraRig({
   )
 }
 
+function housingMaterial(
+  name: string,
+  body: THREE.Material,
+  fasteners: THREE.Material,
+  windows: THREE.Material,
+) {
+  if (/hexagon[_\s]+socket[_\s]+head[_\s]+cap[_\s]+screw/i.test(name)) return fasteners
+  if (/sldasm-Part-28[12]$/i.test(name)) return windows
+  const part = name.match(/sldasm-Part-(\d+)/i)
+  if (part) {
+    const number = Number(part[1])
+    if (number >= 244 && number <= 278 && !/20240814/.test(name)) return fasteners
+  }
+  return body
+}
+
 function Hardware({ mode, onReady }: { mode: Mode; onReady: () => void }) {
   const { scene } = useGLTF(modelUrl)
   const material = useMemo(
@@ -257,11 +273,36 @@ function Hardware({ mode, onReady }: { mode: Mode; onReady: () => void }) {
       }),
     [],
   )
+  const fasteners = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: '#808080',
+        roughness: 0.4,
+        metalness: 0.45,
+        side: THREE.DoubleSide,
+      }),
+    [],
+  )
+  const windows = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: '#333333',
+        roughness: 0.62,
+        metalness: 0.04,
+        side: THREE.DoubleSide,
+      }),
+    [],
+  )
 
   useLayoutEffect(() => {
-    material.clippingPlanes = mode === 'overview' ? [] : [sectionPlane]
+    const planes = mode === 'overview' ? [] : [sectionPlane]
+    material.clippingPlanes = planes
+    fasteners.clippingPlanes = planes
+    windows.clippingPlanes = planes
     material.needsUpdate = true
-  }, [material, mode])
+    fasteners.needsUpdate = true
+    windows.needsUpdate = true
+  }, [fasteners, material, mode, windows])
 
   const root = useMemo(() => {
     const clone = scene.clone(true)
@@ -269,12 +310,29 @@ function Hardware({ mode, onReady }: { mode: Mode; onReady: () => void }) {
     clone.traverse((object) => {
       const mesh = object as THREE.Mesh
       if (!mesh.isMesh) return
-      mesh.material = material
+      mesh.material = housingMaterial(mesh.name, material, fasteners, windows)
       mesh.castShadow = false
       mesh.receiveShadow = false
     })
     return clone
-  }, [material, scene])
+  }, [fasteners, material, scene, windows])
+
+  useLayoutEffect(() => {
+    const showEnds = mode === 'overview'
+    root.traverse((object) => {
+      const mesh = object as THREE.Mesh
+      if (!mesh.isMesh || !/sldasm-Part-28[12]$/i.test(mesh.name)) return
+      mesh.visible = showEnds
+    })
+  }, [mode, root])
+
+  useEffect(() => {
+    return () => {
+      material.dispose()
+      fasteners.dispose()
+      windows.dispose()
+    }
+  }, [fasteners, material, windows])
 
   const reported = useRef(false)
   useLayoutEffect(() => {

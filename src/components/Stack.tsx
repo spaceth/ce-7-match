@@ -1,4 +1,4 @@
-import { Edges, Html, Line } from '@react-three/drei'
+import { Html, Line } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
@@ -139,8 +139,8 @@ export function DetectorAssembly({ motion, progressEl, onStep, onEnded }: StackP
           >
             {layer.kind === 'silicon' ? (
               <>
-                <Wafer material={built.materials[layer.id][0]} offset={-PLANE_OFFSET} readout="x" />
-                <Wafer material={built.materials[layer.id][1]} offset={PLANE_OFFSET} readout="y" />
+                <StripArray material={built.materials[layer.id][0]} offset={-PLANE_OFFSET} axis="x" />
+                <StripArray material={built.materials[layer.id][1]} offset={PLANE_OFFSET} axis="y" />
                 <group
                   ref={(node) => {
                     hitGroups.current[layer.id] = node
@@ -243,20 +243,35 @@ function placeEntranceLabel(
   }
 }
 
-function Wafer({
+const STRIP_COUNT = 8
+const STRIP_GAP = 0.7
+
+function StripArray({
   material,
   offset,
-  readout,
+  axis,
 }: {
   material: THREE.MeshStandardMaterial
   offset: number
-  readout: 'x' | 'y'
+  axis: 'x' | 'y'
 }) {
+  const pitch = SILICON_SIZE / STRIP_COUNT
+  const span = pitch - STRIP_GAP
+  const origin = -SILICON_SIZE / 2 + pitch / 2
   return (
-    <mesh material={material} position={[0, 0, offset]} renderOrder={2}>
-      <boxGeometry args={[SILICON_SIZE, SILICON_SIZE, WAFER_THICKNESS]} />
-      <Edges threshold={15} color={readout === 'x' ? '#f7f8fa' : '#c5d0dc'} />
-    </mesh>
+    <group position={[0, 0, offset]}>
+      {Array.from({ length: STRIP_COUNT }, (_, index) => {
+        const at = origin + index * pitch
+        const position: [number, number, number] = axis === 'x' ? [at, 0, 0] : [0, at, 0]
+        const size: [number, number, number] =
+          axis === 'x' ? [span, SILICON_SIZE, WAFER_THICKNESS] : [SILICON_SIZE, span, WAFER_THICKNESS]
+        return (
+          <mesh key={index} material={material} position={position} renderOrder={2}>
+            <boxGeometry args={size} />
+          </mesh>
+        )
+      })}
+    </group>
   )
 }
 
@@ -264,19 +279,17 @@ function RoundedCrystal({ material, thickness }: { material: THREE.MeshStandardM
   return (
     <mesh material={material} renderOrder={2}>
       <boxGeometry args={[SCINT_SIZE, SCINT_SIZE, thickness]} />
-      <Edges threshold={15} color="#e7ebf0" />
     </mesh>
   )
 }
 
 function createMaterials() {
-  const strips = { x: makeStrip('x'), y: makeStrip('y') }
   const materials: Record<string, THREE.MeshStandardMaterial[]> = {}
   const hits: Record<string, THREE.MeshBasicMaterial> = {}
 
   for (const layer of LAYERS) {
     if (layer.kind === 'silicon') {
-      materials[layer.id] = [siliconMaterial(strips.x, -1), siliconMaterial(strips.y, -2)]
+      materials[layer.id] = [siliconMaterial(-1), siliconMaterial(-2)]
       hits[layer.id] = new THREE.MeshBasicMaterial({
         color: '#fff6d8',
         transparent: true,
@@ -300,16 +313,15 @@ function createMaterials() {
     }
   }
 
-  return { materials, hits, strips }
+  return { materials, hits }
 }
 
-function siliconMaterial(map: THREE.Texture, offset: number) {
+function siliconMaterial(offset: number) {
   const material = new THREE.MeshStandardMaterial({
     color: siliconIdle.clone(),
     roughness: 0.32,
     metalness: 0.62,
     emissive: new THREE.Color('#ffffff'),
-    emissiveMap: map,
     emissiveIntensity: 0.2,
   })
   material.polygonOffset = true
@@ -325,45 +337,6 @@ function applyEmphasis(materials: THREE.MeshStandardMaterial[], kind: LayerKind,
     material.color.copy(idle).lerp(hot, emphasis)
     material.emissiveIntensity = kind === 'silicon' ? 0.08 + emphasis * 0.9 : emphasis * (kind === 'E' ? 0.72 : 0.58)
   }
-}
-
-function makeStrip(readout: 'x' | 'y') {
-  const canvas = document.createElement('canvas')
-  canvas.width = 512
-  canvas.height = 512
-  const context = canvas.getContext('2d')
-  if (!context) {
-    const texture = new THREE.Texture()
-    return texture
-  }
-  context.fillStyle = '#000000'
-  context.fillRect(0, 0, 512, 512)
-  context.strokeStyle = '#ffffff'
-  context.lineWidth = 1.25
-  context.beginPath()
-  const step = 12
-  if (readout === 'x') {
-    for (let x = 0.5; x <= 512; x += step) {
-      context.moveTo(x, 0)
-      context.lineTo(x, 512)
-    }
-  } else {
-    for (let y = 0.5; y <= 512; y += step) {
-      context.moveTo(0, y)
-      context.lineTo(512, y)
-    }
-  }
-  context.stroke()
-  context.font = '600 72px Poppins, sans-serif'
-  context.fillStyle = '#ffffff'
-  context.textAlign = 'left'
-  context.textBaseline = 'top'
-  context.fillText(readout.toUpperCase(), 28, 24)
-  const texture = new THREE.CanvasTexture(canvas)
-  texture.colorSpace = THREE.SRGBColorSpace
-  texture.anisotropy = 8
-  texture.needsUpdate = true
-  return texture
 }
 
 const rodStart = new THREE.Vector3()

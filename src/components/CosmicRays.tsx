@@ -575,7 +575,7 @@ function JupiterFrame({ reduced }: { reduced: boolean }) {
   const playing = shown && !reduced
 
   return (
-    <div ref={frameRef} className="ray-frame ray-jupiter" role="img" aria-label="Rotating Jupiter with magnetic field lines">
+    <div ref={frameRef} className="ray-frame ray-jupiter" role="img" aria-label="Rotating Jupiter with a blue magnetic glow, field lines, and a few particles leaving">
       <Canvas
         dpr={[1, 1.5]}
         camera={{ fov: 30, position: [0.45, 0.28, 5.55] }}
@@ -611,55 +611,142 @@ function Jupiter({ playing }: { playing: boolean }) {
           <shaderMaterial
             toneMapped={false}
             vertexShader={`
-              varying vec3 vPos;
               varying vec3 vNormal;
               void main() {
-                vPos = position;
                 vNormal = normalize(normalMatrix * normal);
                 gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
               }
             `}
             fragmentShader={`
-              varying vec3 vPos;
               varying vec3 vNormal;
-              vec3 jupiterColor(vec3 dir) {
-                float y = dir.y;
-                float ay = abs(y);
-                float lon = atan(dir.z, dir.x);
-                vec3 cream = vec3(0.95, 0.86, 0.68);
-                vec3 sand = vec3(0.86, 0.58, 0.30);
-                vec3 belt = vec3(0.58, 0.28, 0.14);
-                vec3 polar = vec3(0.52, 0.38, 0.28);
-                vec3 color = mix(sand, cream, smoothstep(0.16, 0.0, ay));
-                float belts = smoothstep(0.02, 0.2, ay) * smoothstep(0.42, 0.16, ay);
-                color = mix(color, belt, belts);
-                float zones = smoothstep(0.22, 0.46, ay) * smoothstep(0.72, 0.42, ay);
-                color = mix(color, sand, zones * 0.85);
-                color = mix(color, polar, smoothstep(0.5, 0.98, ay));
-                float spotLon = atan(sin(lon - 0.7), cos(lon - 0.7));
-                float spot = smoothstep(0.46, 0.02, length(vec2(spotLon * 1.05, (y + 0.22) * 2.1)));
-                return mix(color, vec3(0.74, 0.2, 0.12), spot);
-              }
               void main() {
-                vec3 dir = normalize(vPos);
-                vec3 color = jupiterColor(dir);
-                color += jupiterColor(normalize(dir + vec3(0.2, 0.0, 0.0)));
-                color += jupiterColor(normalize(dir + vec3(-0.2, 0.0, 0.0)));
-                color += jupiterColor(normalize(dir + vec3(0.0, 0.16, 0.0)));
-                color += jupiterColor(normalize(dir + vec3(0.0, -0.16, 0.0)));
-                color += jupiterColor(normalize(dir + vec3(0.0, 0.0, 0.2)));
-                color += jupiterColor(normalize(dir + vec3(0.14, 0.1, 0.14)));
-                color /= 7.0;
+                vec3 orange = vec3(0.91, 0.52, 0.18);
                 float light = dot(normalize(vNormal), normalize(vec3(0.35, 0.2, 1.0)));
-                float shade = 0.24 + 0.76 * clamp(light, 0.0, 1.0);
-                gl_FragColor = vec4(color * shade, 1.0);
+                float shade = 0.28 + 0.72 * clamp(light, 0.0, 1.0);
+                gl_FragColor = vec4(orange * shade, 1.0);
+              }
+            `}
+          />
+        </mesh>
+        <mesh>
+          <sphereGeometry args={[JUPITER_RADIUS * 4.2, 48, 32]} />
+          <shaderMaterial
+            transparent
+            depthWrite={false}
+            blending={THREE.AdditiveBlending}
+            toneMapped={false}
+            vertexShader={`
+              varying vec3 vNormal;
+              void main() {
+                vNormal = normalize(normalMatrix * normal);
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+              }
+            `}
+            fragmentShader={`
+              varying vec3 vNormal;
+              void main() {
+                float facing = abs(dot(normalize(vNormal), vec3(0.0, 0.0, 1.0)));
+                float rim = pow(1.0 - facing, 1.45);
+                float body = pow(facing, 2.2) * 0.28;
+                float glow = rim * 0.85 + body;
+                vec3 blue = vec3(0.28, 0.55, 1.0);
+                gl_FragColor = vec4(blue * glow * 0.62, 1.0);
               }
             `}
           />
         </mesh>
         <FieldLines />
       </group>
+      <JupiterElectrons playing={playing} />
     </group>
+  )
+}
+
+const JUPITER_PARTICLES = 10
+
+function jupiterElectronRadius(life: number) {
+  return 0.86 + life * 1.15
+}
+
+function JupiterElectrons({ playing }: { playing: boolean }) {
+  const points = useRef<THREE.Points>(null)
+  const flight = useMemo(
+    () =>
+      Array.from({ length: JUPITER_PARTICLES }, () => ({
+        dir: new THREE.Vector3().randomDirection(),
+        speed: 1.05 + Math.random() * 0.45,
+        life: Math.random(),
+      })),
+    [],
+  )
+
+  useFrame((_, delta) => {
+    const mesh = points.current
+    if (!mesh) return
+    const position = mesh.geometry.getAttribute('position') as THREE.BufferAttribute
+    const lifeAttr = mesh.geometry.getAttribute('aLife') as THREE.BufferAttribute
+    const step = Math.min(delta, 0.05)
+    flight.forEach((item, index) => {
+      if (playing) item.life += step * item.speed
+      if (item.life > 1) {
+        item.life = 0
+        item.dir.randomDirection()
+        item.speed = 1.05 + Math.random() * 0.45
+      }
+      const radius = jupiterElectronRadius(item.life)
+      position.setXYZ(index, item.dir.x * radius, item.dir.y * radius, item.dir.z * radius)
+      lifeAttr.setX(index, item.life)
+    })
+    position.needsUpdate = true
+    lifeAttr.needsUpdate = true
+  })
+
+  const geometry = useMemo(() => {
+    const positions = new Float32Array(JUPITER_PARTICLES * 3)
+    const lives = new Float32Array(JUPITER_PARTICLES)
+    flight.forEach((item, index) => {
+      const radius = jupiterElectronRadius(item.life)
+      positions[index * 3] = item.dir.x * radius
+      positions[index * 3 + 1] = item.dir.y * radius
+      positions[index * 3 + 2] = item.dir.z * radius
+      lives[index] = item.life
+    })
+    const geometry = new THREE.BufferGeometry()
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+    geometry.setAttribute('aLife', new THREE.BufferAttribute(lives, 1))
+    return geometry
+  }, [flight])
+
+  useEffect(() => {
+    return () => geometry.dispose()
+  }, [geometry])
+
+  return (
+    <points ref={points} geometry={geometry} frustumCulled={false}>
+      <shaderMaterial
+        transparent
+        depthWrite={false}
+        toneMapped={false}
+        vertexShader={`
+          attribute float aLife;
+          varying float vLife;
+          void main() {
+            vLife = aLife;
+            gl_PointSize = 3.2;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `}
+        fragmentShader={`
+          varying float vLife;
+          void main() {
+            float dist = length(gl_PointCoord - 0.5);
+            float dot = smoothstep(0.5, 0.15, dist);
+            float fade = smoothstep(0.0, 0.1, vLife) * smoothstep(1.0, 0.58, vLife);
+            gl_FragColor = vec4(0.72, 0.86, 1.0, dot * fade);
+          }
+        `}
+      />
+    </points>
   )
 }
 

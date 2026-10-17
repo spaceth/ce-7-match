@@ -169,6 +169,26 @@ function PayloadModel({ pivotRef }: { pivotRef: MutableRefObject<THREE.Group | n
       }),
     [],
   )
+  const fasteners = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: '#808080',
+        roughness: 0.4,
+        metalness: 0.45,
+        side: THREE.DoubleSide,
+      }),
+    [],
+  )
+  const windows = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: '#333333',
+        roughness: 0.62,
+        metalness: 0.04,
+        side: THREE.DoubleSide,
+      }),
+    [],
+  )
   const root = useMemo(() => {
     const pivot = new THREE.Group()
     const clone = scene.clone(true)
@@ -176,13 +196,13 @@ function PayloadModel({ pivotRef }: { pivotRef: MutableRefObject<THREE.Group | n
     clone.traverse((object) => {
       const mesh = object as THREE.Mesh
       if (!mesh.isMesh) return
-      mesh.material = material
+      mesh.material = housingMaterial(mesh.name, material, fasteners, windows)
       mesh.castShadow = false
       mesh.receiveShadow = false
     })
     pivot.add(clone)
     return pivot
-  }, [material, scene])
+  }, [fasteners, material, scene, windows])
 
   useLayoutEffect(() => {
     pivotRef.current = root
@@ -192,10 +212,30 @@ function PayloadModel({ pivotRef }: { pivotRef: MutableRefObject<THREE.Group | n
   }, [pivotRef, root])
 
   useEffect(() => {
-    return () => material.dispose()
-  }, [material])
+    return () => {
+      material.dispose()
+      fasteners.dispose()
+      windows.dispose()
+    }
+  }, [fasteners, material, windows])
 
   return <primitive object={root} />
+}
+
+function housingMaterial(
+  name: string,
+  body: THREE.Material,
+  fasteners: THREE.Material,
+  windows: THREE.Material,
+) {
+  if (/hexagon[_\s]+socket[_\s]+head[_\s]+cap[_\s]+screw/i.test(name)) return fasteners
+  if (/sldasm-Part-28[12]$/i.test(name)) return windows
+  const part = name.match(/sldasm-Part-(\d+)/i)
+  if (part) {
+    const number = Number(part[1])
+    if (number >= 244 && number <= 278 && !/20240814/.test(name)) return fasteners
+  }
+  return body
 }
 
 const focus = new THREE.Vector3()
