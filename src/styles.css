@@ -495,72 +495,6 @@ button:disabled { opacity: 0.35; cursor: default; }
   line-height: var(--leading-body);
 }
 .eng-block > p + p { margin-top: var(--gap-text); }
-.alloy {
-  margin: var(--gap-stack) 0 0;
-  max-width: 680px;
-}
-.alloy-volume {
-  margin: 0 0 28px;
-  color: var(--faint);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-.alloy-pair {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 280px));
-  gap: 56px;
-}
-.alloy-shape {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-.alloy-name {
-  margin: 22px 0 0;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  line-height: 1.3;
-}
-.alloy-mass {
-  margin: 6px 0 0;
-  color: #fff;
-  font-size: clamp(40px, 4.4vw, 56px);
-  font-weight: 600;
-  letter-spacing: -0.045em;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-.alloy-mass span {
-  display: block;
-  margin-top: 10px;
-  color: var(--faint);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-.alloy figcaption {
-  margin: 48px 0 0;
-  color: #c8c8d0;
-  font-size: var(--type-body);
-  font-weight: 400;
-  line-height: var(--leading-body);
-}
-.alloy figcaption strong {
-  display: block;
-  margin-bottom: 4px;
-  color: #fff;
-  font-size: clamp(28px, 3vw, 36px);
-  font-weight: 600;
-  letter-spacing: -0.035em;
-  line-height: 1.15;
-}
 .eng-facts {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1594,7 +1528,7 @@ footer p { margin: 0; max-width: 68ch; color: var(--faint); font-size: var(--typ
   .craft-lists { grid-template-columns: 1fr; }
   .craft-frame { min-height: 240px; }
   .modes button, .pips button { min-height: 44px; }
-  .eng-facts, .eng-photos, .alloy-pair { grid-template-columns: 1fr; }
+  .eng-facts, .eng-photos { grid-template-columns: 1fr; }
   .eng-photo-wide { aspect-ratio: 16 / 10; }
   .people dl { grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr); column-gap: 16px; }
   .people-row dt { grid-column: 1 / -1; }
@@ -1642,7 +1576,7 @@ footer p { margin: 0; max-width: 68ch; color: var(--faint); font-size: var(--typ
   .craft-stage,
   .craft-lists { grid-template-columns: 1fr; }
   .craft-frame { min-height: 240px; }
-  .eng-facts, .eng-photos, .alloy-pair { grid-template-columns: 1fr; }
+  .eng-facts, .eng-photos { grid-template-columns: 1fr; }
   .eng-photo-wide { aspect-ratio: 16 / 10; }
   .people dl { grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr); column-gap: 16px; }
   .people-row dt { grid-column: 1 / -1; }
