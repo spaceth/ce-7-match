@@ -89,14 +89,6 @@ function Precision() {
           </li>
         ))}
       </ul>
-      <ol className="eng-sequence">
-        {['Material blank', 'Machining', 'Inspection', 'Assembly'].map((step, index) => (
-          <li key={step}>
-            <span>{index + 1}</span>
-            {step}
-          </li>
-        ))}
-      </ol>
       <div className="eng-photos">
         <Photo label="Magnesium-alloy machining" />
         <Photo label="Dimensional inspection" />

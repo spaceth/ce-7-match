@@ -120,12 +120,7 @@ export function ChangE7() {
   return (
     <div className="craft">
       <div className="craft-stage">
-        <div className="craft-frame" role="img" aria-label="Placeholder for the Chang’e-7 spacecraft model">
-          <span>Spacecraft model</span>
-          <strong>
-            {selection === 'match' ? 'MATCH · on the orbiter' : selection === 'overview' ? 'Chang’e-7' : part?.label}
-          </strong>
-        </div>
+        <div className="craft-frame" role="img" aria-label="Placeholder for the Chang’e-7 spacecraft model" />
         <div className="craft-controls">
           <div className="craft-parts" role="group" aria-label="Parts of Chang’e-7">
             <button type="button" aria-pressed={selection === 'overview'} onClick={() => setSelection('overview')}>

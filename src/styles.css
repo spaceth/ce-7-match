@@ -302,25 +302,7 @@ button:disabled { opacity: 0.35; cursor: default; }
   align-items: stretch;
 }
 .craft-frame {
-  display: grid;
-  align-content: end;
-  gap: 8px;
   min-height: 420px;
-  padding: 22px;
-}
-.craft-frame span {
-  color: var(--faint);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-.craft-frame strong {
-  max-width: 10em;
-  font-size: clamp(28px, 3vw, 40px);
-  font-weight: 600;
-  letter-spacing: -0.035em;
-  line-height: 1.05;
 }
 .craft-controls {
   display: flex;
@@ -531,39 +513,6 @@ button:disabled { opacity: 0.35; cursor: default; }
 }
 .eng-facts span { display: block; margin-top: 12px; color: #c8c8d0; font-size: var(--type-note); line-height: 1.5; }
 .eng-facts .eng-fact-line { font-size: clamp(22px, 2.2vw, 30px); line-height: 1.15; }
-.eng-sequence {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 22px;
-  margin: 36px 0 0;
-  padding: 0;
-  list-style: none;
-}
-.eng-sequence li {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  color: #fff;
-  font-size: 15px;
-  font-weight: 600;
-}
-.eng-sequence li span {
-  display: grid;
-  width: 28px;
-  height: 28px;
-  place-items: center;
-  border-radius: 50%;
-  background: #f4f4f5;
-  color: #111;
-  font-size: 13px;
-}
-.eng-sequence li:not(:last-child)::after {
-  content: '';
-  width: 28px;
-  height: 1px;
-  margin-left: 12px;
-  background: rgba(255, 255, 255, 0.35);
-}
 .eng-photos {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1503,7 +1452,6 @@ footer p { margin: 0; max-width: 68ch; color: var(--faint); font-size: var(--typ
   .craft-frame { min-height: 240px; }
   .modes button, .pips button { min-height: 44px; }
   .eng-facts, .eng-photos { grid-template-columns: 1fr; }
-  .eng-sequence li:not(:last-child)::after { width: 16px; }
   .eng-photo-wide { aspect-ratio: 16 / 10; }
   .people dl { grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr); column-gap: 16px; }
   .people-row dt { grid-column: 1 / -1; }
@@ -1552,7 +1500,6 @@ footer p { margin: 0; max-width: 68ch; color: var(--faint); font-size: var(--typ
   .craft-lists { grid-template-columns: 1fr; }
   .craft-frame { min-height: 240px; }
   .eng-facts, .eng-photos { grid-template-columns: 1fr; }
-  .eng-sequence li:not(:last-child)::after { width: 16px; }
   .eng-photo-wide { aspect-ratio: 16 / 10; }
   .people dl { grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr); column-gap: 16px; }
   .people-row dt { grid-column: 1 / -1; }
