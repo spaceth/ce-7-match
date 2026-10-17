@@ -7,6 +7,7 @@ import { Engineering } from './components/Engineering'
 import { People } from './components/People'
 import { CosmicRays } from './components/CosmicRays'
 import { MissionOverview } from './components/MissionOverview'
+import { MeasureNotes } from './components/MeasureNotes'
 import { OrbitSection } from './components/OrbitSection'
 import { hasWebGL } from './lib/webgl'
 
@@ -213,21 +214,7 @@ export function App() {
                 <div className="chapter-body">
                   {webgl ? <Explorer /> : <FallbackView reason="webgl" />}
                   <section className="notes" aria-label="How MATCH measures particles">
-                    <article>
-                      <h3>Track its path.</h3>
-                      <p>Silicon detectors record positions along a particle’s trajectory.</p>
-                    </article>
-                    <article>
-                      <h3>Measure its energy deposits.</h3>
-                      <p>Scintillators reveal how energy is deposited inside the instrument.</p>
-                    </article>
-                    <article>
-                      <h3>Understand the environment.</h3>
-                      <p>
-                        Many events together help researchers investigate Solar Energetic Particles, Galactic Cosmic Rays,
-                        Jovian Electrons, and Lunar Albedo.
-                      </p>
-                    </article>
+                    <MeasureNotes />
                   </section>
                   <footer>
                     <p>
