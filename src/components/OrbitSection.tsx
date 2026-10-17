@@ -6,6 +6,7 @@ import * as THREE from 'three'
 import moonColorUrl from '../assets/moon/lroc-color.jpg?url'
 import { orbitRadiusKm, orbitScene, slantToSurface } from '../lib/orbit'
 import { useReducedMotion } from '../lib/useReducedMotion'
+import { useStageActivity } from '../lib/useStageActivity'
 import { hasWebGL } from '../lib/webgl'
 import { StageFrame } from './StageScreen'
 
@@ -47,13 +48,12 @@ const FLEET: FleetCraft[] = [
 export function OrbitSection() {
   const reduced = useReducedMotion()
   const webgl = useMemo(() => hasWebGL(), [])
-  const sectionRef = useRef<HTMLElement>(null)
+  const { ref: sectionRef, shown: visible, seen } = useStageActivity<HTMLElement>()
   const tags = useRef<Record<string, HTMLSpanElement | null>>({})
   const [playing, setPlaying] = useState(!reduced)
   const [cones, setCones] = useState(true)
   const [closeUp, setCloseUp] = useState(false)
   const [resetToken, setResetToken] = useState(0)
-  const [visible, setVisible] = useState(true)
   const motion = useRef<Motion>({
     playing: !reduced,
     cones: true,
@@ -61,7 +61,7 @@ export function OrbitSection() {
     anomaly: INITIAL,
     intro: reduced ? 1 : 0,
     reduced,
-    visible: true,
+    visible: false,
     pulse: 0,
   })
 
@@ -78,17 +78,6 @@ export function OrbitSection() {
     motion.current.intro = 1
     setPlaying(false)
   }, [reduced])
-
-  useEffect(() => {
-    const node = sectionRef.current
-    if (!node) return
-    const observer = new IntersectionObserver(
-      ([entry]) => setVisible(entry.isIntersecting),
-      { threshold: 0.2 },
-    )
-    observer.observe(node)
-    return () => observer.disconnect()
-  }, [])
 
   function togglePlay() {
     setPlaying((value) => !value)
@@ -110,7 +99,7 @@ export function OrbitSection() {
       <div className="orbit-layout">
         {webgl ? (
           <StageFrame className="stage orbit-stage">
-            <OrbitCanvas motion={motion} resetToken={resetToken} tags={tags} />
+            {seen ? <OrbitCanvas motion={motion} resetToken={resetToken} tags={tags} /> : null}
             <div className="orbit-tags">
               <span ref={(node) => { tags.current.moon = node }}>Moon</span>
               <span ref={(node) => { tags.current.craft = node }}>CE-7 MATCH</span>

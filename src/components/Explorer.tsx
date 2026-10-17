@@ -10,6 +10,7 @@ import {
   type Playback,
 } from '../lib/instrument'
 import { useReducedMotion } from '../lib/useReducedMotion'
+import { useStageActivity } from '../lib/useStageActivity'
 import { FallbackView } from './FallbackView'
 import { StageFrame } from './StageScreen'
 import { LoadState, Viewport, type ViewHandle } from './Viewport'
@@ -22,6 +23,7 @@ const MODES: { id: Mode; label: string }[] = [
 
 export function Explorer() {
   const reduced = useReducedMotion()
+  const { ref: viewerRef, seen } = useStageActivity<HTMLElement>()
   const [mode, setMode] = useState<Mode>('overview')
   const [selected, setSelected] = useState('si1')
   const [spread, setSpread] = useState(true)
@@ -149,7 +151,7 @@ export function Explorer() {
 
   return (
     <CanvasGuard fallback={<FallbackView reason="webgl" />}>
-      <section className="viewer" aria-label="MATCH explorer">
+      <section ref={viewerRef} className="viewer" aria-label="MATCH explorer">
         <div className="toolbar">
           <div className="modes" role="tablist" aria-label="Explorer mode">
             {MODES.map((item) => (
@@ -278,23 +280,25 @@ export function Explorer() {
         </div>
 
         <StageFrame className="stage" role="region" aria-label="3D view of MATCH" aria-describedby="viewer-copy">
-          <Viewport
-            mode={mode}
-            selected={selected}
-            motion={motion}
-            progressEl={progressEl}
-            resetToken={resetToken}
-            reduced={reduced}
-            autoRotate={autoRotate}
-            interacting={interacting}
-            onInteract={setInteracting}
-            onStep={onStep}
-            onEnded={onEnded}
-            onReady={onReady}
-            onModelError={onModelError}
-            viewRef={viewRef}
-          />
-          <LoadState hidden={ready} />
+          {seen ? (
+            <Viewport
+              mode={mode}
+              selected={selected}
+              motion={motion}
+              progressEl={progressEl}
+              resetToken={resetToken}
+              reduced={reduced}
+              autoRotate={autoRotate}
+              interacting={interacting}
+              onInteract={setInteracting}
+              onStep={onStep}
+              onEnded={onEnded}
+              onReady={onReady}
+              onModelError={onModelError}
+              viewRef={viewRef}
+            />
+          ) : null}
+          <LoadState hidden={!seen || ready} />
           {modelError && mode === 'overview' && (
             <div className="overlay">
               <p>The hardware model could not be loaded.</p>

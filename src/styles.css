@@ -150,7 +150,6 @@ button:disabled { opacity: 0.35; cursor: default; }
 .chapter:focus-visible { outline: none; }
 .chapter.chapter-stage { border-top: 0; padding: 0; }
 .chapter:last-child { min-height: calc(100svh - var(--header)); }
-.chapter-slot p { margin: 0; }
 .chapter > h2 {
   margin: 0 0 18px;
   max-width: 16em;
@@ -266,18 +265,6 @@ button:disabled { opacity: 0.35; cursor: default; }
   font-size: 18px;
   line-height: 1.65;
   color: var(--muted);
-}
-.chapter-slot {
-  margin-top: 40px;
-  min-height: 180px;
-  display: grid;
-  place-items: center;
-  padding: 28px;
-  border: 1px dashed rgba(255, 255, 255, 0.16);
-  border-radius: 24px;
-  color: var(--faint);
-  font-size: 14px;
-  text-align: center;
 }
 .chapter-body { margin-top: 40px; }
 .close-copy p {

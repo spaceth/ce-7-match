@@ -1,9 +1,9 @@
-import { Html, Line, OrbitControls, useGLTF, useProgress } from '@react-three/drei'
+import { Html, Line, OrbitControls, useProgress } from '@react-three/drei'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Component, Suspense, useEffect, useLayoutEffect, useMemo, useRef, type Ref } from 'react'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import * as THREE from 'three'
-import modelUrl from '../../model.glb?url'
+import { createHousingMaterials, disposeHousing, paintHousing } from '../lib/housing'
 import {
   MODEL_CENTER,
   TELESCOPE_WORLD,
@@ -12,9 +12,8 @@ import {
   type Mode,
   type Playback,
 } from '../lib/instrument'
+import { useMatchModel } from '../lib/model'
 import { DetectorAssembly } from './Stack'
-
-useGLTF.preload(modelUrl)
 
 export type ViewHandle = {
   zoom: (factor: number) => void
@@ -245,77 +244,24 @@ function CameraRig({
   )
 }
 
-function housingMaterial(
-  name: string,
-  body: THREE.Material,
-  fasteners: THREE.Material,
-  windows: THREE.Material,
-) {
-  if (/hexagon[_\s]+socket[_\s]+head[_\s]+cap[_\s]+screw/i.test(name)) return fasteners
-  if (/sldasm-Part-28[12]$/i.test(name)) return windows
-  const part = name.match(/sldasm-Part-(\d+)/i)
-  if (part) {
-    const number = Number(part[1])
-    if (number >= 244 && number <= 278 && !/20240814/.test(name)) return fasteners
-  }
-  return body
-}
-
 function Hardware({ mode, onReady }: { mode: Mode; onReady: () => void }) {
-  const { scene } = useGLTF(modelUrl)
-  const material = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: '#fafafa',
-        roughness: 0.56,
-        metalness: 0.08,
-        side: THREE.DoubleSide,
-      }),
-    [],
-  )
-  const fasteners = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: '#808080',
-        roughness: 0.4,
-        metalness: 0.45,
-        side: THREE.DoubleSide,
-      }),
-    [],
-  )
-  const windows = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: '#333333',
-        roughness: 0.62,
-        metalness: 0.04,
-        side: THREE.DoubleSide,
-      }),
-    [],
-  )
+  const { scene } = useMatchModel()
+  const materials = useMemo(() => createHousingMaterials(), [])
 
   useLayoutEffect(() => {
     const planes = mode === 'overview' ? [] : [sectionPlane]
-    material.clippingPlanes = planes
-    fasteners.clippingPlanes = planes
-    windows.clippingPlanes = planes
-    material.needsUpdate = true
-    fasteners.needsUpdate = true
-    windows.needsUpdate = true
-  }, [fasteners, material, mode, windows])
+    for (const material of [materials.body, materials.fasteners, materials.windows]) {
+      material.clippingPlanes = planes
+      material.needsUpdate = true
+    }
+  }, [materials, mode])
 
   const root = useMemo(() => {
     const clone = scene.clone(true)
     clone.position.set(-MODEL_CENTER.x, -MODEL_CENTER.y, -MODEL_CENTER.z)
-    clone.traverse((object) => {
-      const mesh = object as THREE.Mesh
-      if (!mesh.isMesh) return
-      mesh.material = housingMaterial(mesh.name, material, fasteners, windows)
-      mesh.castShadow = false
-      mesh.receiveShadow = false
-    })
+    paintHousing(clone, materials)
     return clone
-  }, [fasteners, material, scene, windows])
+  }, [materials, scene])
 
   useLayoutEffect(() => {
     const showEnds = mode === 'overview'
@@ -326,13 +272,7 @@ function Hardware({ mode, onReady }: { mode: Mode; onReady: () => void }) {
     })
   }, [mode, root])
 
-  useEffect(() => {
-    return () => {
-      material.dispose()
-      fasteners.dispose()
-      windows.dispose()
-    }
-  }, [fasteners, material, windows])
+  useEffect(() => () => disposeHousing(materials), [materials])
 
   const reported = useRef(false)
   useLayoutEffect(() => {

@@ -238,11 +238,6 @@ export function App() {
                   </footer>
                 </div>
               ) : null}
-              {chapter.id !== 'orbit' && chapter.id !== 'how-match-works' && chapter.id !== 'cosmic-rays' && chapter.id !== 'change-7' && chapter.id !== 'engineering' && chapter.id !== 'people' && chapter.id !== 'conclusion' ? (
-                <div className="chapter-slot">
-                  <p>This chapter is ready for the next piece of the story.</p>
-                </div>
-              ) : null}
             </section>
           ))}
           <section className="end-credit" aria-labelledby="end-credit-title">

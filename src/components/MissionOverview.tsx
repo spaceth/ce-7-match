@@ -1,13 +1,11 @@
-import { useGLTF } from '@react-three/drei'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState, type MutableRefObject } from 'react'
 import * as THREE from 'three'
-import modelUrl from '../../model.glb?url'
+import { createHousingMaterials, disposeHousing, paintHousing } from '../lib/housing'
 import { MODEL_CENTER } from '../lib/instrument'
+import { useMatchModel } from '../lib/model'
 import { useReducedMotion } from '../lib/useReducedMotion'
 import { StageFrame } from './StageScreen'
-
-useGLTF.preload(modelUrl)
 
 const STEPS = [
   {
@@ -158,51 +156,16 @@ export function MissionOverview({
 }
 
 function PayloadModel({ pivotRef }: { pivotRef: MutableRefObject<THREE.Group | null> }) {
-  const { scene } = useGLTF(modelUrl)
-  const material = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: '#fafafa',
-        roughness: 0.56,
-        metalness: 0.08,
-        side: THREE.DoubleSide,
-      }),
-    [],
-  )
-  const fasteners = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: '#808080',
-        roughness: 0.4,
-        metalness: 0.45,
-        side: THREE.DoubleSide,
-      }),
-    [],
-  )
-  const windows = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: '#333333',
-        roughness: 0.62,
-        metalness: 0.04,
-        side: THREE.DoubleSide,
-      }),
-    [],
-  )
+  const { scene } = useMatchModel()
+  const materials = useMemo(() => createHousingMaterials(), [])
   const root = useMemo(() => {
     const pivot = new THREE.Group()
     const clone = scene.clone(true)
     clone.position.set(-MODEL_CENTER.x, -MODEL_CENTER.y, -MODEL_CENTER.z)
-    clone.traverse((object) => {
-      const mesh = object as THREE.Mesh
-      if (!mesh.isMesh) return
-      mesh.material = housingMaterial(mesh.name, material, fasteners, windows)
-      mesh.castShadow = false
-      mesh.receiveShadow = false
-    })
+    paintHousing(clone, materials)
     pivot.add(clone)
     return pivot
-  }, [fasteners, material, scene, windows])
+  }, [materials, scene])
 
   useLayoutEffect(() => {
     pivotRef.current = root
@@ -211,31 +174,9 @@ function PayloadModel({ pivotRef }: { pivotRef: MutableRefObject<THREE.Group | n
     }
   }, [pivotRef, root])
 
-  useEffect(() => {
-    return () => {
-      material.dispose()
-      fasteners.dispose()
-      windows.dispose()
-    }
-  }, [fasteners, material, windows])
+  useEffect(() => () => disposeHousing(materials), [materials])
 
   return <primitive object={root} />
-}
-
-function housingMaterial(
-  name: string,
-  body: THREE.Material,
-  fasteners: THREE.Material,
-  windows: THREE.Material,
-) {
-  if (/hexagon[_\s]+socket[_\s]+head[_\s]+cap[_\s]+screw/i.test(name)) return fasteners
-  if (/sldasm-Part-28[12]$/i.test(name)) return windows
-  const part = name.match(/sldasm-Part-(\d+)/i)
-  if (part) {
-    const number = Number(part[1])
-    if (number >= 244 && number <= 278 && !/20240814/.test(name)) return fasteners
-  }
-  return body
 }
 
 const focus = new THREE.Vector3()

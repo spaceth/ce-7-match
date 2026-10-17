@@ -2,6 +2,7 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { useReducedMotion } from '../lib/useReducedMotion'
+import { useStageActivity } from '../lib/useStageActivity'
 import { hasWebGL } from '../lib/webgl'
 
 const SOURCES = [
@@ -152,9 +153,6 @@ export function CosmicRays() {
                 ))}
               </g>
               <path className="tail-bow" d="M292 150 C176 196 168 348 292 392" />
-              <text className="tail-label" x="228" y="364" textAnchor="end">
-                Bow shock
-              </text>
               <path
                 className="tail-body"
                 d="M292 198 C214 226 206 314 292 340 C500 402 730 418 940 386 L940 150 C730 118 500 136 292 198 Z"
@@ -196,16 +194,7 @@ export function CosmicRays() {
 
 function SunFrame({ reduced }: { reduced: boolean }) {
   const webgl = useMemo(() => hasWebGL(), [])
-  const frameRef = useRef<HTMLDivElement>(null)
-  const [shown, setShown] = useState(true)
-
-  useEffect(() => {
-    const node = frameRef.current
-    if (!node) return
-    const observer = new IntersectionObserver(([entry]) => setShown(entry.isIntersecting), { threshold: 0.15 })
-    observer.observe(node)
-    return () => observer.disconnect()
-  }, [])
+  const { ref: frameRef, shown, seen } = useStageActivity<HTMLDivElement>()
 
   if (!webgl) {
     return (
@@ -219,7 +208,7 @@ function SunFrame({ reduced }: { reduced: boolean }) {
 
   return (
     <div ref={frameRef} className="ray-frame ray-sun" role="img" aria-label="Glowing orange Sun with particles leaving it">
-      <Canvas
+      {seen ? <Canvas
         dpr={[1, 1.5]}
         camera={{ fov: 30, position: [0, 0, 4.1] }}
         frameloop={playing ? 'always' : 'demand'}
@@ -232,7 +221,7 @@ function SunFrame({ reduced }: { reduced: boolean }) {
       >
         <SunBody />
         <SolarParticles playing={playing} />
-      </Canvas>
+      </Canvas> : null}
     </div>
   )
 }
@@ -355,16 +344,7 @@ function SolarParticles({ playing }: { playing: boolean }) {
 
 function PulsarFrame({ reduced }: { reduced: boolean }) {
   const webgl = useMemo(() => hasWebGL(), [])
-  const frameRef = useRef<HTMLDivElement>(null)
-  const [shown, setShown] = useState(true)
-
-  useEffect(() => {
-    const node = frameRef.current
-    if (!node) return
-    const observer = new IntersectionObserver(([entry]) => setShown(entry.isIntersecting), { threshold: 0.15 })
-    observer.observe(node)
-    return () => observer.disconnect()
-  }, [])
+  const { ref: frameRef, shown, seen } = useStageActivity<HTMLDivElement>()
 
   if (!webgl) {
     return (
@@ -378,7 +358,7 @@ function PulsarFrame({ reduced }: { reduced: boolean }) {
 
   return (
     <div ref={frameRef} className="ray-frame ray-pulsar" role="img" aria-label="Rotating blue pulsar">
-      <Canvas
+      {seen ? <Canvas
         dpr={[1, 1.5]}
         camera={{ fov: 30, position: [0.4, 0.35, 4.2] }}
         frameloop={playing ? 'always' : 'demand'}
@@ -390,7 +370,7 @@ function PulsarFrame({ reduced }: { reduced: boolean }) {
         }}
       >
         <Pulsar playing={playing} />
-      </Canvas>
+      </Canvas> : null}
     </div>
   )
 }
@@ -563,16 +543,7 @@ function BeamParticles({ playing }: { playing: boolean }) {
 
 function JupiterFrame({ reduced }: { reduced: boolean }) {
   const webgl = useMemo(() => hasWebGL(), [])
-  const frameRef = useRef<HTMLDivElement>(null)
-  const [shown, setShown] = useState(true)
-
-  useEffect(() => {
-    const node = frameRef.current
-    if (!node) return
-    const observer = new IntersectionObserver(([entry]) => setShown(entry.isIntersecting), { threshold: 0.15 })
-    observer.observe(node)
-    return () => observer.disconnect()
-  }, [])
+  const { ref: frameRef, shown, seen } = useStageActivity<HTMLDivElement>()
 
   if (!webgl) {
     return (
@@ -586,7 +557,7 @@ function JupiterFrame({ reduced }: { reduced: boolean }) {
 
   return (
     <div ref={frameRef} className="ray-frame ray-jupiter" role="img" aria-label="Rotating Jupiter with a blue magnetic glow, field lines, and a few particles leaving">
-      <Canvas
+      {seen ? <Canvas
         dpr={[1, 1.5]}
         camera={{ fov: 30, position: [0.45, 0.28, 5.55] }}
         frameloop={playing ? 'always' : 'demand'}
@@ -598,7 +569,7 @@ function JupiterFrame({ reduced }: { reduced: boolean }) {
         }}
       >
         <Jupiter playing={playing} />
-      </Canvas>
+      </Canvas> : null}
     </div>
   )
 }
@@ -630,16 +601,16 @@ function Jupiter({ playing }: { playing: boolean }) {
             fragmentShader={`
               varying vec3 vNormal;
               void main() {
-                vec3 orange = vec3(0.91, 0.52, 0.18);
+                vec3 gray = vec3(0.90, 0.91, 0.93);
                 float light = dot(normalize(vNormal), normalize(vec3(0.35, 0.2, 1.0)));
                 float shade = 0.28 + 0.72 * clamp(light, 0.0, 1.0);
-                gl_FragColor = vec4(orange * shade, 1.0);
+                gl_FragColor = vec4(gray * shade, 1.0);
               }
             `}
           />
         </mesh>
         <mesh>
-          <sphereGeometry args={[JUPITER_RADIUS * 4.2, 48, 32]} />
+          <sphereGeometry args={[JUPITER_RADIUS * 6.4, 64, 48]} />
           <shaderMaterial
             transparent
             depthWrite={false}
@@ -656,11 +627,11 @@ function Jupiter({ playing }: { playing: boolean }) {
               varying vec3 vNormal;
               void main() {
                 float facing = abs(dot(normalize(vNormal), vec3(0.0, 0.0, 1.0)));
-                float rim = pow(1.0 - facing, 1.45);
-                float body = pow(facing, 2.2) * 0.28;
-                float glow = rim * 0.85 + body;
+                float feather = smoothstep(0.14, 0.9, facing);
+                float halo = pow(1.0 - facing, 1.15);
+                float glow = halo * feather;
                 vec3 blue = vec3(0.28, 0.55, 1.0);
-                gl_FragColor = vec4(blue * glow * 0.62, 1.0);
+                gl_FragColor = vec4(blue * glow * 0.85, 1.0);
               }
             `}
           />
@@ -782,7 +753,7 @@ function FieldLines() {
       {loops.map((loop, index) => (
         <mesh key={index}>
           <tubeGeometry args={[loop.curve, 72, loop.radius, 6, false]} />
-          <meshBasicMaterial color={loop.color} transparent opacity={0.92} depthWrite={false} toneMapped={false} />
+          <meshBasicMaterial color={loop.color} transparent opacity={0.4} depthWrite={false} toneMapped={false} />
         </mesh>
       ))}
     </group>
@@ -823,16 +794,7 @@ const ALBEDO_COUNT = 36
 
 function LunarFrame({ reduced }: { reduced: boolean }) {
   const webgl = useMemo(() => hasWebGL(), [])
-  const frameRef = useRef<HTMLDivElement>(null)
-  const [shown, setShown] = useState(true)
-
-  useEffect(() => {
-    const node = frameRef.current
-    if (!node) return
-    const observer = new IntersectionObserver(([entry]) => setShown(entry.isIntersecting), { threshold: 0.15 })
-    observer.observe(node)
-    return () => observer.disconnect()
-  }, [])
+  const { ref: frameRef, shown, seen } = useStageActivity<HTMLDivElement>()
 
   if (!webgl) {
     return (
@@ -851,7 +813,7 @@ function LunarFrame({ reduced }: { reduced: boolean }) {
       role="img"
       aria-label="Lunar surface with particles striking it and particles leaving upward"
     >
-      <Canvas
+      {seen ? <Canvas
         dpr={[1, 1.5]}
         camera={{ fov: 30, position: [0, 1.02, 3.15] }}
         frameloop={playing ? 'always' : 'demand'}
@@ -865,7 +827,7 @@ function LunarFrame({ reduced }: { reduced: boolean }) {
       >
         <LunarGround />
         <AlbedoParticles playing={playing} />
-      </Canvas>
+      </Canvas> : null}
     </div>
   )
 }
