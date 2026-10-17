@@ -144,7 +144,6 @@ export function App() {
                   aria-current={active === chapter.id ? 'true' : undefined}
                   onClick={goToChapter}
                 >
-                  <span>{chapter.number}</span>
                   {chapter.title}
                 </a>
               </li>

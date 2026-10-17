@@ -66,6 +66,16 @@ export function CosmicRays() {
     <div className="rays">
       <section className="ray-sources" aria-label="Sources of particles MATCH can study">
         <h3>More than one source.</h3>
+        <div className="ray-intro">
+          <p>
+            The particles that reach the Moon do not all come from the same place. A burst from the Sun, a steady rain from
+            the galaxy, electrons from Jupiter, and particles knocked back off the Moon each tell a different story.
+          </p>
+          <p>
+            MATCH watches them with one detector. Looking toward space and toward the lunar surface lets it compare what
+            arrives from far away with what leaves the Moon itself.
+          </p>
+        </div>
         <div className="ray-grid">
           {SOURCES.map((source) => (
             <article key={source.title}>

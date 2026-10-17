@@ -1,4 +1,6 @@
+import { useEffect, useRef, useState } from 'react'
 import { engineeringSpec } from '../lib/engineering'
+import { useReducedMotion } from '../lib/useReducedMotion'
 
 const spec = engineeringSpec
 
@@ -33,19 +35,56 @@ function Material() {
 }
 
 function Precision() {
+  const reduced = useReducedMotion()
+  const listRef = useRef<HTMLUListElement>(null)
+  const [progress, setProgress] = useState(reduced ? 1 : 0)
   const facts = [
     { value: spec.manufacturing.structuralComponents, label: 'Structural components' },
     { value: spec.manufacturing.thaiFabrication, label: 'Fabricated by Thai engineers' },
     { value: 'Precision machining and dimensional inspection', label: '' },
   ]
 
+  useEffect(() => {
+    if (reduced) {
+      setProgress(1)
+      return
+    }
+    const node = listRef.current
+    if (!node) return
+    let frame = 0
+    let played = false
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || played) return
+        played = true
+        const start = performance.now()
+        const duration = 1200
+        const tick = (now: number) => {
+          const t = Math.min(1, (now - start) / duration)
+          setProgress(1 - (1 - t) ** 3)
+          if (t < 1) frame = requestAnimationFrame(tick)
+        }
+        frame = requestAnimationFrame(tick)
+        observer.disconnect()
+      },
+      { threshold: 0.55 },
+    )
+    observer.observe(node)
+    return () => {
+      observer.disconnect()
+      cancelAnimationFrame(frame)
+    }
+  }, [reduced])
+
   return (
     <section className="eng-block" aria-labelledby="eng-precision-title">
       <h3 id="eng-precision-title">Precision in every component.</h3>
-      <ul className="eng-facts">
+      <ul className="eng-facts" ref={listRef}>
         {facts.map((fact) => (
           <li key={fact.value}>
-            <strong className={fact.label ? undefined : 'eng-fact-line'}>{fact.value}</strong>
+            <strong className={fact.label ? undefined : 'eng-fact-line'} aria-label={fact.value}>
+              {fact.label ? countUp(fact.value, progress) : fact.value}
+            </strong>
             {fact.label ? <span>{fact.label}</span> : null}
           </li>
         ))}
@@ -65,6 +104,13 @@ function Precision() {
       </div>
     </section>
   )
+}
+
+function countUp(value: string, progress: number) {
+  const match = value.match(/\d+/)
+  if (!match || match.index === undefined) return value
+  const current = Math.round(Number(match[0]) * progress)
+  return value.slice(0, match.index) + current + value.slice(match.index + match[0].length)
 }
 
 function Power() {
