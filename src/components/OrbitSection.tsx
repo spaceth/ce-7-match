@@ -3,6 +3,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type MutableRefObject } from 'react'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import * as THREE from 'three'
+import moonColorUrl from '../assets/moon/lroc-color.jpg?url'
 import { orbitRadiusKm, orbitScene, slantToSurface } from '../lib/orbit'
 import { useReducedMotion } from '../lib/useReducedMotion'
 import { hasWebGL } from '../lib/webgl'
@@ -112,7 +113,7 @@ export function OrbitSection() {
             <OrbitCanvas motion={motion} resetToken={resetToken} tags={tags} />
             <div className="orbit-tags">
               <span ref={(node) => { tags.current.moon = node }}>Moon</span>
-              <span ref={(node) => { tags.current.craft = node }}>Chang’e-7 / MATCH</span>
+              <span ref={(node) => { tags.current.craft = node }}>CE-7 MATCH</span>
             </div>
             <div className="orbit-bar">
               <button type="button" onClick={togglePlay} aria-pressed={playing}>
@@ -149,9 +150,12 @@ export function OrbitSection() {
             material. A cone shows viewing geometry. It does not mean every particle inside it is detected, or that
             arrival direction by itself identifies the source.
           </p>
+          <p className="note">
+            Lunar surface color from the CGI Moon Kit, NASA Scientific Visualization Studio.
+          </p>
           <ul className="legend orbit-legend">
             <li>
-              <span className="swatch craft" /> Chang’e-7 / MATCH
+              <span className="swatch craft" /> CE-7 MATCH
             </li>
             <li>
               <span className="swatch moon" /> Moon-facing view
@@ -179,7 +183,7 @@ function OrbitStill() {
         <path d="M300 132 L268 168 L332 168 Z" fill="rgba(143,227,207,0.28)" stroke="#8fe3cf" strokeWidth="1" />
         <path d="M300 132 L274 78 L326 78 Z" fill="rgba(127,208,238,0.22)" stroke="#7fd0ee" strokeWidth="1" />
         <text x="248" y="520" fill="#f4f4f5" fontSize="14" fontFamily="Poppins, sans-serif">Moon</text>
-        <text x="316" y="128" fill="#f4f4f5" fontSize="13" fontFamily="Poppins, sans-serif">Chang’e-7 / MATCH</text>
+        <text x="316" y="128" fill="#f4f4f5" fontSize="13" fontFamily="Poppins, sans-serif">CE-7 MATCH</text>
       </svg>
     </div>
   )
@@ -234,6 +238,33 @@ function Simulation({
       }),
     [],
   )
+  const gl = useThree((state) => state.gl)
+
+  useEffect(() => {
+    const loader = new THREE.TextureLoader()
+    let alive = true
+    let texture: THREE.Texture | null = null
+    loader.load(moonColorUrl, (loaded) => {
+      if (!alive) {
+        loaded.dispose()
+        return
+      }
+      texture = loaded
+      loaded.colorSpace = THREE.SRGBColorSpace
+      loaded.anisotropy = gl.capabilities.getMaxAnisotropy()
+      loaded.wrapS = THREE.RepeatWrapping
+      moonMat.map = loaded
+      moonMat.color.set('#ffffff')
+      moonMat.needsUpdate = true
+    })
+    return () => {
+      alive = false
+      moonMat.map = null
+      moonMat.color.set('#c5c8ce')
+      moonMat.needsUpdate = true
+      texture?.dispose()
+    }
+  }, [gl, moonMat])
   const orbitLine = useMemo(() => makeOrbit(), [])
   const moonCone = useMemo(() => makeVolume(moonAxial(), true, orbitScene.moonFacing), [])
   const spaceCone = useMemo(() => makeVolume(orbitScene.spaceConeLengthKm, false, orbitScene.spaceFacing), [])

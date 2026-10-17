@@ -725,6 +725,20 @@ button:disabled { opacity: 0.35; cursor: default; }
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
+.ray-sun,
+.ray-pulsar,
+.ray-jupiter,
+.ray-moon {
+  position: relative;
+  background: #000;
+}
+.ray-sun canvas,
+.ray-pulsar canvas,
+.ray-jupiter canvas,
+.ray-moon canvas {
+  pointer-events: none;
+  touch-action: pan-y;
+}
 .tail { height: 240vh; margin-top: 88px; }
 .tail-sticky {
   position: sticky;
@@ -744,10 +758,6 @@ button:disabled { opacity: 0.35; cursor: default; }
 }
 .tail-stage { min-width: 0; }
 .tail-stage svg { display: block; width: 100%; height: auto; }
-.tail-wind line {
-  stroke: rgba(255, 255, 255, 0.28);
-  stroke-width: 1.25;
-}
 .tail-wind text,
 .tail-label {
   fill: rgba(255, 255, 255, 0.55);
@@ -761,9 +771,12 @@ button:disabled { opacity: 0.35; cursor: default; }
   stroke-width: 1.25;
 }
 .tail-body {
-  fill: rgba(255, 255, 255, 0.06);
-  stroke: rgba(255, 255, 255, 0.55);
-  stroke-width: 1.25;
+  fill: rgba(176, 178, 186, 0.42);
+  stroke: none;
+  filter: url(#tail-edge);
+}
+.tail-particles circle {
+  fill: rgba(255, 255, 255, 0.78);
 }
 .tail-orbit {
   fill: none;
@@ -1261,7 +1274,6 @@ h1 {
   letter-spacing: -0.01em;
   color: #fff;
   white-space: nowrap;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
 }
 .orbit-tags .mint { color: #8fe3cf; }
 .orbit-tags .cyan { color: #7fd0ee; }
