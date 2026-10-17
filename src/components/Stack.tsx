@@ -2,6 +2,7 @@ import { Html, Line } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
+import { orbitScene } from '../lib/orbit'
 import {
   ENERGY_THICKNESS,
   DELTA_THICKNESS,
@@ -109,13 +110,17 @@ export function DetectorAssembly({ motion, progressEl, onStep, onEnded }: StackP
       mesh.scale.setScalar(scale)
     }
 
+    const particleColor = state.entrance === 'moon' ? orbitScene.moonFacing : orbitScene.spaceFacing
     if (particle.current) {
       particle.current.position.set(pose.particle.x, pose.particle.y, pose.particle.z)
       particle.current.visible = posing
+      const material = particle.current.material as THREE.MeshBasicMaterial
+      material.color.set(particleColor)
     }
 
     placeRod(pathRod, pose.path?.a, pose.path?.b, posing ? (pose.path?.opacity ?? 0) : 0)
     placeRod(tailRod, pose.tail, pose.particle, posing ? pose.tailOpacity : 0)
+    ;(tailRod.material as THREE.MeshBasicMaterial).color.set(particleColor)
 
     const first = placed.find((layer) => layer.id === 'si1')
     const last = placed.find((layer) => layer.id === 'si4')
@@ -187,7 +192,7 @@ export function DetectorAssembly({ motion, progressEl, onStep, onEnded }: StackP
 
       <mesh ref={particle} renderOrder={6}>
         <sphereGeometry args={[1.7, 24, 24]} />
-        <meshBasicMaterial color="#ffffff" toneMapped={false} depthTest={false} />
+        <meshBasicMaterial color={orbitScene.spaceFacing} toneMapped={false} depthTest={false} />
       </mesh>
       <primitive object={pathRod} />
       <primitive object={tailRod} />

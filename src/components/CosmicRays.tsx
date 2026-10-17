@@ -1,9 +1,17 @@
 import { Canvas, useFrame } from '@react-three/fiber'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
+import { orbitScene } from '../lib/orbit'
 import { useReducedMotion } from '../lib/useReducedMotion'
 import { useStageActivity } from '../lib/useStageActivity'
 import { hasWebGL } from '../lib/webgl'
+
+// Same head-and-trail drawing as the orbit particles in chapter 4.
+const SPACE_PARTICLE = orbitScene.spaceFacing
+const MOON_PARTICLE = orbitScene.moonFacing
+const TRAIL_LIFE = 0.16
+const DOT_SIZE = 4.5
+const TRAIL_OPACITY = 0.8
 
 const SOURCES = [
   {
@@ -115,6 +123,10 @@ export function CosmicRays() {
             <svg viewBox="0 0 960 520" role="img" aria-labelledby="magnetotail-title magnetotail-status">
               <title>The Moon crossing Earth’s magnetotail</title>
               <defs>
+                <linearGradient id="tail-fade" x1="0" x2="1" y1="0" y2="0">
+                  <stop offset="0" stopColor="#7fd0ee" stopOpacity="1" />
+                  <stop offset="1" stopColor="#7fd0ee" stopOpacity="0" />
+                </linearGradient>
                 <filter id="tail-edge" x="-12%" y="-30%" width="124%" height="160%">
                   <feGaussianBlur stdDeviation="7" />
                 </filter>
@@ -138,23 +150,27 @@ export function CosmicRays() {
                   { y: 344, x: 90, delay: '-2.6s', duration: '3.1s' },
                   { y: 366, x: 60, delay: '-0.8s', duration: '4.1s' },
                 ].map((particle) => (
-                  <circle key={particle.y} cx={particle.x} cy={particle.y} r="2.2">
+                  <g key={particle.y} transform={reduced ? `translate(${particle.x} 0)` : undefined}>
                     {!reduced && (
-                      <animate
-                        attributeName="cx"
-                        from="16"
-                        to="168"
+                      <animateTransform
+                        attributeName="transform"
+                        type="translate"
+                        from="16 0"
+                        to="168 0"
                         dur={particle.duration}
                         begin={particle.delay}
                         repeatCount="indefinite"
                       />
                     )}
-                  </circle>
+                    <line x1="-24" y1={particle.y} x2="0" y2={particle.y} />
+                    <circle cx="0" cy={particle.y} r="2.25" />
+                  </g>
                 ))}
               </g>
               <path className="tail-bow" d="M292 150 C176 196 168 348 292 392" />
               <path
                 className="tail-body"
+                fill="url(#tail-fade)"
                 d="M292 198 C214 226 206 314 292 340 C500 402 730 418 940 386 L940 150 C730 118 500 136 292 198 Z"
               />
               <text className="tail-label" x="620" y="250">
@@ -207,7 +223,7 @@ function SunFrame({ reduced }: { reduced: boolean }) {
   const playing = shown && !reduced
 
   return (
-    <div ref={frameRef} className="ray-frame ray-sun" role="img" aria-label="Glowing orange Sun with particles leaving it">
+    <div ref={frameRef} className="ray-frame ray-sun" role="img" aria-label="Glowing Sun with particles leaving it">
       {seen ? <Canvas
         dpr={[1, 1.5]}
         camera={{ fov: 30, position: [0, 0, 4.1] }}
@@ -248,8 +264,8 @@ function SunBody() {
             float r = length(vUv * 2.0 - 1.0);
             float disk = smoothstep(0.34, 0.2, r);
             float glow = smoothstep(1.0, 0.18, r);
-            vec3 corona = vec3(1.0, 0.42, 0.05);
-            vec3 core = vec3(1.0, 0.96, 0.86);
+            vec3 corona = vec3(0.55, 0.56, 0.58);
+            vec3 core = vec3(0.96, 0.97, 0.98);
             vec3 color = mix(corona, core, disk);
             float alpha = max(disk, glow * glow * 0.85);
             gl_FragColor = vec4(color, alpha);
@@ -263,7 +279,7 @@ function SunBody() {
 const PARTICLE_COUNT = 36
 
 function SolarParticles({ playing }: { playing: boolean }) {
-  const points = useRef<THREE.Points>(null)
+  const streaks = useStreaks(PARTICLE_COUNT, SPACE_PARTICLE)
   const flight = useMemo(() => {
     return Array.from({ length: PARTICLE_COUNT }, () => ({
       angle: Math.random() * Math.PI * 2,
@@ -272,73 +288,20 @@ function SolarParticles({ playing }: { playing: boolean }) {
     }))
   }, [])
 
-  useFrame((_, delta) => {
-    const mesh = points.current
-    if (!mesh) return
-    const position = mesh.geometry.getAttribute('position') as THREE.BufferAttribute
-    const lifeAttr = mesh.geometry.getAttribute('aLife') as THREE.BufferAttribute
-    const step = Math.min(delta, 0.05)
-    flight.forEach((item, index) => {
-      if (playing) item.life += step * item.speed
-      if (item.life > 1) {
-        item.life = 0
-        item.angle = Math.random() * Math.PI * 2
-        item.speed = 0.16 + Math.random() * 0.2
-      }
-      const radius = 0.46 + item.life * 0.95
-      position.setXY(index, Math.cos(item.angle) * radius, Math.sin(item.angle) * radius)
-      lifeAttr.setX(index, item.life)
-    })
-    position.needsUpdate = true
-    lifeAttr.needsUpdate = true
-  })
-
-  const geometry = useMemo(() => {
-    const positions = new Float32Array(PARTICLE_COUNT * 3)
-    const lives = new Float32Array(PARTICLE_COUNT)
-    flight.forEach((item, index) => {
-      const radius = 0.46 + item.life * 0.95
-      positions[index * 3] = Math.cos(item.angle) * radius
-      positions[index * 3 + 1] = Math.sin(item.angle) * radius
-      lives[index] = item.life
-    })
-    const geometry = new THREE.BufferGeometry()
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-    geometry.setAttribute('aLife', new THREE.BufferAttribute(lives, 1))
-    return geometry
-  }, [flight])
-
-  useEffect(() => {
-    return () => geometry.dispose()
-  }, [geometry])
-
   return (
-    <points ref={points} geometry={geometry} frustumCulled={false} renderOrder={2}>
-      <shaderMaterial
-        transparent
-        depthWrite={false}
-        toneMapped={false}
-        vertexShader={`
-          attribute float aLife;
-          varying float vLife;
-          void main() {
-            vLife = aLife;
-            vec4 view = modelViewMatrix * vec4(position, 1.0);
-            gl_PointSize = 3.5;
-            gl_Position = projectionMatrix * view;
-          }
-        `}
-        fragmentShader={`
-          varying float vLife;
-          void main() {
-            float dist = length(gl_PointCoord - 0.5);
-            float dot = smoothstep(0.5, 0.12, dist);
-            float fade = smoothstep(0.0, 0.08, vLife) * smoothstep(1.0, 0.62, vLife);
-            gl_FragColor = vec4(1.0, 0.9, 0.72, dot * fade);
-          }
-        `}
-      />
-    </points>
+    <StreakField
+      streaks={streaks}
+      tick={(index, delta, head, tail) => {
+        const item = flight[index]
+        if (playing && delta > 0) item.life += delta * item.speed
+        if (item.life > 1) {
+          item.life = 0
+          item.angle = Math.random() * Math.PI * 2
+          item.speed = 0.16 + Math.random() * 0.2
+        }
+        radialEnds(item.angle, item.life, 0.46, 0.95, head, tail)
+      }}
+    />
   )
 }
 
@@ -357,7 +320,7 @@ function PulsarFrame({ reduced }: { reduced: boolean }) {
   const playing = shown && !reduced
 
   return (
-    <div ref={frameRef} className="ray-frame ray-pulsar" role="img" aria-label="Rotating blue pulsar">
+    <div ref={frameRef} className="ray-frame ray-pulsar" role="img" aria-label="Rotating pulsar">
       {seen ? <Canvas
         dpr={[1, 1.5]}
         camera={{ fov: 30, position: [0.4, 0.35, 4.2] }}
@@ -411,8 +374,8 @@ function Pulsar({ playing }: { playing: boolean }) {
               float r = length(vUv * 2.0 - 1.0);
               float core = smoothstep(0.28, 0.0, r);
               float glow = smoothstep(1.0, 0.02, r);
-              vec3 halo = vec3(0.55, 0.82, 1.0);
-              vec3 hot = vec3(1.0, 1.0, 1.0);
+              vec3 halo = vec3(0.62, 0.64, 0.66);
+              vec3 hot = vec3(0.98, 0.98, 0.99);
               vec3 color = mix(halo, hot, smoothstep(0.42, 0.0, r));
               float alpha = max(core, glow * glow * 0.95);
               gl_FragColor = vec4(color, alpha);
@@ -447,8 +410,7 @@ function Beam({ flip = false }: { flip?: boolean }) {
             float radial = clamp(length(vPos.xz) / 0.2, 0.0, 1.0);
             float beam = smoothstep(1.0, 0.0, radial);
             float alpha = beam * mix(0.16, 0.78, along);
-            vec3 color = mix(vec3(0.28, 0.58, 1.0), vec3(0.94, 0.98, 1.0), along);
-            gl_FragColor = vec4(color, alpha);
+            gl_FragColor = vec4(vec3(0.498, 0.816, 0.933), alpha);
           }
         `}
       />
@@ -459,7 +421,7 @@ function Beam({ flip = false }: { flip?: boolean }) {
 const BEAM_PARTICLES = 28
 
 function BeamParticles({ playing }: { playing: boolean }) {
-  const points = useRef<THREE.Points>(null)
+  const streaks = useStreaks(BEAM_PARTICLES, SPACE_PARTICLE)
   const flight = useMemo(
     () =>
       Array.from({ length: BEAM_PARTICLES }, (_, index) => ({
@@ -470,74 +432,24 @@ function BeamParticles({ playing }: { playing: boolean }) {
       })),
     [],
   )
-  const geometry = useMemo(() => {
-    const positions = new Float32Array(BEAM_PARTICLES * 3)
-    const lives = new Float32Array(BEAM_PARTICLES)
-    flight.forEach((item, index) => {
-      const place = beamPoint(item.sign, item.angle, item.life)
-      positions[index * 3] = place.x
-      positions[index * 3 + 1] = place.y
-      positions[index * 3 + 2] = place.z
-      lives[index] = item.life
-    })
-    const geometry = new THREE.BufferGeometry()
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-    geometry.setAttribute('aLife', new THREE.BufferAttribute(lives, 1))
-    return geometry
-  }, [flight])
-
-  useEffect(() => {
-    return () => geometry.dispose()
-  }, [geometry])
-
-  useFrame((_, delta) => {
-    const mesh = points.current
-    if (!mesh) return
-    const position = mesh.geometry.getAttribute('position') as THREE.BufferAttribute
-    const lifeAttr = mesh.geometry.getAttribute('aLife') as THREE.BufferAttribute
-    const step = Math.min(delta, 0.05)
-    flight.forEach((item, index) => {
-      if (playing) item.life += step * item.speed
-      if (item.life > 1) {
-        item.life = 0
-        item.angle = Math.random() * Math.PI * 2
-        item.speed = 0.28 + Math.random() * 0.28
-      }
-      const place = beamPoint(item.sign, item.angle, item.life)
-      position.setXYZ(index, place.x, place.y, place.z)
-      lifeAttr.setX(index, item.life)
-    })
-    position.needsUpdate = true
-    lifeAttr.needsUpdate = true
-  })
 
   return (
-    <points ref={points} geometry={geometry} frustumCulled={false} renderOrder={2}>
-      <shaderMaterial
-        transparent
-        depthWrite={false}
-        toneMapped={false}
-        vertexShader={`
-          attribute float aLife;
-          varying float vLife;
-          void main() {
-            vLife = aLife;
-            vec4 view = modelViewMatrix * vec4(position, 1.0);
-            gl_PointSize = 3.2;
-            gl_Position = projectionMatrix * view;
-          }
-        `}
-        fragmentShader={`
-          varying float vLife;
-          void main() {
-            float dist = length(gl_PointCoord - 0.5);
-            float dot = smoothstep(0.5, 0.1, dist);
-            float fade = smoothstep(0.0, 0.08, vLife) * smoothstep(1.0, 0.7, vLife);
-            gl_FragColor = vec4(0.9, 0.96, 1.0, dot * fade);
-          }
-        `}
-      />
-    </points>
+    <StreakField
+      streaks={streaks}
+      tick={(index, delta, head, tail) => {
+        const item = flight[index]
+        if (playing && delta > 0) item.life += delta * item.speed
+        if (item.life > 1) {
+          item.life = 0
+          item.angle = Math.random() * Math.PI * 2
+          item.speed = 0.28 + Math.random() * 0.28
+        }
+        const lead = beamPoint(item.sign, item.angle, item.life)
+        const follow = beamPoint(item.sign, item.angle, Math.max(0, item.life - TRAIL_LIFE))
+        head.set(lead.x, lead.y, lead.z)
+        tail.set(follow.x, follow.y, follow.z)
+      }}
+    />
   )
 }
 
@@ -556,7 +468,7 @@ function JupiterFrame({ reduced }: { reduced: boolean }) {
   const playing = shown && !reduced
 
   return (
-    <div ref={frameRef} className="ray-frame ray-jupiter" role="img" aria-label="Rotating Jupiter with a blue magnetic glow, field lines, and a few particles leaving">
+    <div ref={frameRef} className="ray-frame ray-jupiter" role="img" aria-label="Rotating Jupiter with a cyan magnetic glow, field lines, and a few particles leaving">
       {seen ? <Canvas
         dpr={[1, 1.5]}
         camera={{ fov: 30, position: [0.45, 0.28, 5.55] }}
@@ -630,8 +542,8 @@ function Jupiter({ playing }: { playing: boolean }) {
                 float feather = smoothstep(0.14, 0.9, facing);
                 float halo = pow(1.0 - facing, 1.15);
                 float glow = halo * feather;
-                vec3 blue = vec3(0.28, 0.55, 1.0);
-                gl_FragColor = vec4(blue * glow * 0.85, 1.0);
+                vec3 cyan = vec3(0.498, 0.816, 0.933);
+                gl_FragColor = vec4(cyan * glow * 0.85, 1.0);
               }
             `}
           />
@@ -650,7 +562,7 @@ function jupiterElectronRadius(life: number) {
 }
 
 function JupiterElectrons({ playing }: { playing: boolean }) {
-  const points = useRef<THREE.Points>(null)
+  const streaks = useStreaks(JUPITER_PARTICLES, MOON_PARTICLE)
   const flight = useMemo(
     () =>
       Array.from({ length: JUPITER_PARTICLES }, () => ({
@@ -661,82 +573,30 @@ function JupiterElectrons({ playing }: { playing: boolean }) {
     [],
   )
 
-  useFrame((_, delta) => {
-    const mesh = points.current
-    if (!mesh) return
-    const position = mesh.geometry.getAttribute('position') as THREE.BufferAttribute
-    const lifeAttr = mesh.geometry.getAttribute('aLife') as THREE.BufferAttribute
-    const step = Math.min(delta, 0.05)
-    flight.forEach((item, index) => {
-      if (playing) item.life += step * item.speed
-      if (item.life > 1) {
-        item.life = 0
-        item.dir.randomDirection()
-        item.speed = 1.05 + Math.random() * 0.45
-      }
-      const radius = jupiterElectronRadius(item.life)
-      position.setXYZ(index, item.dir.x * radius, item.dir.y * radius, item.dir.z * radius)
-      lifeAttr.setX(index, item.life)
-    })
-    position.needsUpdate = true
-    lifeAttr.needsUpdate = true
-  })
-
-  const geometry = useMemo(() => {
-    const positions = new Float32Array(JUPITER_PARTICLES * 3)
-    const lives = new Float32Array(JUPITER_PARTICLES)
-    flight.forEach((item, index) => {
-      const radius = jupiterElectronRadius(item.life)
-      positions[index * 3] = item.dir.x * radius
-      positions[index * 3 + 1] = item.dir.y * radius
-      positions[index * 3 + 2] = item.dir.z * radius
-      lives[index] = item.life
-    })
-    const geometry = new THREE.BufferGeometry()
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-    geometry.setAttribute('aLife', new THREE.BufferAttribute(lives, 1))
-    return geometry
-  }, [flight])
-
-  useEffect(() => {
-    return () => geometry.dispose()
-  }, [geometry])
-
   return (
-    <points ref={points} geometry={geometry} frustumCulled={false}>
-      <shaderMaterial
-        transparent
-        depthWrite={false}
-        toneMapped={false}
-        vertexShader={`
-          attribute float aLife;
-          varying float vLife;
-          void main() {
-            vLife = aLife;
-            gl_PointSize = 3.2;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }
-        `}
-        fragmentShader={`
-          varying float vLife;
-          void main() {
-            float dist = length(gl_PointCoord - 0.5);
-            float dot = smoothstep(0.5, 0.15, dist);
-            float fade = smoothstep(0.0, 0.1, vLife) * smoothstep(1.0, 0.58, vLife);
-            gl_FragColor = vec4(0.72, 0.86, 1.0, dot * fade);
-          }
-        `}
-      />
-    </points>
+    <StreakField
+      streaks={streaks}
+      tick={(index, delta, head, tail) => {
+        const item = flight[index]
+        if (playing && delta > 0) item.life += delta * item.speed
+        if (item.life > 1) {
+          item.life = 0
+          item.dir.randomDirection()
+          item.speed = 1.05 + Math.random() * 0.45
+        }
+        head.copy(item.dir).multiplyScalar(jupiterElectronRadius(item.life))
+        tail.copy(item.dir).multiplyScalar(jupiterElectronRadius(Math.max(0, item.life - TRAIL_LIFE)))
+      }}
+    />
   )
 }
 
 function FieldLines() {
   const loops = useMemo(() => {
     const shells = [
-      { reach: 0.82, color: '#8ec4ff', radius: 0.0032 },
-      { reach: 1.32, color: '#c5e4ff', radius: 0.0036 },
-      { reach: 1.92, color: '#f4f9ff', radius: 0.0042 },
+      { reach: 0.82, color: '#7fd0ee', radius: 0.0032 },
+      { reach: 1.32, color: '#7fd0ee', radius: 0.0036 },
+      { reach: 1.92, color: '#d7d7de', radius: 0.0042 },
     ]
     const phis = [0.15, 1.2, 2.25, 3.3, 4.35, 5.4]
     return shells.flatMap((shell) =>
@@ -869,7 +729,7 @@ function LunarGround() {
 }
 
 function AlbedoParticles({ playing }: { playing: boolean }) {
-  const points = useRef<THREE.Points>(null)
+  const streaks = useStreaks(ALBEDO_COUNT, SPACE_PARTICLE)
   const flight = useMemo(
     () =>
       Array.from({ length: ALBEDO_COUNT }, () => ({
@@ -883,95 +743,33 @@ function AlbedoParticles({ playing }: { playing: boolean }) {
       })),
     [],
   )
-  const geometry = useMemo(() => {
-    const positions = new Float32Array(ALBEDO_COUNT * 3)
-    const lives = new Float32Array(ALBEDO_COUNT)
-    const phases = new Float32Array(ALBEDO_COUNT)
-    flight.forEach((item, index) => {
-      const place = albedoPoint(item)
-      positions[index * 3] = place.x
-      positions[index * 3 + 1] = place.y
-      positions[index * 3 + 2] = place.z
-      lives[index] = item.life
-      phases[index] = item.phase
-    })
-    const geometry = new THREE.BufferGeometry()
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-    geometry.setAttribute('aLife', new THREE.BufferAttribute(lives, 1))
-    geometry.setAttribute('aPhase', new THREE.BufferAttribute(phases, 1))
-    return geometry
-  }, [flight])
-
-  useEffect(() => {
-    return () => geometry.dispose()
-  }, [geometry])
-
-  useFrame((_, delta) => {
-    const mesh = points.current
-    if (!mesh) return
-    const position = mesh.geometry.getAttribute('position') as THREE.BufferAttribute
-    const lifeAttr = mesh.geometry.getAttribute('aLife') as THREE.BufferAttribute
-    const phaseAttr = mesh.geometry.getAttribute('aPhase') as THREE.BufferAttribute
-    const step = Math.min(delta, 0.05)
-    flight.forEach((item, index) => {
-      if (playing) item.life += step * (item.phase === 0 ? item.inSpeed : item.outSpeed)
-      if (item.life > 1) {
-        item.life = 0
-        if (item.phase === 0) {
-          item.phase = 1
-        } else {
-          item.phase = 0
-          item.x = (Math.random() - 0.5) * 1.7
-          item.z = -0.2 + Math.random() * 1.2
-          item.angle = Math.random() * Math.PI * 2
-          item.inSpeed = 0.34 + Math.random() * 0.22
-          item.outSpeed = 0.28 + Math.random() * 0.2
-        }
-      }
-      const place = albedoPoint(item)
-      position.setXYZ(index, place.x, place.y, place.z)
-      lifeAttr.setX(index, item.life)
-      phaseAttr.setX(index, item.phase)
-    })
-    position.needsUpdate = true
-    lifeAttr.needsUpdate = true
-    phaseAttr.needsUpdate = true
-  })
 
   return (
-    <points ref={points} geometry={geometry} frustumCulled={false} renderOrder={2}>
-      <shaderMaterial
-        transparent
-        depthWrite={false}
-        toneMapped={false}
-        vertexShader={`
-          attribute float aLife;
-          attribute float aPhase;
-          varying float vLife;
-          varying float vPhase;
-          void main() {
-            vLife = aLife;
-            vPhase = aPhase;
-            vec4 view = modelViewMatrix * vec4(position, 1.0);
-            gl_PointSize = 4.2;
-            gl_Position = projectionMatrix * view;
+    <StreakField
+      streaks={streaks}
+      tick={(index, delta, head, tail) => {
+        const item = flight[index]
+        if (playing && delta > 0) item.life += delta * (item.phase === 0 ? item.inSpeed : item.outSpeed)
+        if (item.life > 1) {
+          item.life = 0
+          if (item.phase === 0) {
+            item.phase = 1
+          } else {
+            item.phase = 0
+            item.x = (Math.random() - 0.5) * 1.7
+            item.z = -0.2 + Math.random() * 1.2
+            item.angle = Math.random() * Math.PI * 2
+            item.inSpeed = 0.34 + Math.random() * 0.22
+            item.outSpeed = 0.28 + Math.random() * 0.2
           }
-        `}
-        fragmentShader={`
-          varying float vLife;
-          varying float vPhase;
-          void main() {
-            float dist = length(gl_PointCoord - 0.5);
-            float dot = smoothstep(0.5, 0.12, dist);
-            float fade = smoothstep(0.0, 0.08, vLife) * smoothstep(1.0, 0.68, vLife);
-            vec3 incoming = vec3(0.78, 0.88, 1.0);
-            vec3 leaving = vec3(1.0, 0.93, 0.78);
-            vec3 color = mix(incoming, leaving, step(0.5, vPhase));
-            gl_FragColor = vec4(color, dot * fade);
-          }
-        `}
-      />
-    </points>
+        }
+        const lead = albedoPoint(item)
+        const follow = albedoPoint({ ...item, life: Math.max(0, item.life - TRAIL_LIFE) })
+        head.set(lead.x, lead.y, lead.z)
+        tail.set(follow.x, follow.y, follow.z)
+        return item.phase === 0 ? SPACE_PARTICLE : MOON_PARTICLE
+      }}
+    />
   )
 }
 
@@ -995,4 +793,138 @@ function albedoPoint(item: { x: number; z: number; angle: number; phase: number;
     y: ground + 0.03 + item.life * 0.74,
     z: item.z + Math.sin(item.angle) * item.life * 0.26,
   }
+}
+
+type Streak = { trail: THREE.LineSegments; dot: THREE.Points }
+
+const streakHead = new THREE.Vector3()
+const streakTail = new THREE.Vector3()
+const particleCircle = makeParticleCircle()
+
+function useStreaks(count: number, color: string) {
+  const streaks = useMemo(() => Array.from({ length: count }, () => makeStreak(color)), [count, color])
+  useEffect(() => {
+    return () => {
+      streaks.forEach((streak) => {
+        streak.trail.geometry.dispose()
+        ;(streak.trail.material as THREE.Material).dispose()
+        streak.dot.geometry.dispose()
+        ;(streak.dot.material as THREE.Material).dispose()
+      })
+    }
+  }, [streaks])
+  return streaks
+}
+
+function StreakField({
+  streaks,
+  tick,
+}: {
+  streaks: Streak[]
+  tick: (index: number, delta: number, head: THREE.Vector3, tail: THREE.Vector3) => string | void
+}) {
+  const tickRef = useRef(tick)
+  tickRef.current = tick
+
+  useLayoutEffect(() => {
+    streaks.forEach((streak, index) => {
+      const color = tickRef.current(index, 0, streakHead, streakTail)
+      placeStreak(streak, streakHead, streakTail, color || undefined)
+    })
+  }, [streaks])
+
+  useFrame((_, delta) => {
+    const step = Math.min(delta, 0.05)
+    streaks.forEach((streak, index) => {
+      const color = tickRef.current(index, step, streakHead, streakTail)
+      placeStreak(streak, streakHead, streakTail, color || undefined)
+    })
+  })
+
+  return (
+    <group>
+      {streaks.map((streak, index) => (
+        <group key={index}>
+          <primitive object={streak.trail} />
+          <primitive object={streak.dot} />
+        </group>
+      ))}
+    </group>
+  )
+}
+
+function radialEnds(
+  angle: number,
+  life: number,
+  near: number,
+  span: number,
+  head: THREE.Vector3,
+  tail: THREE.Vector3,
+) {
+  const lead = near + life * span
+  const follow = near + Math.max(0, life - TRAIL_LIFE) * span
+  head.set(Math.cos(angle) * lead, Math.sin(angle) * lead, 0)
+  tail.set(Math.cos(angle) * follow, Math.sin(angle) * follow, 0)
+}
+
+function placeStreak(streak: Streak, head: THREE.Vector3, tail: THREE.Vector3, color?: string) {
+  const line = streak.trail.geometry.getAttribute('position') as THREE.BufferAttribute
+  line.setXYZ(0, tail.x, tail.y, tail.z)
+  line.setXYZ(1, head.x, head.y, head.z)
+  line.needsUpdate = true
+  const dot = streak.dot.geometry.getAttribute('position') as THREE.BufferAttribute
+  dot.setXYZ(0, head.x, head.y, head.z)
+  dot.needsUpdate = true
+  if (!color) return
+  ;(streak.trail.material as THREE.LineBasicMaterial).color.set(color)
+  ;(streak.dot.material as THREE.PointsMaterial).color.set(color)
+}
+
+function makeStreak(color: string): Streak {
+  const trailGeometry = new THREE.BufferGeometry()
+  trailGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(6), 3))
+  const trailMaterial = new THREE.LineBasicMaterial({
+    color,
+    transparent: true,
+    opacity: TRAIL_OPACITY,
+    depthWrite: false,
+    toneMapped: false,
+  })
+  const trail = new THREE.LineSegments(trailGeometry, trailMaterial)
+  trail.frustumCulled = false
+  trail.renderOrder = 3
+
+  const dotGeometry = new THREE.BufferGeometry()
+  dotGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(3), 3))
+  const dotMaterial = new THREE.PointsMaterial({
+    color,
+    map: particleCircle,
+    size: DOT_SIZE,
+    sizeAttenuation: false,
+    transparent: true,
+    alphaTest: 0.45,
+    opacity: 1,
+    depthWrite: false,
+    toneMapped: false,
+  })
+  const dot = new THREE.Points(dotGeometry, dotMaterial)
+  dot.frustumCulled = false
+  dot.renderOrder = 4
+  return { trail, dot }
+}
+
+function makeParticleCircle() {
+  const canvas = document.createElement('canvas')
+  canvas.width = 64
+  canvas.height = 64
+  const context = canvas.getContext('2d')
+  if (!context) return new THREE.Texture()
+  context.clearRect(0, 0, 64, 64)
+  context.beginPath()
+  context.arc(32, 32, 30, 0, Math.PI * 2)
+  context.fillStyle = '#ffffff'
+  context.fill()
+  const texture = new THREE.CanvasTexture(canvas)
+  texture.colorSpace = THREE.SRGBColorSpace
+  return texture
 }

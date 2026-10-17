@@ -268,7 +268,7 @@ export function poseAt(t: number, layers: PlacedLayer[], entrance: Entrance): Po
   const z =
     index >= marks.length - 1 ? marks[marks.length - 1] : marks[index] + (marks[index + 1] - marks[index]) * smooth(u)
   const particle = trackPoint(z, entrance)
-  const behind = trackPoint(z - dir * 16, entrance)
+  const behind = trackPoint(z - dir * 48, entrance)
   const hit1 = ramp(t, STEP_AT[1] - 0.07, STEP_AT[1])
   const hit2 = ramp(t, STEP_AT[2] - 0.07, STEP_AT[2])
   const deltaGlow = ramp(t, STEP_AT[3] - 0.08, STEP_AT[3])
