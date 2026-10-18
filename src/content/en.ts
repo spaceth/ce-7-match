@@ -11,6 +11,10 @@ export const en = {
       'MATCH is Thailand’s particle detector on the Chang’e-7 lunar orbiter. See how one instrument measures energetic particles arriving from space and leaving the Moon.',
     siteName: 'MATCH',
     url: 'https://match.spaceth.co',
+    image: 'https://match.spaceth.co/og.jpg',
+    imageWidth: '3000',
+    imageHeight: '1570',
+    imageType: 'image/jpeg',
     noscript:
       'MATCH is a particle detector for the Chang’e-7 lunar orbiter. This explorer needs JavaScript and WebGL.',
   },
