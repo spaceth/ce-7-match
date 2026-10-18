@@ -5,30 +5,10 @@ import { createHousingMaterials, disposeHousing, paintHousing } from '../lib/hou
 import { MODEL_CENTER } from '../lib/instrument'
 import { useMatchModel } from '../lib/model'
 import { useReducedMotion } from '../lib/useReducedMotion'
+import { copy } from '../content'
 import { StageFrame } from './StageScreen'
 
-const STEPS = [
-  {
-    kicker: 'The payload',
-    title: 'MATCH flies on Chang’e-7.',
-    body: 'A particle detector built to investigate energetic particles around the Moon.',
-  },
-  {
-    kicker: 'One axis',
-    title: 'Two entrances, one instrument.',
-    body: 'Space-facing and Moon-facing views open onto the same detector bore.',
-  },
-  {
-    kicker: 'The measurement',
-    title: 'Path and energy, together.',
-    body: 'Silicon layers record where a particle crosses. Scintillators record how energy is deposited.',
-  },
-  {
-    kicker: 'The orbit',
-    title: 'About 200 kilometres up.',
-    body: 'From a near-polar orbit, MATCH watches particles arriving from space and emerging from the lunar surface.',
-  },
-]
+const STEPS = copy.mission.steps
 
 const NEAR = 478
 const FAR = 1560
@@ -89,12 +69,12 @@ export function MissionOverview({
     <div className="mission" ref={pinRef} data-reduced={reduced}>
       <div className="mission-sticky">
         <div className="mission-heading">
-          <p className="kicker">Chapter {number}</p>
+          <p className="kicker">{copy.ui.chapter} {number}</p>
           <h2 id="mission-overview-title">{title}</h2>
           <p className="chapter-lead">{description}</p>
         </div>
         <div className="mission-copy">
-          <p className="mission-tag">Placeholder summary</p>
+          <p className="mission-tag">{copy.mission.placeholder}</p>
           {reduced ? (
             STEPS.map((item) => (
               <article key={item.title}>
@@ -115,7 +95,7 @@ export function MissionOverview({
         </div>
         <div className="mission-scrim" aria-hidden="true" />
         {webgl ? (
-          <StageFrame className="stage mission-stage" screen={false} aria-label="MATCH payload">
+          <StageFrame className="stage mission-stage" screen={false} aria-label={copy.mission.stageLabel}>
             <Canvas
               dpr={[1, 1.6]}
               camera={{ fov: 28, near: 0.5, far: 9000, position: [220, 150, 340] }}
@@ -138,11 +118,11 @@ export function MissionOverview({
               </Suspense>
               <Turntable progressRef={progressRef} visibleRef={visibleRef} pivotRef={pivotRef} reduced={reduced} />
             </Canvas>
-            <p className="mission-plate">CE-7 MATCH</p>
+            <p className="mission-plate">{copy.mission.plate}</p>
           </StageFrame>
         ) : (
-          <div className="stage mission-stage mission-fallback" role="img" aria-label="MATCH is unavailable without WebGL">
-            <p>The model needs WebGL.</p>
+          <div className="stage mission-stage mission-fallback" role="img" aria-label={copy.mission.unavailable}>
+            <p>{copy.mission.needsWebgl}</p>
           </div>
         )}
         <ol className="mission-ticks" aria-hidden="true">

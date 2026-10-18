@@ -1,5 +1,31 @@
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
+import { copy } from './src/content/index.ts'
+
+function escapeHtml(value: string) {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+}
+
+function siteMeta(): Plugin {
+  const fields: Record<string, string> = {
+    '%LANG%': copy.meta.lang,
+    '%TITLE%': escapeHtml(copy.meta.title),
+    '%DESCRIPTION%': escapeHtml(copy.meta.description),
+    '%SITE_NAME%': escapeHtml(copy.meta.siteName),
+    '%URL%': escapeHtml(copy.meta.url),
+    '%NOSCRIPT%': escapeHtml(copy.meta.noscript),
+  }
+  return {
+    name: 'site-meta',
+    transformIndexHtml(html) {
+      return Object.entries(fields).reduce((next, [token, value]) => next.replaceAll(token, value), html)
+    },
+  }
+}
 
 function preloadModel(): Plugin {
   return {
@@ -20,7 +46,7 @@ function preloadModel(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), preloadModel()],
+  plugins: [react(), siteMeta(), preloadModel()],
   assetsInclude: ['**/*.glb'],
   server: {
     port: 5173,

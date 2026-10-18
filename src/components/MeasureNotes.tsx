@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react'
 import { useReducedMotion } from '../lib/useReducedMotion'
+import { copy } from '../content'
 
 const SPECIES = [
-  { name: 'Electrons', range: '4.0 MeV ~ 120 MeV', min: 4, max: 120, color: '#7fd0ee', delay: '-0.2s' },
-  { name: 'Protons', range: '25 MeV ~ 150 MeV', min: 25, max: 150, color: '#f4f4f5', delay: '-0.55s' },
-  { name: 'Alpha particles', range: '60 MeV ~ 400 MeV', min: 60, max: 400, color: '#8fe3cf', delay: '-0.9s' },
+  { ...copy.notes.species[0], min: 4, max: 120, color: '#7fd0ee', delay: '-0.2s' },
+  { ...copy.notes.species[1], min: 25, max: 150, color: '#f4f4f5', delay: '-0.55s' },
+  { ...copy.notes.species[2], min: 60, max: 400, color: '#8fe3cf', delay: '-0.9s' },
 ] as const
 
 const ENERGY_MAX = 400
@@ -15,24 +16,16 @@ export function MeasureNotes() {
 
   return (
     <>
-      <Topic
-        title="Track its path."
-        body="Silicon detectors record positions along a particle’s trajectory."
-        label="First Silicon tracking layer, Si 1, drawn as crossed strips"
-      >
+      <Topic title={copy.notes.topics[0].title} body={copy.notes.topics[0].body} label={copy.notes.topics[0].label}>
         <SiliconMark />
       </Topic>
-      <Topic
-        title="Measure its energy deposits."
-        body="Scintillators reveal how energy is deposited inside the instrument."
-        label="First ΔE scintillator and central E scintillator"
-      >
+      <Topic title={copy.notes.topics[1].title} body={copy.notes.topics[1].body} label={copy.notes.topics[1].label}>
         <EnergyMark />
       </Topic>
       <Topic
-        title="Understand the environment."
-        body="Many events together help researchers investigate Solar Energetic Particles, Galactic Cosmic Rays, Jovian Electrons, and Lunar Albedo."
-        label="Electrons, protons, and alpha particles with their energy ranges"
+        title={copy.notes.topics[2].title}
+        body={copy.notes.topics[2].body}
+        label={copy.notes.topics[2].label}
         labelled={false}
       >
         <SpeciesMark reduced={reduced} />
@@ -85,7 +78,7 @@ function SiliconMark() {
         return <rect key={`y-${index}`} x={at} y={top} width={span} height={size} fill="#c5ccd4" opacity="0.42" />
       })}
       <text className="note-svg-label" x="160" y="168" textAnchor="middle">
-        Si 1
+        {copy.notes.silicon}
       </text>
     </svg>
   )
@@ -97,10 +90,10 @@ function EnergyMark() {
       <rect x="78" y="42" width="52" height="96" fill="#6d8494" />
       <rect x="176" y="28" width="78" height="110" fill="#8f8270" />
       <text className="note-svg-label is-delta" x="104" y="168" textAnchor="middle">
-        ΔE 1
+        {copy.notes.delta}
       </text>
       <text className="note-svg-label is-energy" x="215" y="168" textAnchor="middle">
-        E
+        {copy.notes.energy}
       </text>
     </svg>
   )

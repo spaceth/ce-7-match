@@ -13,6 +13,7 @@ import {
   type Playback,
 } from '../lib/instrument'
 import { useMatchModel } from '../lib/model'
+import { copy, fill } from '../content'
 import { DetectorAssembly } from './Stack'
 
 export type ViewHandle = {
@@ -96,11 +97,11 @@ export function LoadState({ hidden }: { hidden: boolean }) {
   const value = Math.max(4, Math.round(progress))
   return (
     <div className="loader" role="status">
-      <p>Loading the instrument</p>
+      <p>{copy.explorer.loading}</p>
       <div className="meter" aria-hidden="true">
         <span style={{ width: `${value}%` }} />
       </div>
-      <span className="sr-only">{value} percent</span>
+      <span className="sr-only">{fill(copy.ui.percent, { value })}</span>
     </div>
   )
 }
@@ -548,7 +549,7 @@ class ModelBoundary extends Component<
   }
 
   componentDidCatch(error: Error) {
-    this.props.onError(error.message || 'The hardware model could not be loaded.')
+    this.props.onError(error.message || copy.explorer.modelFailed)
   }
 
   render() {

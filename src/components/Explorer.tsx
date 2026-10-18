@@ -14,12 +14,10 @@ import { useStageActivity } from '../lib/useStageActivity'
 import { FallbackView } from './FallbackView'
 import { StageFrame } from './StageScreen'
 import { LoadState, Viewport, type ViewHandle } from './Viewport'
+import { copy, fill } from '../content'
 
-const MODES: { id: Mode; label: string }[] = [
-  { id: 'overview', label: 'Overview' },
-  { id: 'inside', label: 'Inside MATCH' },
-  { id: 'particle', label: 'Follow a particle' },
-]
+const MODES = copy.explorer.modes
+const text = copy.explorer
 
 export function Explorer() {
   const reduced = useReducedMotion()
@@ -147,13 +145,13 @@ export function Explorer() {
   const layer = LAYERS.find((item) => item.id === selected) ?? LAYERS[0]
   const eventStep = stepCopy(step, entrance)
   const active = new Set(layersActiveAt(step, entrance))
-  const badge = mode === 'overview' ? 'Hardware model' : mode === 'inside' ? 'Detector schematic' : 'Illustrative event'
+  const badge = text.badges[mode]
 
   return (
     <CanvasGuard fallback={<FallbackView reason="webgl" />}>
-      <section ref={viewerRef} className="viewer" aria-label="MATCH explorer">
+      <section ref={viewerRef} className="viewer" aria-label={text.label}>
         <div className="toolbar">
-          <div className="modes" role="tablist" aria-label="Explorer mode">
+          <div className="modes" role="tablist" aria-label={text.modeLabel}>
             {MODES.map((item) => (
               <button
                 key={item.id}
@@ -174,19 +172,17 @@ export function Explorer() {
         <div className="dock" id="viewer-copy" role="tabpanel" aria-labelledby={`tab-${mode}`}>
           {mode === 'overview' && (
             <>
-              <p className="kicker">The instrument</p>
-              <h2>Two entrances, one axis.</h2>
-              <p>
-                MATCH is a single layered detector. Window extensions at opposite ends open onto the same bore — one toward space, one toward the Moon.
-              </p>
-              <p>The housing in this view is the supplied flight-model geometry.</p>
+              <p className="kicker">{text.overview.kicker}</p>
+              <h2>{text.overview.title}</h2>
+              <p>{text.overview.body}</p>
+              <p>{text.overview.housing}</p>
               {modelError && <p className="note">{modelError}</p>}
               <div className="actions">
                 <button type="button" onClick={() => changeMode('inside')}>
-                  Inside the stack
+                  {text.overview.inside}
                 </button>
                 <button type="button" onClick={() => changeMode('particle')}>
-                  Follow a particle
+                  {text.overview.follow}
                 </button>
               </div>
             </>
@@ -194,14 +190,12 @@ export function Explorer() {
 
           {mode === 'inside' && (
             <>
-              <p className="kicker">Detector schematic</p>
+              <p className="kicker">{text.inside.kicker}</p>
               <h2>{layer.name}</h2>
               <p aria-live="polite">{layer.body}</p>
-              <p className="note">
-                Schematic, aligned with the hardware bore. Spacing is explanatory — these layers are not separate parts in the model.
-              </p>
-              <p className="axis-note">Space-facing side to Moon-facing side</p>
-              <div className="pips" role="listbox" aria-label="Detector layers">
+              <p className="note">{text.inside.note}</p>
+              <p className="axis-note">{text.inside.axis}</p>
+              <div className="pips" role="listbox" aria-label={text.inside.layersLabel}>
                 {LAYERS.map((item) => (
                   <button
                     key={item.id}
@@ -216,7 +210,7 @@ export function Explorer() {
                 ))}
               </div>
               <button type="button" className="quiet" aria-pressed={spread} onClick={() => setSpread((value) => !value)}>
-                {spread ? 'Gather the layers' : 'Spread the layers'}
+                {spread ? text.inside.gather : text.inside.spread}
               </button>
               <Legend />
             </>
@@ -224,16 +218,16 @@ export function Explorer() {
 
           {mode === 'particle' && (
             <>
-              <p className="kicker">Illustrative event</p>
-              <h2>Stopping ion</h2>
+              <p className="kicker">{text.particle.kicker}</p>
+              <h2>{text.particle.title}</h2>
               <h3>{eventStep.title}</h3>
               <p aria-live="polite">{eventStep.body}</p>
-              <div className="segment" role="group" aria-label="Entrance direction">
+              <div className="segment" role="group" aria-label={text.particle.entranceLabel}>
                 <button type="button" aria-pressed={entrance === 'space'} onClick={() => chooseEntrance('space')}>
-                  Space-facing
+                  {text.particle.space}
                 </button>
                 <button type="button" aria-pressed={entrance === 'moon'} onClick={() => chooseEntrance('moon')}>
-                  Moon-facing
+                  {text.particle.moon}
                 </button>
               </div>
               <div className="progress" aria-hidden="true">
@@ -241,24 +235,24 @@ export function Explorer() {
               </div>
               <div className="transport">
                 <button type="button" onClick={() => seek(step - 1)} disabled={step === 0}>
-                  Previous
+                  {copy.ui.previous}
                 </button>
-                <button type="button" onClick={togglePlay} aria-label={playing ? 'Pause event' : 'Play event'}>
-                  {playing ? 'Pause' : 'Play'}
+                <button type="button" onClick={togglePlay} aria-label={playing ? text.particle.pause : text.particle.play}>
+                  {playing ? copy.ui.pause : copy.ui.play}
                 </button>
                 <button type="button" onClick={() => seek(step + 1)} disabled={step === STEP_COUNT - 1}>
-                  Next
+                  {copy.ui.next}
                 </button>
                 <button type="button" onClick={replay}>
-                  Replay
+                  {copy.ui.replay}
                 </button>
               </div>
-              <div className="dots" role="group" aria-label="Event steps">
+              <div className="dots" role="group" aria-label={text.particle.stepsLabel}>
                 {Array.from({ length: STEP_COUNT }, (_, index) => (
                   <button
                     key={index}
                     type="button"
-                    aria-label={`Step ${index + 1}: ${stepCopy(index, entrance).title}`}
+                    aria-label={fill(text.particle.step, { n: index + 1, title: stepCopy(index, entrance).title })}
                     aria-current={index === step ? 'step' : undefined}
                     onClick={() => seek(index)}
                   />
@@ -271,15 +265,13 @@ export function Explorer() {
                   </li>
                 ))}
               </ul>
-              <p className="note">
-                Comparing ΔE with E helps tell particle types apart when the particle stops. The entrance is a direction through MATCH, not proof of an astronomical source.
-              </p>
+              <p className="note">{text.particle.note}</p>
               <Legend />
             </>
           )}
         </div>
 
-        <StageFrame className="stage" role="region" aria-label="3D view of MATCH" aria-describedby="viewer-copy">
+        <StageFrame className="stage" role="region" aria-label={text.stage} aria-describedby="viewer-copy">
           {seen ? (
             <Viewport
               mode={mode}
@@ -301,26 +293,26 @@ export function Explorer() {
           <LoadState hidden={!seen || ready} />
           {modelError && mode === 'overview' && (
             <div className="overlay">
-              <p>The hardware model could not be loaded.</p>
+              <p>{text.modelFailed}</p>
               <button type="button" onClick={() => changeMode('inside')}>
-                View the schematic
+                {text.viewSchematic}
               </button>
             </div>
           )}
           <div className="view-controls">
-            <button type="button" aria-label="Zoom in" onClick={() => viewRef.current?.zoom(0.82)}>
+            <button type="button" aria-label={copy.ui.zoomIn} onClick={() => viewRef.current?.zoom(0.82)}>
               <PlusIcon />
             </button>
-            <button type="button" aria-label="Zoom out" onClick={() => viewRef.current?.zoom(1 / 0.82)}>
+            <button type="button" aria-label={copy.ui.zoomOut} onClick={() => viewRef.current?.zoom(1 / 0.82)}>
               <MinusIcon />
             </button>
-            <button type="button" aria-label="Reset view" onClick={() => setResetToken((value) => value + 1)}>
+            <button type="button" aria-label={copy.ui.resetView} onClick={() => setResetToken((value) => value + 1)}>
               <ResetIcon />
             </button>
             {mode === 'overview' && (
               <button
                 type="button"
-                aria-label={autoRotate ? 'Stop rotation' : 'Rotate gently'}
+                aria-label={autoRotate ? copy.ui.stopRotation : copy.ui.rotateGently}
                 aria-pressed={autoRotate}
                 onClick={() => setAutoRotate((value) => !value)}
               >
@@ -338,13 +330,13 @@ function Legend() {
   return (
     <ul className="legend">
       <li>
-        <i className="swatch silicon" /> Silicon tracker
+        <i className="swatch silicon" /> {text.legend.silicon}
       </li>
       <li>
-        <i className="swatch delta" /> ΔE scintillator
+        <i className="swatch delta" /> {text.legend.delta}
       </li>
       <li>
-        <i className="swatch energy" /> E scintillator
+        <i className="swatch energy" /> {text.legend.energy}
       </li>
     </ul>
   )

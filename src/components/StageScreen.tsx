@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type HTMLAttributes, type ReactNode, type RefObject } from 'react'
+import { copy } from '../content'
 
 type ScreenMode = 'off' | 'native' | 'overlay'
 
@@ -103,7 +104,7 @@ export function StageFrame({
 
 function ScreenButton({ full, onEnter, onExit }: { full: boolean; onEnter: () => void; onExit: () => void }) {
   return (
-    <button type="button" className="screen-toggle" aria-label={full ? 'Close full screen' : 'Full screen'} onClick={full ? onExit : onEnter}>
+    <button type="button" className="screen-toggle" aria-label={full ? copy.ui.closeFullScreen : copy.ui.fullScreen} onClick={full ? onExit : onEnter}>
       {full ? <CloseIcon /> : <ExpandIcon />}
     </button>
   )

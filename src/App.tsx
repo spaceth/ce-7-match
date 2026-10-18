@@ -10,66 +10,9 @@ import { MissionOverview } from './components/MissionOverview'
 import { MeasureNotes } from './components/MeasureNotes'
 import { OrbitSection } from './components/OrbitSection'
 import { hasWebGL } from './lib/webgl'
+import { copy } from './content'
 
-const CHAPTERS = [
-  {
-    id: 'mission-overview',
-    number: '01',
-    voice: 'display',
-    title: 'Mission Overview',
-    description: 'A first look at this story: the mission, the particles, and the instrument built to measure them.',
-  },
-  {
-    id: 'cosmic-rays',
-    number: '02',
-    voice: 'statement',
-    title: 'Why Study Cosmic Rays',
-    description:
-      'Cosmic rays are energetic particles traveling through space. Most are protons and atomic nuclei, and electrons travel with them. They are not light. Each particle is a clue to whatever set it moving.',
-  },
-  {
-    id: 'change-7',
-    number: '03',
-    voice: 'invert',
-    title: 'About Chang’e-7 Mission',
-    description: 'The lunar mission that carries MATCH, and the place this instrument holds in it.',
-  },
-  {
-    id: 'orbit',
-    number: '04',
-    voice: 'aside',
-    title: 'MATCH’s orbit around the Moon',
-    description: 'Where MATCH flies, and the two directions it looks from that orbit.',
-  },
-  {
-    id: 'how-match-works',
-    number: '05',
-    voice: 'direct',
-    title: 'How MATCH works',
-    description: 'How the detector turns arriving particles into measurements.',
-  },
-  {
-    id: 'engineering',
-    number: '06',
-    voice: 'measured',
-    title: 'Behind the Engineering',
-    description: 'The design and construction that make the instrument possible.',
-  },
-  {
-    id: 'people',
-    number: '07',
-    voice: 'human',
-    title: 'People Behind this Project',
-    description: 'The people who designed, built, and studied MATCH.',
-  },
-  {
-    id: 'conclusion',
-    number: '08',
-    voice: 'close',
-    title: 'Conclusion',
-    description: 'What this view of MATCH leaves us with.',
-  },
-] as const
+const CHAPTERS = copy.chapters
 
 type ChapterId = (typeof CHAPTERS)[number]['id']
 
@@ -116,7 +59,7 @@ export function App() {
   return (
     <div className="site">
       <header className="brand">
-        <h1 className="sr-only">MATCH</h1>
+        <h1 className="sr-only">{copy.ui.brand}</h1>
         <button
           type="button"
           className="menu-toggle"
@@ -125,18 +68,18 @@ export function App() {
           onClick={() => setMenuOpen((open) => !open)}
         >
           <MenuIcon open={menuOpen} />
-          <span className="sr-only">{menuOpen ? 'Close chapters' : 'Open chapters'}</span>
+          <span className="sr-only">{menuOpen ? copy.ui.closeChapters : copy.ui.openChapters}</span>
         </button>
-        <img src={logo} alt="SpaceTH" />
+        <img src={logo} alt={copy.ui.logoAlt} />
       </header>
 
       {menuOpen ? (
-        <button type="button" className="nav-backdrop" aria-label="Close chapters" onClick={() => setMenuOpen(false)} />
+        <button type="button" className="nav-backdrop" aria-label={copy.ui.closeChapters} onClick={() => setMenuOpen(false)} />
       ) : null}
 
       <div className="shell">
-        <nav id="chapter-menu" className="chapters-nav" data-open={menuOpen} aria-label="Chapters">
-          <p>Chapters</p>
+        <nav id="chapter-menu" className="chapters-nav" data-open={menuOpen} aria-label={copy.ui.chapters}>
+          <p>{copy.ui.chapters}</p>
           <ol>
             {CHAPTERS.map((chapter) => (
               <li key={chapter.id}>
@@ -164,7 +107,7 @@ export function App() {
         <main className="page">
           {CHAPTERS.slice(1).map((chapter) => (
             <section key={chapter.id} id={chapter.id} className={`chapter voice-${chapter.voice}`} aria-labelledby={`${chapter.id}-title`} tabIndex={-1}>
-              <p className="kicker">Chapter {chapter.number}</p>
+              <p className="kicker">{copy.ui.chapter} {chapter.number}</p>
               <h2 id={`${chapter.id}-title`}>{chapter.title}</h2>
               <p className="chapter-lead">{chapter.description}</p>
               {chapter.id === 'change-7' ? (
@@ -184,20 +127,9 @@ export function App() {
               ) : null}
               {chapter.id === 'conclusion' ? (
                 <div className="chapter-body close-copy">
-                  <p>
-                    MATCH is Thailand’s particle detector on the Chang’e-7 orbiter. From about 200 kilometres above the
-                    Moon, one instrument looks two ways: toward space, and toward the lunar surface.
-                  </p>
-                  <p>
-                    Those views let MATCH study energetic particles from the Sun, the galaxy, and Jupiter, and particles
-                    that leave the Moon after striking its surface. As the Moon passes through Earth’s magnetotail, the
-                    particles that can reach the spacecraft change.
-                  </p>
-                  <p>
-                    The measurement depends on the whole system. A light structure, precise detectors, careful readout,
-                    and the people who built MATCH turn arriving particles into information the spacecraft can send back
-                    to Earth.
-                  </p>
+                  {copy.conclusion.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
                 </div>
               ) : null}
               {chapter.id === 'cosmic-rays' ? (
@@ -213,43 +145,36 @@ export function App() {
               {chapter.id === 'how-match-works' ? (
                 <div className="chapter-body">
                   {webgl ? <Explorer /> : <FallbackView reason="webgl" />}
-                  <section className="notes" aria-label="How MATCH measures particles">
+                  <section className="notes" aria-label={copy.notes.label}>
                     <MeasureNotes />
                   </section>
                   <footer>
-                    <p>
-                      The hardware view is the supplied model, shown in white. Inside MATCH, the seven detector groups are
-                      a schematic placed on the model’s axis — they are not separate parts in the file. Which window faces
-                      space should be confirmed against the spacecraft mounting.
-                    </p>
+                    <p>{copy.howFooter}</p>
                   </footer>
                 </div>
               ) : null}
             </section>
           ))}
           <section className="end-credit" aria-labelledby="end-credit-title">
-            <h2 id="end-credit-title">End Credit</h2>
-            <h3>Story by</h3>
+            <h2 id="end-credit-title">{copy.credits.title}</h2>
+            <h3>{copy.credits.story}</h3>
             <ul>
-              <li>
-                <span>Website and Visualization</span>
-                Nattanon Dungsunenarn
-              </li>
-              <li>
-                <span>Scientific Information</span>
-                Jirasin Aswakool
-              </li>
+              {copy.credits.roles.map((item) => (
+                <li key={item.role}>
+                  <span>{item.role}</span>
+                  {item.name}
+                </li>
+              ))}
             </ul>
-            <h3>Special Thanks to NARIT Communication team</h3>
+            <h3>{copy.credits.thanks}</h3>
             <ul>
-              <li>Piriyaporn Sabhasri</li>
-              <li>Hathaichanok Therdthampaisal</li>
-              <li>Jitraporn Janpeng</li>
-              <li>Matipon Tangmatitham</li>
+              {copy.credits.thanksPeople.map((name) => (
+                <li key={name}>{name}</li>
+              ))}
             </ul>
-            <h3>In Memory of</h3>
-            <p>Jullada Kaosa-ard (1967-2026)</p>
-            <p className="end-credit-copy">©2026 SPACETH.CO. ALL RIGHTS RESERVED.</p>
+            <h3>{copy.credits.memory}</h3>
+            <p>{copy.credits.memoryName}</p>
+            <p className="end-credit-copy">{copy.credits.copyright}</p>
           </section>
         </main>
         </div>

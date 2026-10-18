@@ -5,32 +5,14 @@ import { orbitScene } from '../lib/orbit'
 import { useReducedMotion } from '../lib/useReducedMotion'
 import { useStageActivity } from '../lib/useStageActivity'
 import { hasWebGL } from '../lib/webgl'
+import { copy, fill } from '../content'
 
-// Same head-and-trail drawing as the orbit particles in chapter 4.
+const SOURCES = copy.cosmic.sources
 const SPACE_PARTICLE = orbitScene.spaceFacing
 const MOON_PARTICLE = orbitScene.moonFacing
 const TRAIL_LIFE = 0.16
 const DOT_SIZE = 4.5
 const TRAIL_OPACITY = 0.8
-
-const SOURCES = [
-  {
-    title: 'Solar Cosmic Rays',
-    body: 'The Sun releases bursts of energetic particles, especially during flares and eruptions. They arrive suddenly, then fade.',
-  },
-  {
-    title: 'Galactic Cosmic Rays',
-    body: 'A steadier rain comes from beyond the solar system. These are among the most energetic particles, likely sped up by the remnants of exploded stars.',
-  },
-  {
-    title: 'Jovian Electrons',
-    body: 'Jupiter’s vast magnetic field accelerates electrons. Some of them cross the solar system and can be measured near the Moon.',
-  },
-  {
-    title: 'Lunar Albedo',
-    body: 'Particles that strike the lunar surface can knock new particles back out. Those emerging particles are lunar albedo — not reflected light.',
-  },
-]
 
 const EARTH = { x: 292, y: 268 }
 const ORBIT = 146
@@ -73,33 +55,24 @@ export function CosmicRays() {
 
   return (
     <div className="rays">
-      <section className="ray-sources" aria-label="Sources of particles MATCH can study">
-        <h3>More than one source.</h3>
+      <section className="ray-sources" aria-label={copy.cosmic.sourcesLabel}>
+        <h3>{copy.cosmic.heading}</h3>
         <div className="ray-intro">
-          <p>
-            The particles that reach the Moon do not all come from the same place. A burst from the Sun, a steady rain from
-            the galaxy, electrons from Jupiter, and particles knocked back off the Moon each tell a different story.
-          </p>
-          <p>
-            MATCH watches them with one detector. Looking toward space and toward the lunar surface lets it compare what
-            arrives from far away with what leaves the Moon itself.
-          </p>
+          {copy.cosmic.intro.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
         </div>
         <div className="ray-grid">
           {SOURCES.map((source) => (
-            <article key={source.title}>
-              {source.title === 'Solar Cosmic Rays' ? (
+            <article key={source.id}>
+              {source.id === 'solar' ? (
                 <SunFrame reduced={reduced} />
-              ) : source.title === 'Galactic Cosmic Rays' ? (
+              ) : source.id === 'galactic' ? (
                 <PulsarFrame reduced={reduced} />
-              ) : source.title === 'Jovian Electrons' ? (
+              ) : source.id === 'jovian' ? (
                 <JupiterFrame reduced={reduced} />
-              ) : source.title === 'Lunar Albedo' ? (
-                <LunarFrame reduced={reduced} />
               ) : (
-                <div className="ray-frame" role="img" aria-label={`Image placeholder for ${source.title}`}>
-                  <span>Image</span>
-                </div>
+                <LunarFrame reduced={reduced} />
               )}
               <h4>{source.title}</h4>
               <p>{source.body}</p>
@@ -111,17 +84,13 @@ export function CosmicRays() {
       <section className="tail" ref={pinRef} data-reduced={reduced} aria-labelledby="magnetotail-title">
         <div className="tail-sticky">
           <div className="tail-copy">
-            <p className="kicker">Around Earth</p>
-            <h3 id="magnetotail-title">In and out of the magnetotail.</h3>
-            <p>
-              The Moon circles Earth about once a month. The solar wind blows Earth’s magnetic field into a long tail on the
-              night side. For several days each month the Moon crosses that tail, then returns to the solar wind. MATCH
-              flies with the Moon, so one orbit carries the detector through more than one particle environment.
-            </p>
+            <p className="kicker">{copy.cosmic.tail.kicker}</p>
+            <h3 id="magnetotail-title">{copy.cosmic.tail.title}</h3>
+            <p>{copy.cosmic.tail.body}</p>
           </div>
           <div className="tail-stage">
             <svg viewBox="0 0 960 520" role="img" aria-labelledby="magnetotail-title magnetotail-status">
-              <title>The Moon crossing Earth’s magnetotail</title>
+              <title>{copy.cosmic.tail.diagramTitle}</title>
               <defs>
                 <linearGradient id="tail-fade" x1="0" x2="1" y1="0" y2="0">
                   <stop offset="0" stopColor="#7fd0ee" stopOpacity="1" />
@@ -133,7 +102,7 @@ export function CosmicRays() {
               </defs>
               <g className="tail-wind" aria-hidden="true">
                 <text x="28" y="128">
-                  Solar wind
+                  {copy.cosmic.tail.solarWind}
                 </text>
               </g>
               <g className="tail-particles" aria-hidden="true">
@@ -174,36 +143,36 @@ export function CosmicRays() {
                 d="M292 198 C214 226 206 314 292 340 C500 402 730 418 940 386 L940 150 C730 118 500 136 292 198 Z"
               />
               <text className="tail-label" x="620" y="250">
-                Magnetotail
+                {copy.cosmic.tail.magnetotail}
               </text>
               <circle className="tail-orbit" cx={EARTH.x} cy={EARTH.y} r={ORBIT} />
               <circle className="tail-earth" cx={EARTH.x} cy={EARTH.y} r="18" />
               <text className="tail-label" x={EARTH.x - 18} y={EARTH.y + 36}>
-                Earth
+                {copy.ui.earth}
               </text>
               <g className="tail-moon">
                 <circle cx={moonX} cy={moonY} r="7" />
               </g>
             </svg>
             <p id="magnetotail-status" className="tail-status" data-in={inTail}>
-              <span>{inTail ? 'Inside the magnetotail' : 'In the solar wind'}</span>
-              {inTail
-                ? 'Earth’s magnetic tail stands between the Moon and the solar wind. The particles MATCH can record are not the same mix.'
-                : 'Outside the tail, particles from the Sun, the galaxy, and Jupiter can reach the Moon more directly.'}
+              <span>{inTail ? copy.cosmic.tail.inside : copy.cosmic.tail.outside}</span>
+              {inTail ? copy.cosmic.tail.insideBody : copy.cosmic.tail.outsideBody}
             </p>
-            <p className="tail-caption">
-              Illustrative. The Moon’s orbit is not drawn to scale. Chang’e-7 / MATCH rides with the Moon.
-            </p>
+            <p className="tail-caption">{copy.cosmic.tail.caption}</p>
           </div>
         </div>
       </section>
 
-      <p className="ray-close">That is why Thailand goes to orbit around the Moon.</p>
-      <p className="ray-close-lead">
-        A detector on Earth sits under the atmosphere and inside the magnetic field. From lunar orbit, MATCH passes
-        through the solar wind and Earth’s magnetotail, and it can watch particles leaving the lunar surface. One flight
-        can meet solar cosmic rays, galactic cosmic rays, Jovian electrons, and lunar albedo.
-      </p>
+      <p className="ray-close">{copy.cosmic.close}</p>
+      <p className="ray-close-lead">{copy.cosmic.closeLead}</p>
+    </div>
+  )
+}
+
+function ImagePlaceholder({ title }: { title: string }) {
+  return (
+    <div className="ray-frame" role="img" aria-label={fill(copy.cosmic.imagePlaceholder, { title })}>
+      <span>{copy.ui.image}</span>
     </div>
   )
 }
@@ -214,16 +183,14 @@ function SunFrame({ reduced }: { reduced: boolean }) {
 
   if (!webgl) {
     return (
-      <div className="ray-frame" role="img" aria-label="Image placeholder for Solar Cosmic Rays">
-        <span>Image</span>
-      </div>
+      <ImagePlaceholder title={SOURCES[0].title} />
     )
   }
 
   const playing = shown && !reduced
 
   return (
-    <div ref={frameRef} className="ray-frame ray-sun" role="img" aria-label="Glowing Sun with particles leaving it">
+    <div ref={frameRef} className="ray-frame ray-sun" role="img" aria-label={SOURCES[0].diagram}>
       {seen ? <Canvas
         dpr={[1, 1.5]}
         camera={{ fov: 30, position: [0, 0, 4.1] }}
@@ -311,16 +278,14 @@ function PulsarFrame({ reduced }: { reduced: boolean }) {
 
   if (!webgl) {
     return (
-      <div className="ray-frame" role="img" aria-label="Image placeholder for Galactic Cosmic Rays">
-        <span>Image</span>
-      </div>
+      <ImagePlaceholder title={SOURCES[1].title} />
     )
   }
 
   const playing = shown && !reduced
 
   return (
-    <div ref={frameRef} className="ray-frame ray-pulsar" role="img" aria-label="Rotating pulsar">
+    <div ref={frameRef} className="ray-frame ray-pulsar" role="img" aria-label={SOURCES[1].diagram}>
       {seen ? <Canvas
         dpr={[1, 1.5]}
         camera={{ fov: 30, position: [0.4, 0.35, 4.2] }}
@@ -459,16 +424,14 @@ function JupiterFrame({ reduced }: { reduced: boolean }) {
 
   if (!webgl) {
     return (
-      <div className="ray-frame" role="img" aria-label="Image placeholder for Jovian Electrons">
-        <span>Image</span>
-      </div>
+      <ImagePlaceholder title={SOURCES[2].title} />
     )
   }
 
   const playing = shown && !reduced
 
   return (
-    <div ref={frameRef} className="ray-frame ray-jupiter" role="img" aria-label="Rotating Jupiter with a cyan magnetic glow, field lines, and a few particles leaving">
+    <div ref={frameRef} className="ray-frame ray-jupiter" role="img" aria-label={SOURCES[2].diagram}>
       {seen ? <Canvas
         dpr={[1, 1.5]}
         camera={{ fov: 30, position: [0.45, 0.28, 5.55] }}
@@ -658,9 +621,7 @@ function LunarFrame({ reduced }: { reduced: boolean }) {
 
   if (!webgl) {
     return (
-      <div className="ray-frame" role="img" aria-label="Image placeholder for Lunar Albedo">
-        <span>Image</span>
-      </div>
+      <ImagePlaceholder title={SOURCES[3].title} />
     )
   }
 
@@ -671,7 +632,7 @@ function LunarFrame({ reduced }: { reduced: boolean }) {
       ref={frameRef}
       className="ray-frame ray-moon"
       role="img"
-      aria-label="Lunar surface with particles striking it and particles leaving upward"
+      aria-label={SOURCES[3].diagram}
     >
       {seen ? <Canvas
         dpr={[1, 1.5]}

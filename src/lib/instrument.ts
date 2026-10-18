@@ -8,6 +8,8 @@
  * lowZIsSpace is a working assignment for labels. The CAD names do not say
  * which end points outward. Flip this if the spacecraft mounting says otherwise.
  */
+import { copy, fill } from '../content'
+
 export const lowZIsSpace = true
 
 export const MODEL_CENTER = { x: 4.7, y: -100.606707548, z: 33.922016071 }
@@ -39,64 +41,20 @@ export type LayerDef = {
   body: string
 }
 
-export const LAYERS: LayerDef[] = [
-  {
-    id: 'si1',
-    kind: 'silicon',
-    pip: 'Si 1',
-    name: 'First Silicon tracking layer',
-    label: 'First Silicon',
-    body: 'Records where a particle crosses on the space-facing side. Perpendicular strips measure X and Y — two of the eight Silicon planes.',
-  },
-  {
-    id: 'si2',
-    kind: 'silicon',
-    pip: 'Si 2',
-    name: 'Second Silicon tracking layer',
-    label: 'Second Silicon',
-    body: 'A second crossing, separated along the detector axis. Together with the first hit, it defines a straight trajectory.',
-  },
-  {
-    id: 'de1',
-    kind: 'deltaE',
-    pip: 'ΔE 1',
-    name: 'First ΔE scintillator',
-    label: 'First ΔE',
-    body: 'Measures a portion of the energy deposited as a particle passes through, before the central stopper.',
-  },
-  {
-    id: 'e',
-    kind: 'E',
-    pip: 'E',
-    name: 'Central E scintillator',
-    label: 'Central E',
-    body: 'The stopping stage for suitable events. It measures residual energy. Comparing ΔE with E helps distinguish particle types. Not every particle stops, and electron events require their own interpretation.',
-  },
-  {
-    id: 'de2',
-    kind: 'deltaE',
-    pip: 'ΔE 2',
-    name: 'Second ΔE scintillator',
-    label: 'Second ΔE',
-    body: 'The matching ΔE measurement on the Moon-facing side. A particle entering there meets this scintillator before the central stopper.',
-  },
-  {
-    id: 'si3',
-    kind: 'silicon',
-    pip: 'Si 3',
-    name: 'Third Silicon tracking layer',
-    label: 'Third Silicon',
-    body: 'A tracking layer on the Moon-facing half. Particles from that entrance reach it before the scintillators.',
-  },
-  {
-    id: 'si4',
-    kind: 'silicon',
-    pip: 'Si 4',
-    name: 'Fourth Silicon tracking layer',
-    label: 'Fourth Silicon',
-    body: 'The outer tracker on the Moon-facing side. Four tracking layers, each with crossed X and Y strips, give eight Silicon planes.',
-  },
-]
+const LAYER_KIND = {
+  si1: 'silicon',
+  si2: 'silicon',
+  de1: 'deltaE',
+  e: 'E',
+  de2: 'deltaE',
+  si3: 'silicon',
+  si4: 'silicon',
+} as const satisfies Record<(typeof copy.explorer.layers)[number]['id'], LayerKind>
+
+export const LAYERS: LayerDef[] = copy.explorer.layers.map((layer) => ({
+  ...layer,
+  kind: LAYER_KIND[layer.id],
+}))
 
 export type PlacedLayer = LayerDef & { z: number; thickness: number }
 
@@ -131,34 +89,35 @@ export type Callout = {
 
 /** Positions are in the GLB’s original coordinates, before centering. */
 export function overviewCallouts(): Callout[] {
-  const lowTitle = lowZIsSpace ? 'Space-facing' : 'Moon-facing'
-  const highTitle = lowZIsSpace ? 'Moon-facing' : 'Space-facing'
+  const labels = copy.explorer.callouts
+  const lowTitle = lowZIsSpace ? copy.explorer.particle.space : copy.explorer.particle.moon
+  const highTitle = lowZIsSpace ? copy.explorer.particle.moon : copy.explorer.particle.space
   return [
     {
       id: 'entrance-low-z',
-      kicker: 'Window extension',
+      kicker: labels.window,
       title: lowTitle,
       anchor: [0, 30, -20],
       side: 'right',
     },
     {
       id: 'entrance-high-z',
-      kicker: 'Window extension',
+      kicker: labels.window,
       title: highTitle,
       anchor: [0, 30, 106],
       side: 'left',
     },
     {
       id: 'housing',
-      kicker: 'Structure',
-      title: 'Electrical part',
+      kicker: labels.structure,
+      title: labels.electrical,
       anchor: [72, -132, 48],
       side: 'right',
     },
     {
       id: 'base',
-      kicker: 'Bottom plate',
-      title: 'Mounting structure',
+      kicker: labels.plate,
+      title: labels.mounting,
       anchor: [66, -224, 20],
       side: 'left',
     },
@@ -198,37 +157,15 @@ export function timeForStep(step: number) {
 }
 
 export function stepCopy(step: number, entrance: Entrance) {
-  const side = entrance === 'space' ? 'space-facing' : 'Moon-facing'
-  const first = entrance === 'space' ? 'first' : 'fourth'
-  const second = entrance === 'space' ? 'second' : 'third'
-  const delta = entrance === 'space' ? 'first' : 'second'
-  const steps = [
-    {
-      title: 'At the entrance',
-      body: `A stopping ion approaches the ${side} side. This is an illustrative event, not a measured arrival.`,
-    },
-    {
-      title: 'First tracking hit',
-      body: `The ${first} Silicon layer records the crossing. Crossed strips give an X position and a Y position.`,
-    },
-    {
-      title: 'Second tracking hit',
-      body: `The ${second} Silicon layer records another crossing. Two separated positions define the trajectory.`,
-    },
-    {
-      title: 'Deposit in ΔE',
-      body: `The ${delta} ΔE scintillator measures energy deposited as the particle passes through.`,
-    },
-    {
-      title: 'Stopping in E',
-      body: 'The ion stops in the central E scintillator, which measures the residual energy. Comparing ΔE with E helps distinguish particle types. Not every particle stops, and electron events require their own interpretation.',
-    },
-    {
-      title: 'Path from the hits',
-      body: 'The line is drawn through the Silicon hits. It reconstructs direction inside MATCH. Arrival through one entrance does not, by itself, identify the astronomical source.',
-    },
-  ]
-  return steps[step] ?? steps[0]
+  const words = copy.explorer.ordinals
+  const values = {
+    side: entrance === 'space' ? copy.explorer.sides.space : copy.explorer.sides.moon,
+    first: entrance === 'space' ? words.first : words.fourth,
+    second: entrance === 'space' ? words.second : words.third,
+    delta: entrance === 'space' ? words.first : words.second,
+  }
+  const item = copy.explorer.steps[step] ?? copy.explorer.steps[0]
+  return { title: item.title, body: fill(item.body, values) }
 }
 
 export function layersActiveAt(step: number, entrance: Entrance) {

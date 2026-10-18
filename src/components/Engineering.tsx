@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { engineeringSpec } from '../lib/engineering'
 import { useReducedMotion } from '../lib/useReducedMotion'
+import { copy, fill } from '../content'
 
 const spec = engineeringSpec
 
@@ -20,17 +21,21 @@ function Material() {
   const [low, high] = spec.material.alloyMassRange
   const [lighterLow, lighterHigh] = spec.material.lighterPercentRange
 
+  const text = copy.engineering.material
+
   return (
     <section className="eng-block" aria-labelledby="eng-material-title">
-      <h3 id="eng-material-title">A lighter structure. A demanding material.</h3>
+      <h3 id="eng-material-title">{text.title}</h3>
       <p>
-        Magnesium alloy helped reduce the structural mass of MATCH, supporting the instrument’s tight mass allocation. For
-        the same volume of material, aluminium is the reference at {spec.material.referenceMass}, and the magnesium alloy
-        is approximately {low}–{high}. NARIT describes the material as approximately {lighterLow}–{lighterHigh}% lighter
-        than aluminium. The comparison applies to the structural material. The complete instrument also contains detectors,
-        electronics, and other components.
+        {fill(text.body, {
+          referenceMass: spec.material.referenceMass,
+          low,
+          high,
+          lighterLow,
+          lighterHigh,
+        })}
       </p>
-      <p>This is the first time in Thailand that magnesium alloy material can be fabricated.</p>
+      <p>{text.first}</p>
     </section>
   )
 }
@@ -39,10 +44,11 @@ function Precision() {
   const reduced = useReducedMotion()
   const listRef = useRef<HTMLUListElement>(null)
   const [progress, setProgress] = useState(reduced ? 1 : 0)
+  const text = copy.engineering.precision
   const facts = [
-    { value: spec.manufacturing.structuralComponents, label: 'Structural components' },
-    { value: spec.manufacturing.thaiFabrication, label: 'Fabricated by Thai engineers' },
-    { value: 'Precision machining and dimensional inspection', label: '' },
+    { value: spec.manufacturing.structuralComponents, label: text.components },
+    { value: spec.manufacturing.thaiFabrication, label: text.fabricated },
+    { value: text.inspection, label: '' },
   ]
 
   useEffect(() => {
@@ -79,7 +85,7 @@ function Precision() {
 
   return (
     <section className="eng-block" aria-labelledby="eng-precision-title">
-      <h3 id="eng-precision-title">Precision in every component.</h3>
+      <h3 id="eng-precision-title">{text.title}</h3>
       <ul className="eng-facts" ref={listRef}>
         {facts.map((fact) => (
           <li key={fact.value}>
@@ -90,11 +96,6 @@ function Precision() {
           </li>
         ))}
       </ul>
-      <div className="eng-photos">
-        <Photo label="Magnesium-alloy machining" />
-        <Photo label="Dimensional inspection" />
-        <Photo label="Structural assembly" />
-      </div>
     </section>
   )
 }
@@ -109,11 +110,13 @@ function countUp(value: string, progress: number) {
 function Power() {
   const verified = spec.power.verified
 
+  const text = copy.engineering.power
+
   return (
     <section className="eng-block" aria-labelledby="eng-power-title">
-      <h3 id="eng-power-title">Sensitive measurements. Limited power.</h3>
-      <p>Detector readout must capture small signals while sharing the spacecraft’s limited electrical resources.</p>
-      <p className="eng-quiet">{verified ? `≤${spec.power.averageWatts} W average` : 'Low-power readout'}</p>
+      <h3 id="eng-power-title">{text.title}</h3>
+      <p>{text.body}</p>
+      <p className="eng-quiet">{verified ? fill(text.verified, { watts: spec.power.averageWatts ?? '' }) : text.quiet}</p>
     </section>
   )
 }
@@ -121,35 +124,24 @@ function Power() {
 function DataFlow() {
   const showRate = spec.data.verified && spec.data.bitsPerSecond !== null
 
+  const text = copy.engineering.data
+
   return (
     <section className="eng-block" aria-labelledby="eng-data-title">
-      <h3 id="eng-data-title">From signals to scientific information.</h3>
-      <p>
-        Particle interactions produce detector signals. Readout electronics convert those signals into digital
-        information, which is passed to the Chang’e-7 spacecraft for return to Earth.
-      </p>
-      {showRate ? <p className="eng-quiet">{spec.data.bitsPerSecond} bit/s instrument data</p> : null}
+      <h3 id="eng-data-title">{text.title}</h3>
+      <p>{text.body}</p>
+      {showRate ? <p className="eng-quiet">{fill(text.rate, { rate: spec.data.bitsPerSecond ?? '' })}</p> : null}
     </section>
   )
 }
 
 function Close() {
+  const text = copy.engineering.close
+
   return (
     <section className="eng-block eng-close" aria-labelledby="eng-close-title">
-      <h3 id="eng-close-title">Engineering makes the measurement possible.</h3>
-      <p>
-        The structure, detectors, electronics, and spacecraft interfaces must work as one system. Each engineering
-        decision helps turn a scientific question into a measurement.
-      </p>
-      <Photo label="Engineering team or assembly" wide />
+      <h3 id="eng-close-title">{text.title}</h3>
+      <p>{text.body}</p>
     </section>
-  )
-}
-
-function Photo({ label, wide = false }: { label: string; wide?: boolean }) {
-  return (
-    <div className={wide ? 'eng-photo eng-photo-wide' : 'eng-photo'} role="img" aria-label={`Placeholder photograph: ${label}`}>
-      <span>{label}</span>
-    </div>
   )
 }

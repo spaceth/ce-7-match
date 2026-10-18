@@ -8,6 +8,7 @@ import { orbitRadiusKm, orbitScene, slantToSurface } from '../lib/orbit'
 import { useReducedMotion } from '../lib/useReducedMotion'
 import { useStageActivity } from '../lib/useStageActivity'
 import { hasWebGL } from '../lib/webgl'
+import { copy } from '../content'
 import { StageFrame } from './StageScreen'
 
 const HALF = (orbitScene.coneHalfAngleDeg * Math.PI) / 180
@@ -95,27 +96,27 @@ export function OrbitSection() {
   }
 
   return (
-    <section className="orbit-block" ref={sectionRef} aria-label="Where MATCH observes">
+    <section className="orbit-block" ref={sectionRef} aria-label={copy.orbit.label}>
       <div className="orbit-layout">
         {webgl ? (
           <StageFrame className="stage orbit-stage">
             {seen ? <OrbitCanvas motion={motion} resetToken={resetToken} tags={tags} /> : null}
             <div className="orbit-tags">
-              <span ref={(node) => { tags.current.moon = node }}>Moon</span>
-              <span ref={(node) => { tags.current.craft = node }}>CE-7 MATCH</span>
+              <span ref={(node) => { tags.current.moon = node }}>{copy.ui.moon}</span>
+              <span ref={(node) => { tags.current.craft = node }}>{copy.ui.match}</span>
             </div>
             <div className="orbit-bar">
               <button type="button" onClick={togglePlay} aria-pressed={playing}>
-                {playing ? 'Pause' : 'Play'}
+                {playing ? copy.ui.pause : copy.ui.play}
               </button>
               <button type="button" onClick={resetView}>
-                Reset view
+                {copy.ui.resetView}
               </button>
               <button type="button" onClick={() => setCones((value) => !value)} aria-pressed={cones}>
-                Show viewing cones
+                {copy.orbit.showCones}
               </button>
               <button type="button" onClick={toggleClose} aria-pressed={closeUp}>
-                Close-up
+                {copy.orbit.closeUp}
               </button>
             </div>
           </StageFrame>
@@ -124,39 +125,27 @@ export function OrbitSection() {
         )}
 
         <div className="orbit-copy">
-          <p className="kicker">Around the Moon</p>
-          <h2>One instrument. Two views.</h2>
-          <p>
-            From approximately 200 kilometres above the Moon, MATCH observes particles arriving from space and
-            particles emerging from the lunar surface through two opposing viewing directions.
-          </p>
-          <p className="note">
-            The path is a schematic near-polar circle, not the reconstructed mission trajectory. The cone angle is
-            illustrative. It is not MATCH’s verified acceptance angle.
-          </p>
-          <p className="note">
-            Particles leaving the surface stand in for Lunar Albedo, which emerges after interactions with lunar
-            material. A cone shows viewing geometry. It does not mean every particle inside it is detected, or that
-            arrival direction by itself identifies the source.
-          </p>
-          <p className="note">
-            Lunar surface color from the CGI Moon Kit, NASA Scientific Visualization Studio.
-          </p>
+          <p className="kicker">{copy.orbit.kicker}</p>
+          <h2>{copy.orbit.title}</h2>
+          <p>{copy.orbit.body}</p>
+          <p className="note">{copy.orbit.pathNote}</p>
+          <p className="note">{copy.orbit.albedoNote}</p>
+          <p className="note">{copy.orbit.credit}</p>
           <ul className="legend orbit-legend">
             <li>
-              <span className="swatch craft" /> CE-7 MATCH
+              <span className="swatch craft" /> {copy.orbit.legend.match}
             </li>
             <li>
-              <span className="swatch moon" /> Moon-facing view
+              <span className="swatch moon" /> {copy.orbit.legend.moon}
             </li>
             <li>
-              <span className="swatch space" /> Space-facing view
+              <span className="swatch space" /> {copy.orbit.legend.space}
             </li>
           </ul>
         </div>
       </div>
       <p className="orbit-finish">
-        Two viewing directions provide complementary measurements of the particle environment around the Moon.
+        {copy.orbit.finish}
       </p>
     </section>
   )
@@ -164,15 +153,15 @@ export function OrbitSection() {
 
 function OrbitStill() {
   return (
-    <div className="stage orbit-stage orbit-still" role="img" aria-label="Illustrative diagram of MATCH in a near-polar orbit, looking toward the Moon and toward space">
+    <div className="stage orbit-stage orbit-still" role="img" aria-label={copy.orbit.still}>
       <svg viewBox="0 0 640 640">
         <circle cx="300" cy="320" r="168" fill="#c5c8ce" />
         <ellipse cx="300" cy="320" rx="78" ry="214" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.25" />
         <circle cx="300" cy="132" r="5" fill="#fff" />
         <path d="M300 132 L268 168 L332 168 Z" fill="rgba(143,227,207,0.28)" stroke="#8fe3cf" strokeWidth="1" />
         <path d="M300 132 L274 78 L326 78 Z" fill="rgba(127,208,238,0.22)" stroke="#7fd0ee" strokeWidth="1" />
-        <text x="248" y="520" fill="#f4f4f5" fontSize="14" fontFamily="Poppins, sans-serif">Moon</text>
-        <text x="316" y="128" fill="#f4f4f5" fontSize="13" fontFamily="Poppins, sans-serif">CE-7 MATCH</text>
+        <text x="248" y="520" fill="#f4f4f5" fontSize="14" fontFamily="Poppins, sans-serif">{copy.ui.moon}</text>
+        <text x="316" y="128" fill="#f4f4f5" fontSize="13" fontFamily="Poppins, sans-serif">{copy.ui.match}</text>
       </svg>
     </div>
   )

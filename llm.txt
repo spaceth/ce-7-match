@@ -1,0 +1,35 @@
+MATCH landing page
+https://match.spaceth.co
+
+This site explains CE-7 MATCH, the Thai particle detector on the Chang’e-7 lunar orbiter. One detector axis has two opposing entrances: space-facing and Moon-facing. Four tracking layers, each with crossed X and Y strips, make eight Silicon planes. The conceptual stack from space toward the Moon is First Silicon, Second Silicon, First ΔE, Central E, Second ΔE, Third Silicon, Fourth Silicon.
+
+Chapters, in order:
+1. Mission Overview
+2. Why Study Cosmic Rays
+3. About Chang’e-7 Mission
+4. MATCH’s orbit around the Moon
+5. How MATCH works
+6. Behind the Engineering
+7. People Behind this Project
+8. Conclusion
+
+All visitor-facing sentences, including the page title, description, and Open Graph text, live in src/content/en.ts. Views read them through src/content/index.ts. To add a language, duplicate en.ts, keep the same keys, and switch the export in index.ts. Vite writes the title and description into index.html from that file.
+
+Science to keep:
+Cosmic rays are energetic particles, mostly protons and nuclei, plus electrons. They are not light.
+Solar cosmic rays are solar energetic particles from flares and eruptions.
+Galactic cosmic rays are a steady high-energy rain from beyond the solar system, likely from supernova remnants.
+Jovian electrons are electrons accelerated in Jupiter’s magnetosphere.
+Lunar albedo is secondary particles leaving the surface after an interaction. It is not reflected light.
+Earth’s magnetosphere is compressed sunward and stretched into a magnetotail anti-sunward. The Moon’s orbit crosses that tail for several days each month. The diagram is not to scale. MATCH rides with the Moon.
+MATCH flies about 200 kilometres above the Moon in a near-polar orbit. The orbit drawing is schematic, not a reconstructed trajectory. The viewing cones are illustrative.
+
+Chang’e-7 has an orbiter, a lander, a rover, and a hopper. The lander is planned to touch down on the illuminated rim of Shackleton crater, near the lunar south pole. MATCH stays on the orbiter. The route animation is schematic and is not a reconstructed flight path. The launch site named in the copy is the Wenchang Spacecraft Launch Site on Hainan. Do not add a parking-orbit altitude, launch date, rocket model, transfer duration, or delta-v.
+
+The Chapter 3 spacecraft is a procedural illustration. The white hardware model in Chapters 1 and 5 is the supplied CAD. Keep those two views distinct. The detector layers drawn inside MATCH are a schematic on the model axis. They are not separate parts in the file. lowZIsSpace is a working label, not a confirmed mounting.
+
+Do not invent payload names, alloy grade, coating, machining tolerance, structural mass, kilograms saved, a total-mass percentage, strength or stiffness equivalence, peak power, subsystem power, voltage, heater demand, bitrate, or daily data volume. engineeringSpec may contain mass and dimensions that are not shown. Power and data stay hidden unless their verified flags are true. The magnesium comparison uses only the figures already rendered from engineeringSpec.
+
+China and international payload names, and the Thai and Chinese team lists, are in the copy file. Do not add people or instruments. Copyright line: ©2026 SPACETH.CO. ALL RIGHTS RESERVED.
+
+Visual rules are in style.md. The page is black, type is Poppins, the spacecraft is white #fafafa when shown and #666 when unselected, and mint #8fe3cf and cyan #7fd0ee mark Moon-facing and space-facing particles. Respect prefers-reduced-motion.

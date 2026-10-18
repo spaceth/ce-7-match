@@ -1,23 +1,20 @@
+import { copy } from '../content'
+
 type FallbackProps = {
   reason: 'webgl'
 }
 
 export function FallbackView({ reason }: FallbackProps) {
+  const text = copy.fallback
   return (
-    <section className="fallback" aria-label="Static detector schematic">
+    <section className="fallback" aria-label={text.label}>
       <div className="fallback-copy">
-        <p className="kicker">Detector schematic</p>
-        <h2>One stack, two entrances.</h2>
-        <p>
-          {reason === 'webgl'
-            ? 'Interactive 3D isn’t available in this browser. The sequence below is the same layer order used in the explorer.'
-            : 'The interactive view could not start. The sequence below is the detector order.'}
-        </p>
+        <p className="kicker">{text.kicker}</p>
+        <h2>{text.title}</h2>
+        <p>{reason === 'webgl' ? text.webgl : text.failed}</p>
       </div>
       <SchematicFigure />
-      <p className="footnote">
-        Space-facing to Moon-facing: Silicon, Silicon, ΔE, E, ΔE, Silicon, Silicon. A particle from the Moon-facing side meets that sequence in reverse. This drawing is explanatory, not the flight-model geometry.
-      </p>
+      <p className="footnote">{text.footnote}</p>
     </section>
   )
 }
@@ -33,12 +30,12 @@ function SchematicFigure() {
     { name: 'Si', kind: 'silicon' },
   ]
   return (
-    <svg className="schematic" viewBox="0 0 880 280" role="img" aria-label="Schematic of MATCH from the space-facing entrance to the Moon-facing entrance">
+    <svg className="schematic" viewBox="0 0 880 280" role="img" aria-label={copy.fallback.diagram}>
       <text x="36" y="78" fill="#f4f4f5" fontSize="14" fontFamily="Poppins, sans-serif">
-        Space-facing
+        {copy.fallback.space}
       </text>
       <text x="760" y="78" fill="#f4f4f5" fontSize="14" fontFamily="Poppins, sans-serif">
-        Moon-facing
+        {copy.fallback.moon}
       </text>
       <line x1="70" y1="148" x2="810" y2="148" stroke="rgba(255,255,255,0.28)" />
       {layers.map((layer, index) => {
