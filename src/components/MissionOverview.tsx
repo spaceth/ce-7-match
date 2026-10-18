@@ -118,7 +118,6 @@ export function MissionOverview({
               </Suspense>
               <Turntable progressRef={progressRef} visibleRef={visibleRef} pivotRef={pivotRef} reduced={reduced} />
             </Canvas>
-            <p className="mission-plate">{copy.mission.plate}</p>
           </StageFrame>
         ) : (
           <div className="stage mission-stage mission-fallback" role="img" aria-label={copy.mission.unavailable}>
