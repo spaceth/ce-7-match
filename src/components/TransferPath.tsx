@@ -213,7 +213,7 @@ export function TransferPath() {
               {step.body}
             </p>
           )}
-          <p className="transfer-caption">{copy.transfer.caption}</p>
+          {copy.transfer.caption ? <p className="transfer-caption">{copy.transfer.caption}</p> : null}
         </div>
         <div className="transfer-stage">
           <svg viewBox="0 0 860 640" role="img" aria-label={copy.transfer.diagram}>

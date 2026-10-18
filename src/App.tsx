@@ -148,9 +148,11 @@ export function App() {
                   <section className="notes" aria-label={copy.notes.label}>
                     <MeasureNotes />
                   </section>
-                  <footer>
-                    <p>{copy.howFooter}</p>
-                  </footer>
+                  {copy.howFooter ? (
+                    <footer>
+                      <p>{copy.howFooter}</p>
+                    </footer>
+                  ) : null}
                 </div>
               ) : null}
             </section>

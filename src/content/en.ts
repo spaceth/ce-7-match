@@ -49,8 +49,8 @@ export const en = {
       id: 'mission-overview',
       number: '01',
       voice: 'display',
-      title: 'Meet CE-7 MATCH',
-      description: 'A compact detector built in Thailand is heading to lunar orbit to study particles we cannot see.',
+      title: 'CE-7 MATCH',
+      description: 'Moon-Aiming Thai-Chinese Hodoscop',
     },
     {
       id: 'cosmic-rays',
@@ -105,30 +105,30 @@ export const en = {
   ],
   mission: {
     plate: 'CE-7 MATCH',
-    stageLabel: 'CE-7 MATCH payload',
-    placeholder: 'Thailand’s detector for lunar orbit',
+    stageLabel: 'Moon-Aiming Thai-Chinese Hodoscop',
+    placeholder: '',
     needsWebgl: 'The model needs WebGL.',
     unavailable: 'CE-7 MATCH is unavailable without WebGL',
     steps: [
       {
-        kicker: 'The payload',
-        title: 'CE-7 MATCH is going to the Moon.',
-        body: 'Thailand’s particle detector will fly aboard China’s Chang’e-7 lunar orbiter.',
+        kicker: 'Destination',
+        title: 'Moon Orbit',
+        body: 'Installed on the Chang’e-7 lunar orbiter.',
       },
       {
-        kicker: 'One axis',
-        title: 'Two entrances, one instrument.',
-        body: 'One entrance faces space. The other faces the Moon. Both lead into the same detector.',
+        kicker: 'Instrument',
+        title: 'Particle Detector',
+        body: 'Detect path and energy of particles.',
       },
       {
-        kicker: 'The measurement',
-        title: 'Trace the path. Measure the energy.',
-        body: 'Silicon layers mark the particle’s path. Scintillators measure the energy it leaves behind.',
+        kicker: 'Science Mission',
+        title: 'Explore the Particle Environment',
+        body: 'Study the particles that reach the Moon from space and those that emerge from the lunar surface.',
       },
       {
-        kicker: 'The orbit',
-        title: 'About 200 kilometres up.',
-        body: 'From lunar orbit, CE-7 MATCH can compare particles arriving from space with particles emerging from the Moon.',
+        kicker: 'Orbit',
+        title: '200 kilometres Above Lunar Surface',
+        body: 'First Thai Science Mission to the Moon',
       },
     ],
   },
@@ -178,7 +178,7 @@ export const en = {
       outside: 'In the solar wind',
       outsideBody:
         'Outside the tail, particles from the Sun, the galaxy, and Jupiter can reach the Moon more directly.',
-      caption: 'Illustrative and not to scale. Chang’e-7 and CE-7 MATCH travel with the Moon.',
+      caption: '',
     },
     imagePlaceholder: 'Image placeholder for {title}',
     close: 'Lunar orbit offers a changing laboratory.',
@@ -294,8 +294,7 @@ export const en = {
     kicker: 'The route',
     title: 'From Wenchang to lunar orbit.',
     diagram: 'Schematic route of Chang’e-7 from Earth to the Moon',
-    caption:
-      'Schematic. Earth, the Moon, and the path are not to scale. The curve is the shape of a transfer orbit, not a reconstructed flight path.',
+    caption: '',
     steps: [
       {
         title: 'Launch',
@@ -332,11 +331,9 @@ export const en = {
     kicker: 'Around the Moon',
     title: 'One instrument. Two views.',
     body: 'From about 200 kilometres above the Moon, CE-7 MATCH uses two opposing entrances to compare particles arriving from space with particles emerging from the lunar surface.',
-    pathNote:
-      'The orbit is a schematic near-polar circle, not a reconstructed mission trajectory. The viewing cones explain direction and do not represent a verified acceptance angle.',
-    albedoNote:
-      'The Moon-facing particles represent lunar albedo produced by interactions in the surface. A viewing direction alone does not identify a particle’s astronomical source.',
-    credit: 'Lunar surface color from the CGI Moon Kit, NASA Scientific Visualization Studio.',
+    pathNote: '',
+    albedoNote: '',
+    credit: '',
     legend: {
       match: 'CE-7 MATCH',
       moon: 'Moon-facing view',
@@ -365,13 +362,13 @@ export const en = {
       kicker: 'The instrument',
       title: 'Two entrances, one axis.',
       body: 'CE-7 MATCH is one layered detector with an opening at each end. One faces space; the other faces the Moon.',
-      housing: 'The housing in this view is the supplied flight-model geometry.',
+      housing: '',
       inside: 'Inside the stack',
       follow: 'Follow a particle',
     },
     inside: {
       kicker: 'Detector schematic',
-      note: 'This diagram follows the detector axis. Layer spacing is expanded for clarity and does not reproduce the hardware model.',
+      note: '',
       axis: 'Space-facing side to Moon-facing side',
       layersLabel: 'Detector layers',
       spread: 'Spread the layers',
@@ -387,7 +384,7 @@ export const en = {
       step: 'Step {n}: {title}',
       play: 'Play event',
       pause: 'Pause event',
-      note: 'The pattern of energy left in ΔE and E helps distinguish particle types. The entrance shows the direction through CE-7 MATCH; it does not prove where the particle originated.',
+      note: 'The pattern of energy left in ΔE and E helps distinguish particle types.',
     },
     stage: '3D view of CE-7 MATCH',
     loading: 'Loading the instrument',
@@ -461,7 +458,7 @@ export const en = {
     steps: [
       {
         title: 'At the entrance',
-        body: 'An ion enters from the {side} side. This example illustrates the measurement; it is not a recorded event.',
+        body: 'An ion enters from the {side} side.',
       },
       {
         title: 'First tracking hit',
@@ -481,7 +478,7 @@ export const en = {
       },
       {
         title: 'Path from the hits',
-        body: 'A line through the Silicon hits reconstructs the particle’s direction inside CE-7 MATCH. Direction alone does not identify its source.',
+        body: 'A line through the Silicon hits reconstructs the particle’s direction inside CE-7 MATCH.',
       },
     ],
   },
@@ -520,14 +517,12 @@ export const en = {
     webgl:
       'Interactive 3D isn’t available in this browser. The sequence below is the same layer order used in the explorer.',
     failed: 'The interactive view could not start. The sequence below is the detector order.',
-    footnote:
-      'Space-facing to Moon-facing: Silicon, Silicon, ΔE, E, ΔE, Silicon, Silicon. A particle from the Moon-facing side meets that sequence in reverse. This drawing is explanatory, not the flight-model geometry.',
+    footnote: '',
     diagram: 'Schematic of CE-7 MATCH from the space-facing entrance to the Moon-facing entrance',
     space: 'Space-facing',
     moon: 'Moon-facing',
   },
-  howFooter:
-    'The white exterior is the supplied hardware model. The seven internal detector groups are an explanatory schematic aligned with its axis, not separate parts from that model. The space-facing window remains a working assignment pending confirmation from the spacecraft mounting.',
+  howFooter: '',
   engineering: {
     material: {
       title: 'A lighter structure. A demanding material.',

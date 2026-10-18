@@ -125,11 +125,6 @@ export function MissionOverview({
             <p>{copy.mission.needsWebgl}</p>
           </div>
         )}
-        <ol className="mission-ticks" aria-hidden="true">
-          {STEPS.map((item, index) => (
-            <li key={item.title} data-on={index === step} />
-          ))}
-        </ol>
       </div>
     </div>
   )

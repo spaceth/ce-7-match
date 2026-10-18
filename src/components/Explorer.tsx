@@ -175,7 +175,7 @@ export function Explorer() {
               <p className="kicker">{text.overview.kicker}</p>
               <h2>{text.overview.title}</h2>
               <p>{text.overview.body}</p>
-              <p>{text.overview.housing}</p>
+              {text.overview.housing ? <p>{text.overview.housing}</p> : null}
               {modelError && <p className="note">{modelError}</p>}
               <div className="actions">
                 <button type="button" onClick={() => changeMode('inside')}>
@@ -193,7 +193,7 @@ export function Explorer() {
               <p className="kicker">{text.inside.kicker}</p>
               <h2>{layer.name}</h2>
               <p aria-live="polite">{layer.body}</p>
-              <p className="note">{text.inside.note}</p>
+              {text.inside.note ? <p className="note">{text.inside.note}</p> : null}
               <p className="axis-note">{text.inside.axis}</p>
               <div className="pips" role="listbox" aria-label={text.inside.layersLabel}>
                 {LAYERS.map((item) => (

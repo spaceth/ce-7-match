@@ -158,7 +158,7 @@ export function CosmicRays() {
               <span>{inTail ? copy.cosmic.tail.inside : copy.cosmic.tail.outside}</span>
               {inTail ? copy.cosmic.tail.insideBody : copy.cosmic.tail.outsideBody}
             </p>
-            <p className="tail-caption">{copy.cosmic.tail.caption}</p>
+            {copy.cosmic.tail.caption ? <p className="tail-caption">{copy.cosmic.tail.caption}</p> : null}
           </div>
         </div>
       </section>

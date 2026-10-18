@@ -128,8 +128,8 @@ export function OrbitSection() {
           <p className="kicker">{copy.orbit.kicker}</p>
           <h2>{copy.orbit.title}</h2>
           <p>{copy.orbit.body}</p>
-          <p className="note">{copy.orbit.pathNote}</p>
-          <p className="note">{copy.orbit.albedoNote}</p>
+          {copy.orbit.pathNote ? <p className="note">{copy.orbit.pathNote}</p> : null}
+          {copy.orbit.albedoNote ? <p className="note">{copy.orbit.albedoNote}</p> : null}
           <p className="note">{copy.orbit.credit}</p>
           <ul className="legend orbit-legend">
             <li>

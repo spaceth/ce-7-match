@@ -14,7 +14,7 @@ export function FallbackView({ reason }: FallbackProps) {
         <p>{reason === 'webgl' ? text.webgl : text.failed}</p>
       </div>
       <SchematicFigure />
-      <p className="footnote">{text.footnote}</p>
+      {text.footnote ? <p className="footnote">{text.footnote}</p> : null}
     </section>
   )
 }

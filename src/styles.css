@@ -364,23 +364,23 @@ button:active:not(:disabled) { transform: scale(0.97); }
   color: #111;
   border-color: #f4f4f5;
 }
-.craft-detail { margin-top: var(--gap-stack); }
-.craft-detail > h3 {
-  margin: 0 0 var(--gap-title);
-  max-width: 18em;
+.craft-selection { margin-top: 8px; }
+.craft-selection h3 {
+  margin: 0 0 8px;
   color: #fff;
-  font-size: var(--type-section);
+  font-size: 20px;
   font-weight: 600;
-  letter-spacing: -0.035em;
-  line-height: var(--leading-title);
+  letter-spacing: -0.03em;
+  line-height: 1.25;
 }
-.craft-detail > p {
+.craft-selection p {
   margin: 0;
-  max-width: 42rem;
   color: #c8c8d0;
-  font-size: var(--type-body);
-  line-height: var(--leading-body);
+  font-size: var(--type-note);
+  line-height: 1.6;
 }
+.craft-detail { margin-top: var(--gap-stack); }
+.craft-detail .craft-manifest { margin-top: 0; }
 .craft-manifest { margin-top: var(--gap-stack); }
 .craft-manifest h4 {
   margin: 0 0 var(--gap-text);
@@ -896,25 +896,6 @@ button:active:not(:disabled) { transform: scale(0.97); }
   font-size: var(--type-body);
   line-height: var(--leading-body);
 }
-.mission-ticks {
-  position: absolute;
-  z-index: 5;
-  left: max(32px, 4vw);
-  bottom: 20px;
-  height: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.mission-ticks li {
-  width: 22px;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.18);
-}
-.mission-ticks li[data-on="true"] { background: #fff; }
 .mission[data-reduced="true"] { height: auto; }
 .mission[data-reduced="true"] .mission-sticky {
   position: relative;
@@ -942,7 +923,6 @@ button:active:not(:disabled) { transform: scale(0.97); }
   transform: none;
   margin-bottom: 28px;
 }
-.mission[data-reduced="true"] .mission-ticks { display: none; }
 .mission-fallback {
   display: grid;
   place-items: center;
@@ -1611,7 +1591,6 @@ footer p { margin: 0; max-width: 68ch; color: var(--faint); font-size: var(--typ
   .mission-heading { top: 18px; left: 20px; width: calc(100% - 40px); }
   .mission-copy { left: 20px; bottom: 58px; width: calc(100% - 40px); min-height: 168px; }
   .mission-plate { bottom: 16px; }
-  .mission-ticks { left: 20px; bottom: 16px; }
   .ray-grid { grid-template-columns: 1fr; }
   .tail-sticky,
   .transfer-sticky {

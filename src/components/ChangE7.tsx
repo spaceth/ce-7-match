@@ -59,12 +59,14 @@ export function ChangE7() {
               {text.match}
             </button>
           </div>
+          <div className="craft-selection">
+            <h3>{selection === 'match' ? text.match : selection === 'overview' ? text.overview : part?.label}</h3>
+            <p>{selection === 'match' ? MATCH_COPY : selection === 'overview' ? OVERVIEW_COPY : part?.body}</p>
+          </div>
         </div>
       </div>
 
       <div className="craft-detail">
-        <h3>{selection === 'match' ? text.match : selection === 'overview' ? text.overview : part?.label}</h3>
-        <p>{selection === 'match' ? MATCH_COPY : selection === 'overview' ? OVERVIEW_COPY : part?.body}</p>
         <section className="craft-manifest" aria-label={text.manifestLabel}>
           <h4>{text.manifestTitle}</h4>
           <div className="craft-lists">
