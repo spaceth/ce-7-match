@@ -1,26 +1,26 @@
 /**
- * English copy for the MATCH site.
+ * English copy for the CE-7 MATCH site.
  * Add a language by duplicating this file and switching the export in index.ts.
  * Keep the same keys. Views read `copy` and do not hard-code sentences.
  */
 export const en = {
   meta: {
     lang: 'en',
-    title: 'MATCH — Making the invisible measurable',
+    title: 'CE-7 MATCH — Moon-Aiming Thai-Chinese Hodoscope',
     description:
-      'MATCH is Thailand’s particle detector on the Chang’e-7 lunar orbiter. See how one instrument measures energetic particles arriving from space and leaving the Moon.',
-    siteName: 'MATCH',
+      'CE-7 MATCH is Thailand’s particle detector aboard the Chang’e-7 lunar orbiter. Explore how it traces energetic particles around the Moon and measures their energy.',
+    siteName: 'CE-7 MATCH',
     url: 'https://match.spaceth.co',
     image: 'https://match.spaceth.co/og.jpg',
     imageWidth: '3000',
     imageHeight: '1570',
     imageType: 'image/jpeg',
     noscript:
-      'MATCH is a particle detector for the Chang’e-7 lunar orbiter. This explorer needs JavaScript and WebGL.',
+      'CE-7 MATCH is a particle detector aboard the Chang’e-7 lunar orbiter. This explorer requires JavaScript and WebGL.',
   },
   ui: {
-    brand: 'MATCH',
-    logoAlt: 'SpaceTH',
+    brand: 'CE-7 MATCH',
+    logoAlt: 'Spaceth',
     chapters: 'Chapters',
     chapter: 'Chapter',
     openChapters: 'Open chapters',
@@ -42,15 +42,15 @@ export const en = {
     earth: 'Earth',
     moon: 'Moon',
     match: 'CE-7 MATCH',
-    matchShort: 'MATCH',
+    matchShort: 'CE-7 MATCH',
   },
   chapters: [
     {
       id: 'mission-overview',
       number: '01',
       voice: 'display',
-      title: 'Mission Overview',
-      description: 'A first look at this story: the mission, the particles, and the instrument built to measure them.',
+      title: 'Meet CE-7 MATCH',
+      description: 'A compact detector built in Thailand is heading to lunar orbit to study particles we cannot see.',
     },
     {
       id: 'cosmic-rays',
@@ -58,146 +58,146 @@ export const en = {
       voice: 'statement',
       title: 'Why Study Cosmic Rays',
       description:
-        'Cosmic rays are energetic particles traveling through space. Most are protons and atomic nuclei, and electrons travel with them. They are not light. Each particle is a clue to whatever set it moving.',
+        'Energetic particles carry evidence of eruptions on the Sun, violent events across the galaxy, and interactions at the Moon.',
     },
     {
       id: 'change-7',
       number: '03',
       voice: 'invert',
       title: 'About Chang’e-7 Mission',
-      description: 'The lunar mission that carries MATCH, and the place this instrument holds in it.',
+      description: 'Chang’e-7 carries an orbiter, a lander, a rover, a hopper — and Thailand’s CE-7 MATCH detector.',
     },
     {
       id: 'orbit',
       number: '04',
       voice: 'aside',
-      title: 'MATCH’s orbit around the Moon',
-      description: 'Where MATCH flies, and the two directions it looks from that orbit.',
+      title: 'CE-7 MATCH’s orbit around the Moon',
+      description: 'Its orbit gives one detector two useful views: outward to space and inward to the lunar surface.',
     },
     {
       id: 'how-match-works',
       number: '05',
       voice: 'direct',
-      title: 'How MATCH works',
-      description: 'How the detector turns arriving particles into measurements.',
+      title: 'How CE-7 MATCH works',
+      description: 'A particle passes through layers that reveal two essentials: where it traveled and how much energy it deposited.',
     },
     {
       id: 'engineering',
       number: '06',
       voice: 'measured',
       title: 'Behind the Engineering',
-      description: 'The design and construction that make the instrument possible.',
+      description: 'To work in lunar orbit, a sensitive detector must also be light, precise, efficient, and dependable.',
     },
     {
       id: 'people',
       number: '07',
       voice: 'human',
       title: 'People Behind this Project',
-      description: 'The people who designed, built, and studied MATCH.',
+      description: 'CE-7 MATCH is the work of scientists and engineers in Thailand and China.',
     },
     {
       id: 'conclusion',
       number: '08',
       voice: 'close',
       title: 'Conclusion',
-      description: 'What this view of MATCH leaves us with.',
+      description: 'A small instrument can open a new view of the particle environment around the Moon.',
     },
   ],
   mission: {
     plate: 'CE-7 MATCH',
-    stageLabel: 'MATCH payload',
-    placeholder: 'Placeholder summary',
+    stageLabel: 'CE-7 MATCH payload',
+    placeholder: 'Thailand’s detector for lunar orbit',
     needsWebgl: 'The model needs WebGL.',
-    unavailable: 'MATCH is unavailable without WebGL',
+    unavailable: 'CE-7 MATCH is unavailable without WebGL',
     steps: [
       {
         kicker: 'The payload',
-        title: 'MATCH flies on Chang’e-7.',
-        body: 'A particle detector built to investigate energetic particles around the Moon.',
+        title: 'CE-7 MATCH is going to the Moon.',
+        body: 'Thailand’s particle detector will fly aboard China’s Chang’e-7 lunar orbiter.',
       },
       {
         kicker: 'One axis',
         title: 'Two entrances, one instrument.',
-        body: 'Space-facing and Moon-facing views open onto the same detector bore.',
+        body: 'One entrance faces space. The other faces the Moon. Both lead into the same detector.',
       },
       {
         kicker: 'The measurement',
-        title: 'Path and energy, together.',
-        body: 'Silicon layers record where a particle crosses. Scintillators record how energy is deposited.',
+        title: 'Trace the path. Measure the energy.',
+        body: 'Silicon layers mark the particle’s path. Scintillators measure the energy it leaves behind.',
       },
       {
         kicker: 'The orbit',
         title: 'About 200 kilometres up.',
-        body: 'From a near-polar orbit, MATCH watches particles arriving from space and emerging from the lunar surface.',
+        body: 'From lunar orbit, CE-7 MATCH can compare particles arriving from space with particles emerging from the Moon.',
       },
     ],
   },
   cosmic: {
-    sourcesLabel: 'Sources of particles MATCH can study',
-    heading: 'More than one source.',
+    sourcesLabel: 'Particle sources CE-7 MATCH can study',
+    heading: 'Every particle begins somewhere.',
     intro: [
-      'The particles that reach the Moon do not all come from the same place. A burst from the Sun, a steady rain from the galaxy, electrons from Jupiter, and particles knocked back off the Moon each tell a different story.',
-      'MATCH watches them with one detector. Looking toward space and toward the lunar surface lets it compare what arrives from far away with what leaves the Moon itself.',
+      'Cosmic rays are energetic particles, mostly protons and atomic nuclei, along with electrons. They are matter moving through space, not light.',
+      'Near the Moon, several populations overlap. Their timing, direction, and energy help scientists work out where they came from and what happened along the way.',
     ],
     sources: [
       {
         id: 'solar',
-        title: 'Solar Cosmic Rays',
-        body: 'The Sun releases bursts of energetic particles, especially during flares and eruptions. They arrive suddenly, then fade.',
+        title: 'Solar Energetic Particles',
+        body: 'Flares and coronal mass ejections can send bursts of energetic particles from the Sun. Their sudden arrival reveals how solar eruptions accelerate matter.',
         diagram: 'Glowing Sun with particles leaving it',
       },
       {
         id: 'galactic',
         title: 'Galactic Cosmic Rays',
-        body: 'A steadier rain comes from beyond the solar system. These are among the most energetic particles, likely sped up by the remnants of exploded stars.',
+        body: 'A steadier, higher-energy rain comes from beyond the solar system. Many of these particles are thought to be accelerated by supernova remnants.',
         diagram: 'Rotating pulsar',
       },
       {
         id: 'jovian',
         title: 'Jovian Electrons',
-        body: 'Jupiter’s vast magnetic field accelerates electrons. Some of them cross the solar system and can be measured near the Moon.',
+        body: 'Jupiter’s vast magnetosphere accelerates electrons. Some travel far enough across the solar system to be detected near the Moon.',
         diagram: 'Rotating Jupiter with a cyan magnetic glow, field lines, and a few particles leaving',
       },
       {
         id: 'albedo',
         title: 'Lunar Albedo',
-        body: 'Particles that strike the lunar surface can knock new particles back out. Those emerging particles are lunar albedo — not reflected light.',
+        body: 'When incoming particles strike lunar material, the interaction can produce secondary particles that emerge from the surface. This is lunar albedo, not reflected light.',
         diagram: 'Lunar surface with particles striking it and particles leaving upward',
       },
     ],
     tail: {
       kicker: 'Around Earth',
-      title: 'In and out of the magnetotail.',
-      body: 'The Moon circles Earth about once a month. The solar wind blows Earth’s magnetic field into a long tail on the night side. For several days each month the Moon crosses that tail, then returns to the solar wind. MATCH flies with the Moon, so one orbit carries the detector through more than one particle environment.',
+      title: 'The Moon moves through changing space weather.',
+      body: 'The solar wind compresses Earth’s magnetic field on the Sun-facing side and stretches it into a long magnetotail on the night side. Near full moon, the Moon crosses that tail for several days before returning to the solar wind. CE-7 MATCH travels with it, sampling both environments.',
       diagramTitle: 'The Moon crossing Earth’s magnetotail',
       solarWind: 'Solar wind',
       magnetotail: 'Magnetotail',
       inside: 'Inside the magnetotail',
       insideBody:
-        'Earth’s magnetic tail stands between the Moon and the solar wind. The particles MATCH can record are not the same mix.',
+        'Earth’s magnetic field changes which particles can reach the Moon. CE-7 MATCH samples that altered environment.',
       outside: 'In the solar wind',
       outsideBody:
         'Outside the tail, particles from the Sun, the galaxy, and Jupiter can reach the Moon more directly.',
-      caption: 'Illustrative. The Moon’s orbit is not drawn to scale. Chang’e-7 / MATCH rides with the Moon.',
+      caption: 'Illustrative and not to scale. Chang’e-7 and CE-7 MATCH travel with the Moon.',
     },
     imagePlaceholder: 'Image placeholder for {title}',
-    close: 'That is why Thailand goes to orbit around the Moon.',
+    close: 'Lunar orbit offers a changing laboratory.',
     closeLead:
-      'A detector on Earth sits under the atmosphere and inside the magnetic field. From lunar orbit, MATCH passes through the solar wind and Earth’s magnetotail, and it can watch particles leaving the lunar surface. One flight can meet solar cosmic rays, galactic cosmic rays, Jovian electrons, and lunar albedo.',
+      'Earth-based detectors sit beneath the atmosphere and within Earth’s magnetic field. CE-7 MATCH will observe beyond those layers, moving between the solar wind and the magnetotail while also watching particles emerge from the lunar surface.',
   },
   change7: {
     partsLabel: 'Parts of Chang’e-7',
     overview: 'Overview',
     overviewBody:
-      'Chang’e-7 is a lunar mission of four parts: an orbiter, a lander, a rover, and a hopper. It is planned to study the south polar region. MATCH, Thailand’s particle detector, flies on the orbiter.',
+      'Chang’e-7 combines four spacecraft: an orbiter, a lander, a rover, and a small flying probe called a hopper. Together they are designed to study the lunar south polar region. CE-7 MATCH rides on the orbiter.',
     match: 'CE-7 MATCH',
     matchBody:
-      'CE-7 MATCH is Thailand’s particle detector, hosted on the orbiter. From lunar orbit it measures energetic particles arriving from space and particles leaving the lunar surface.',
+      'CE-7 MATCH is Thailand’s particle detector aboard the orbiter. Its two viewing directions let it study energetic particles arriving from space and secondary particles emerging from the Moon.',
     parts: [
       {
         id: 'orbiter',
         label: 'Orbiter',
-        body: 'The orbiter stays in lunar orbit and surveys the south polar region. MATCH flies on this part of Chang’e-7.',
+        body: 'The orbiter circles the Moon and surveys the south polar region. CE-7 MATCH remains aboard it throughout the mission.',
       },
       {
         id: 'lander',
@@ -207,12 +207,12 @@ export const en = {
       {
         id: 'rover',
         label: 'Rover',
-        body: 'The rover drives around the landing area, studying the surface and the ground just beneath it.',
+        body: 'The rover explores the landing area, studying the surface and the shallow subsurface.',
       },
       {
         id: 'hopper',
         label: 'Hopper',
-        body: 'The hopper is a small flying probe. It can hop into a crater that stays in shadow and look for water there.',
+        body: 'The hopper is a small flying probe designed to enter permanently shadowed terrain and investigate water there.',
       },
     ],
     hosts: {
@@ -257,7 +257,7 @@ export const en = {
         flags: [{ code: 'ch', name: 'Switzerland' }],
       },
       {
-        name: 'MATCH',
+        name: 'CE-7 MATCH',
         host: 'orbiter',
         match: true,
         flags: [{ code: 'th', name: 'Thailand' }],
@@ -288,7 +288,7 @@ export const en = {
     },
     ilrsTitle: 'International Lunar Research Station',
     ilrsBody:
-      'The International Lunar Research Station is a cooperative program to build a sustained scientific presence near the lunar south pole. The instruments that partner countries fly on Chang’e-7 are an early part of that work.',
+      'The International Lunar Research Station is a cooperative program for long-term scientific work near the lunar south pole. International instruments aboard Chang’e-7 contribute to that broader effort.',
   },
   transfer: {
     kicker: 'The route',
@@ -299,61 +299,61 @@ export const en = {
     steps: [
       {
         title: 'Launch',
-        body: 'Chang’e-7 leaves Earth from the Wenchang Spacecraft Launch Site, on the island of Hainan. The orbiter, lander, rover, and hopper ride together as one spacecraft.',
+        body: 'Chang’e-7 departs from the Wenchang Spacecraft Launch Site on Hainan. The orbiter, lander, rover, and hopper begin the journey together.',
       },
       {
         title: 'Earth parking orbit',
-        body: 'The spacecraft first enters a closed orbit around Earth. It circles there while the departure toward the Moon is lined up.',
+        body: 'The spacecraft first circles Earth in a parking orbit, preparing for the burn that will send it toward the Moon.',
       },
       {
         title: 'Trans-lunar injection',
-        body: 'A burn stretches the parking orbit. The path opens from a loop around Earth into a long curve pointed toward the Moon.',
+        body: 'A rocket burn adds speed and stretches the orbit into a long arc toward the Moon.',
       },
       {
         title: 'Lunar transfer',
-        body: 'The spacecraft coasts on that curve. Earth stays near one end, and the Moon is near the other. The route bends with the orbit. It does not run straight across.',
+        body: 'The spacecraft coasts along a curved transfer orbit shaped by gravity. The journey is an arc, not a straight line.',
       },
       {
         title: 'Lunar orbit insertion',
-        body: 'Near the Moon, a burn lets the Moon capture the spacecraft. The first orbit around the Moon is highly elliptical: close at one end, far at the other.',
+        body: 'Near the Moon, another burn slows the spacecraft enough for lunar gravity to capture it in a highly elliptical orbit.',
       },
       {
         title: 'About 200 kilometres',
-        body: 'Further burns bring the path into a near-circular orbit about 200 kilometres above the Moon. MATCH flies on the orbiter in this orbit.',
+        body: 'Further burns reshape the path into a near-circular orbit about 200 kilometres above the Moon. CE-7 MATCH begins its work from here.',
       },
       {
         title: 'The lander separates',
-        body: 'The lander leaves the orbiter and descends toward the lunar south pole, carrying the rover and the hopper. The orbiter stays in lunar orbit, and MATCH stays with it.',
+        body: 'The lander, carrying the rover and hopper, separates and descends toward the lunar south pole. The orbiter continues circling the Moon with CE-7 MATCH aboard.',
       },
     ],
   },
   orbit: {
-    label: 'Where MATCH observes',
+    label: 'Where CE-7 MATCH observes',
     kicker: 'Around the Moon',
     title: 'One instrument. Two views.',
-    body: 'From approximately 200 kilometres above the Moon, MATCH observes particles arriving from space and particles emerging from the lunar surface through two opposing viewing directions.',
+    body: 'From about 200 kilometres above the Moon, CE-7 MATCH uses two opposing entrances to compare particles arriving from space with particles emerging from the lunar surface.',
     pathNote:
-      'The path is a schematic near-polar circle, not the reconstructed mission trajectory. The cone angle is illustrative. It is not MATCH’s verified acceptance angle.',
+      'The orbit is a schematic near-polar circle, not a reconstructed mission trajectory. The viewing cones explain direction and do not represent a verified acceptance angle.',
     albedoNote:
-      'Particles leaving the surface stand in for Lunar Albedo, which emerges after interactions with lunar material. A cone shows viewing geometry. It does not mean every particle inside it is detected, or that arrival direction by itself identifies the source.',
+      'The Moon-facing particles represent lunar albedo produced by interactions in the surface. A viewing direction alone does not identify a particle’s astronomical source.',
     credit: 'Lunar surface color from the CGI Moon Kit, NASA Scientific Visualization Studio.',
     legend: {
       match: 'CE-7 MATCH',
       moon: 'Moon-facing view',
       space: 'Space-facing view',
     },
-    finish: 'Two viewing directions provide complementary measurements of the particle environment around the Moon.',
+    finish: 'Together, the two views reveal how the particle environment changes between open space and the lunar surface.',
     still:
-      'Illustrative diagram of MATCH in a near-polar orbit, looking toward the Moon and toward space',
+      'Illustrative diagram of CE-7 MATCH in a near-polar orbit, looking toward the Moon and toward space',
     showCones: 'Show viewing cones',
     closeUp: 'Close-up',
   },
   explorer: {
-    label: 'MATCH explorer',
+    label: 'CE-7 MATCH explorer',
     modeLabel: 'Explorer mode',
     modes: [
       { id: 'overview', label: 'Overview' },
-      { id: 'inside', label: 'Inside MATCH' },
+      { id: 'inside', label: 'Inside CE-7 MATCH' },
       { id: 'particle', label: 'Follow a particle' },
     ],
     badges: {
@@ -364,14 +364,14 @@ export const en = {
     overview: {
       kicker: 'The instrument',
       title: 'Two entrances, one axis.',
-      body: 'MATCH is a single layered detector. Window extensions at opposite ends open onto the same bore — one toward space, one toward the Moon.',
+      body: 'CE-7 MATCH is one layered detector with an opening at each end. One faces space; the other faces the Moon.',
       housing: 'The housing in this view is the supplied flight-model geometry.',
       inside: 'Inside the stack',
       follow: 'Follow a particle',
     },
     inside: {
       kicker: 'Detector schematic',
-      note: 'Schematic, aligned with the hardware bore. Spacing is explanatory — these layers are not separate parts in the model.',
+      note: 'This diagram follows the detector axis. Layer spacing is expanded for clarity and does not reproduce the hardware model.',
       axis: 'Space-facing side to Moon-facing side',
       layersLabel: 'Detector layers',
       spread: 'Spread the layers',
@@ -379,7 +379,7 @@ export const en = {
     },
     particle: {
       kicker: 'Illustrative event',
-      title: 'Stopping ion',
+      title: 'Stopping Particle',
       entranceLabel: 'Entrance direction',
       space: 'Space-facing',
       moon: 'Moon-facing',
@@ -387,9 +387,9 @@ export const en = {
       step: 'Step {n}: {title}',
       play: 'Play event',
       pause: 'Pause event',
-      note: 'Comparing ΔE with E helps tell particle types apart when the particle stops. The entrance is a direction through MATCH, not proof of an astronomical source.',
+      note: 'The pattern of energy left in ΔE and E helps distinguish particle types. The entrance shows the direction through CE-7 MATCH; it does not prove where the particle originated.',
     },
-    stage: '3D view of MATCH',
+    stage: '3D view of CE-7 MATCH',
     loading: 'Loading the instrument',
     modelFailed: 'The hardware model could not be loaded.',
     viewSchematic: 'View the schematic',
@@ -413,94 +413,94 @@ export const en = {
         pip: 'Si 1',
         name: 'First Silicon tracking layer',
         label: 'First Silicon',
-        body: 'Records where a particle crosses on the space-facing side. Perpendicular strips measure X and Y — two of the eight Silicon planes.',
+        body: 'Marks the particle’s first crossing on the space-facing side. Two crossed strip planes record its position in X and Y.',
       },
       {
         id: 'si2',
         pip: 'Si 2',
         name: 'Second Silicon tracking layer',
         label: 'Second Silicon',
-        body: 'A second crossing, separated along the detector axis. Together with the first hit, it defines a straight trajectory.',
+        body: 'Marks a second position. Connecting it to the first shows the particle’s path through the detector.',
       },
       {
         id: 'de1',
         pip: 'ΔE 1',
         name: 'First ΔE scintillator',
         label: 'First ΔE',
-        body: 'Measures a portion of the energy deposited as a particle passes through, before the central stopper.',
+        body: 'Measures some of the energy the particle leaves behind as it passes through.',
       },
       {
         id: 'e',
         pip: 'E',
         name: 'Central E scintillator',
         label: 'Central E',
-        body: 'The stopping stage for suitable events. It measures residual energy. Comparing ΔE with E helps distinguish particle types. Not every particle stops, and electron events require their own interpretation.',
+        body: 'Stops suitable particles and measures their remaining energy. Scientists compare this reading with ΔE to help identify the particle type.',
       },
       {
         id: 'de2',
         pip: 'ΔE 2',
         name: 'Second ΔE scintillator',
         label: 'Second ΔE',
-        body: 'The matching ΔE measurement on the Moon-facing side. A particle entering there meets this scintillator before the central stopper.',
+        body: 'Provides the same energy-deposit measurement for particles entering from the Moon-facing side.',
       },
       {
         id: 'si3',
         pip: 'Si 3',
         name: 'Third Silicon tracking layer',
         label: 'Third Silicon',
-        body: 'A tracking layer on the Moon-facing half. Particles from that entrance reach it before the scintillators.',
+        body: 'Marks a particle’s position on the Moon-facing half of the detector.',
       },
       {
         id: 'si4',
         pip: 'Si 4',
         name: 'Fourth Silicon tracking layer',
         label: 'Fourth Silicon',
-        body: 'The outer tracker on the Moon-facing side. Four tracking layers, each with crossed X and Y strips, give eight Silicon planes.',
+        body: 'Marks the outer crossing on the Moon-facing side. In all, four tracking layers use eight crossed Silicon planes.',
       },
     ],
     steps: [
       {
         title: 'At the entrance',
-        body: 'A stopping ion approaches the {side} side. This is an illustrative event, not a measured arrival.',
+        body: 'An ion enters from the {side} side. This example illustrates the measurement; it is not a recorded event.',
       },
       {
         title: 'First tracking hit',
-        body: 'The {first} Silicon layer records the crossing. Crossed strips give an X position and a Y position.',
+        body: 'The {first} Silicon layer marks where the particle crossed in two dimensions.',
       },
       {
         title: 'Second tracking hit',
-        body: 'The {second} Silicon layer records another crossing. Two separated positions define the trajectory.',
+        body: 'The {second} Silicon layer marks another point. Two points reveal the path.',
       },
       {
         title: 'Deposit in ΔE',
-        body: 'The {delta} ΔE scintillator measures energy deposited as the particle passes through.',
+        body: 'The {delta} ΔE layer measures energy the particle leaves behind while passing through.',
       },
       {
         title: 'Stopping in E',
-        body: 'The ion stops in the central E scintillator, which measures the residual energy. Comparing ΔE with E helps distinguish particle types. Not every particle stops, and electron events require their own interpretation.',
+        body: 'The particle stops in the central E layer, which measures its remaining energy. Not every particle stops, and electron events require a different interpretation.',
       },
       {
         title: 'Path from the hits',
-        body: 'The line is drawn through the Silicon hits. It reconstructs direction inside MATCH. Arrival through one entrance does not, by itself, identify the astronomical source.',
+        body: 'A line through the Silicon hits reconstructs the particle’s direction inside CE-7 MATCH. Direction alone does not identify its source.',
       },
     ],
   },
   notes: {
-    label: 'How MATCH measures particles',
+    label: 'How CE-7 MATCH measures particles',
     topics: [
       {
         title: 'Track its path.',
-        body: 'Silicon detectors record positions along a particle’s trajectory.',
+        body: 'Silicon layers mark where the particle crossed. Two or more points reveal its path.',
         label: 'First Silicon tracking layer, Si 1, drawn as crossed strips',
       },
       {
-        title: 'Measure its energy deposits.',
-        body: 'Scintillators reveal how energy is deposited inside the instrument.',
+        title: 'Measure its energy.',
+        body: 'Scintillators measure how much energy the particle leaves in each layer.',
         label: 'First ΔE scintillator and central E scintillator',
       },
       {
-        title: 'Understand the environment.',
-        body: 'Many events together help researchers investigate Solar Energetic Particles, Galactic Cosmic Rays, Jovian Electrons, and Lunar Albedo.',
+        title: 'Build the larger picture.',
+        body: 'Many measurements reveal how particle populations change with source, direction, and the Moon’s position.',
         label: 'Electrons, protons, and alpha particles with their energy ranges',
       },
     ],
@@ -522,17 +522,17 @@ export const en = {
     failed: 'The interactive view could not start. The sequence below is the detector order.',
     footnote:
       'Space-facing to Moon-facing: Silicon, Silicon, ΔE, E, ΔE, Silicon, Silicon. A particle from the Moon-facing side meets that sequence in reverse. This drawing is explanatory, not the flight-model geometry.',
-    diagram: 'Schematic of MATCH from the space-facing entrance to the Moon-facing entrance',
+    diagram: 'Schematic of CE-7 MATCH from the space-facing entrance to the Moon-facing entrance',
     space: 'Space-facing',
     moon: 'Moon-facing',
   },
   howFooter:
-    'The hardware view is the supplied model, shown in white. Inside MATCH, the seven detector groups are a schematic placed on the model’s axis — they are not separate parts in the file. Which window faces space should be confirmed against the spacecraft mounting.',
+    'The white exterior is the supplied hardware model. The seven internal detector groups are an explanatory schematic aligned with its axis, not separate parts from that model. The space-facing window remains a working assignment pending confirmation from the spacecraft mounting.',
   engineering: {
     material: {
       title: 'A lighter structure. A demanding material.',
-      body: 'Magnesium alloy helped reduce the structural mass of MATCH, supporting the instrument’s tight mass allocation. For the same volume of material, aluminium is the reference at {referenceMass}, and the magnesium alloy is approximately {low}–{high}. NARIT describes the material as approximately {lighterLow}–{lighterHigh}% lighter than aluminium. The comparison applies to the structural material. The complete instrument also contains detectors, electronics, and other components.',
-      first: 'This is the first time in Thailand that magnesium alloy material can be fabricated.',
+      body: 'CE-7 MATCH uses magnesium alloy to reduce structural mass. For the same volume of material, if aluminium is represented as {referenceMass}, the magnesium alloy is approximately {low}–{high}. NARIT describes this as about {lighterLow}–{lighterHigh}% lighter than aluminium. This comparison applies to the structure, not to the complete instrument with its detectors and electronics.',
+      first: 'The project marks the first time magnesium-alloy components have been fabricated in Thailand for this purpose.',
     },
     precision: {
       title: 'Precision in every component.',
@@ -542,18 +542,18 @@ export const en = {
     },
     power: {
       title: 'Sensitive measurements. Limited power.',
-      body: 'Detector readout must capture small signals while sharing the spacecraft’s limited electrical resources.',
+      body: 'The electronics must detect small signals while using the limited electrical power available aboard the spacecraft.',
       quiet: 'Low-power readout',
       verified: '≤{watts} W average',
     },
     data: {
       title: 'From signals to scientific information.',
-      body: 'Particle interactions produce detector signals. Readout electronics convert those signals into digital information, which is passed to the Chang’e-7 spacecraft for return to Earth.',
+      body: 'When a particle crosses CE-7 MATCH, the detector produces electrical signals. The electronics turn them into digital data for Chang’e-7 to send to Earth.',
       rate: '{rate} bit/s instrument data',
     },
     close: {
       title: 'Engineering makes the measurement possible.',
-      body: 'The structure, detectors, electronics, and spacecraft interfaces must work as one system. Each engineering decision helps turn a scientific question into a measurement.',
+      body: 'The structure, detectors, electronics, and spacecraft connections must work as one system. That integration turns a scientific question into reliable data.',
     },
   },
   people: {
@@ -620,9 +620,9 @@ export const en = {
     ],
   },
   conclusion: [
-    'MATCH is Thailand’s particle detector on the Chang’e-7 orbiter. From about 200 kilometres above the Moon, one instrument looks two ways: toward space, and toward the lunar surface.',
-    'Those views let MATCH study energetic particles from the Sun, the galaxy, and Jupiter, and particles that leave the Moon after striking its surface. As the Moon passes through Earth’s magnetotail, the particles that can reach the spacecraft change.',
-    'The measurement depends on the whole system. A light structure, precise detectors, careful readout, and the people who built MATCH turn arriving particles into information the spacecraft can send back to Earth.',
+    'From lunar orbit, CE-7 MATCH will observe a place where several particle stories meet: bursts from the Sun, high-energy visitors from the galaxy, electrons from Jupiter, and secondary particles emerging from the Moon.',
+    'Its two entrances provide the comparison. Its Silicon layers trace each path. Its scintillators measure energy. As the Moon moves between the solar wind and Earth’s magnetotail, the instrument can watch the environment change.',
+    'The result is more than a detector reading. It is a Thai contribution to understanding space weather, the lunar environment, and the energetic processes that connect the Moon to the wider solar system.',
   ],
   credits: {
     title: 'End Credit',

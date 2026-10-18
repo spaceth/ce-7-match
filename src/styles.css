@@ -242,9 +242,20 @@ button:active:not(:disabled) { transform: scale(0.97); }
   font-size: var(--type-body);
   line-height: var(--leading-body);
 }
+.end-credit li:has(span) {
+  margin-bottom: 22px;
+  color: #fff;
+  font-weight: 500;
+  line-height: 1.35;
+}
 .end-credit li span {
   display: block;
-  color: #b7b7c0;
+  margin-bottom: 2px;
+  color: var(--faint);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
 }
 .end-credit p.end-credit-copy {
   margin-top: 36px;
