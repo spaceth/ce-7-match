@@ -1,4 +1,4 @@
-import { en } from './en.ts'
+import { en } from './en'
 
 /**
  * The copy the site renders. To add a language, duplicate en.ts and
