@@ -1,7 +1,6 @@
 /**
  * English copy for the CE-7 MATCH site.
- * Add a language by duplicating this file and switching the export in index.ts.
- * Keep the same keys. Views read `copy` and do not hard-code sentences.
+ * Thai lives in th.ts with the same keys. Views read `copy`.
  */
 export const en = {
   meta: {
@@ -43,6 +42,7 @@ export const en = {
     moon: 'Moon',
     match: 'CE-7 MATCH',
     matchShort: 'CE-7 MATCH',
+    language: 'Language',
   },
   chapters: [
     {
@@ -65,21 +65,21 @@ export const en = {
       number: '03',
       voice: 'invert',
       title: 'About Chang’e-7 Mission',
-      description: 'Chang’e-7 carries an orbiter, a lander, a rover, a hopper — and Thailand’s CE-7 MATCH detector.',
+      description: 'Chang’e-7 is China’s flagship lunar mission aiming to lay the groundwork for future human lunar exploration. It is the seventh mission of its series and the first mission to explore the lunar south pole.',
     },
     {
       id: 'orbit',
       number: '04',
       voice: 'aside',
-      title: 'CE-7 MATCH’s orbit around the Moon',
-      description: 'Its orbit gives one detector two useful views: outward to space and inward to the lunar surface.',
+      title: 'Science Mission Orbit',
+      description: 'Its orbit gives one detector two useful views outward to space and inward to the lunar surface.',
     },
     {
       id: 'how-match-works',
       number: '05',
       voice: 'direct',
-      title: 'How CE-7 MATCH works',
-      description: 'A particle passes through layers that reveal two essentials: where it traveled and how much energy it deposited.',
+      title: 'How the Particle Detectors Work',
+      description: 'It uses two types of detectors to study particles a silicon tracker to study path and a scintillator detector to study energy.',
     },
     {
       id: 'engineering',
@@ -93,7 +93,7 @@ export const en = {
       number: '07',
       voice: 'human',
       title: 'People Behind this Project',
-      description: 'CE-7 MATCH is the work of scientists and engineers in Thailand and China.',
+      description: 'CE-7 MATCH is the work of scientists and engineers in Thailand and China. One of the most sophisticated particle detectors in space for Thailand',
     },
     {
       id: 'conclusion',
@@ -134,7 +134,7 @@ export const en = {
   },
   cosmic: {
     sourcesLabel: 'Particle sources CE-7 MATCH can study',
-    heading: 'Every particle begins somewhere.',
+    heading: 'Every particle begins somewhere',
     intro: [
       'Cosmic rays are energetic particles, mostly protons and atomic nuclei, along with electrons. They are matter moving through space, not light.',
       'Near the Moon, several populations overlap. Their timing, direction, and energy help scientists work out where they came from and what happened along the way.',
@@ -167,7 +167,7 @@ export const en = {
     ],
     tail: {
       kicker: 'Around Earth',
-      title: 'The Moon moves through changing space weather.',
+      title: 'The Moon moves through changing space weather',
       body: 'The solar wind compresses Earth’s magnetic field on the Sun-facing side and stretches it into a long magnetotail on the night side. Near full moon, the Moon crosses that tail for several days before returning to the solar wind. CE-7 MATCH travels with it, sampling both environments.',
       diagramTitle: 'The Moon crossing Earth’s magnetotail',
       solarWind: 'Solar wind',
@@ -181,7 +181,7 @@ export const en = {
       caption: '',
     },
     imagePlaceholder: 'Image placeholder for {title}',
-    close: 'Lunar orbit offers a changing laboratory.',
+    close: 'Lunar orbit offers a changing laboratory',
     closeLead:
       'Earth-based detectors sit beneath the atmosphere and within Earth’s magnetic field. CE-7 MATCH will observe beyond those layers, moving between the solar wind and the magnetotail while also watching particles emerge from the lunar surface.',
   },
@@ -221,8 +221,8 @@ export const en = {
       rover: 'Rover',
       hopper: 'Hopper',
     },
-    manifestLabel: 'Payloads on Chang’e-7',
-    manifestTitle: 'Payloads on Chang’e-7',
+    manifestLabel: 'List of All Payloads on Chang’e-7',
+    manifestTitle: 'List of All Payloads on Chang’e-7',
     china: 'China',
     international: 'International',
     iloaShort: 'ILOA',
@@ -286,19 +286,19 @@ export const en = {
       hopper: 'Hopper separated from the lander',
       match: 'CE-7 MATCH separated from the orbiter',
     },
-    ilrsTitle: 'International Lunar Research Station',
+    ilrsTitle: 'Contributing to the International Lunar Research Station',
     ilrsBody:
-      'The International Lunar Research Station is a cooperative program for long-term scientific work near the lunar south pole. International instruments aboard Chang’e-7 contribute to that broader effort.',
+      'The International Lunar Research Station (ILRS) is a China-led international effort to build a long-term research base near the Moon’s south pole, supported by spacecraft in lunar orbit. It will grow through a series of missions that study the lunar environment, search for resources such as water ice, and test technologies for future exploration. Chang’e-7 helps lay this foundation, with international instruments—including Thailand’s MATCH—contributing to our understanding of the Moon and its surrounding space environment.',
   },
   transfer: {
     kicker: 'The route',
-    title: 'From Wenchang to lunar orbit.',
-    diagram: 'Schematic route of Chang’e-7 from Earth to the Moon',
+    title: 'Launching to the Moon',
+    diagram: 'Trajactory of the spacecraft to its operational orbit',
     caption: '',
     steps: [
       {
         title: 'Launch',
-        body: 'Chang’e-7 departs from the Wenchang Spacecraft Launch Site on Hainan. The orbiter, lander, rover, and hopper begin the journey together.',
+        body: 'Chang’e-7 departs on a Long March 5B rocket from the Wenchang Spacecraft Launch Site on Hainan Island, China. The orbiter, lander, rover, and hopper begin the journey together.',
       },
       {
         title: 'Earth parking orbit',
@@ -306,11 +306,11 @@ export const en = {
       },
       {
         title: 'Trans-lunar injection',
-        body: 'A rocket burn adds speed and stretches the orbit into a long arc toward the Moon.',
+        body: 'An engine burn adds speed and stretches the orbit into a long arc toward the Moon.',
       },
       {
         title: 'Lunar transfer',
-        body: 'The spacecraft coasts along a curved transfer orbit shaped by gravity. The journey is an arc, not a straight line.',
+        body: 'The spacecraft coasts for about 5-7 days to reach the Moon.',
       },
       {
         title: 'Lunar orbit insertion',
@@ -329,7 +329,7 @@ export const en = {
   orbit: {
     label: 'Where CE-7 MATCH observes',
     kicker: 'Around the Moon',
-    title: 'One instrument. Two views.',
+    title: 'One instrument. Two views',
     body: 'From about 200 kilometres above the Moon, CE-7 MATCH uses two opposing entrances to compare particles arriving from space with particles emerging from the lunar surface.',
     pathNote: '',
     albedoNote: '',
@@ -342,7 +342,7 @@ export const en = {
     finish: 'Together, the two views reveal how the particle environment changes between open space and the lunar surface.',
     still:
       'Illustrative diagram of CE-7 MATCH in a near-polar orbit, looking toward the Moon and toward space',
-    showCones: 'Show viewing cones',
+    showCones: 'Show field of view',
     closeUp: 'Close-up',
   },
   explorer: {
@@ -350,21 +350,21 @@ export const en = {
     modeLabel: 'Explorer mode',
     modes: [
       { id: 'overview', label: 'Overview' },
-      { id: 'inside', label: 'Inside CE-7 MATCH' },
-      { id: 'particle', label: 'Follow a particle' },
+      { id: 'inside', label: 'Detectors Layer' },
+      { id: 'particle', label: 'Particle Path' },
     ],
     badges: {
-      overview: 'Hardware model',
-      inside: 'Detector schematic',
-      particle: 'Illustrative event',
+      overview: 'Dimension',
+      inside: 'Detector Schematic',
+      particle: 'Decection Event',
     },
     overview: {
       kicker: 'The instrument',
-      title: 'Two entrances, one axis.',
+      title: 'Two entrances sharing a common core',
       body: 'CE-7 MATCH is one layered detector with an opening at each end. One faces space; the other faces the Moon.',
       housing: '',
-      inside: 'Inside the stack',
-      follow: 'Follow a particle',
+      inside: 'Detectors Layer',
+      follow: 'How Particle Path is Detected',
     },
     inside: {
       kicker: 'Detector schematic',
@@ -398,7 +398,7 @@ export const en = {
     sides: { space: 'space-facing', moon: 'Moon-facing' },
     ordinals: { first: 'first', second: 'second', third: 'third', fourth: 'fourth' },
     callouts: {
-      window: 'Window extension',
+      window: 'Window',
       structure: 'Structure',
       electrical: 'Electrical part',
       plate: 'Bottom plate',
@@ -486,17 +486,17 @@ export const en = {
     label: 'How CE-7 MATCH measures particles',
     topics: [
       {
-        title: 'Track its path.',
+        title: 'Track its path',
         body: 'Silicon layers mark where the particle crossed. Two or more points reveal its path.',
         label: 'First Silicon tracking layer, Si 1, drawn as crossed strips',
       },
       {
-        title: 'Measure its energy.',
+        title: 'Measure its energy',
         body: 'Scintillators measure how much energy the particle leaves in each layer.',
         label: 'First ΔE scintillator and central E scintillator',
       },
       {
-        title: 'Build the larger picture.',
+        title: 'Build the larger picture',
         body: 'Many measurements reveal how particle populations change with source, direction, and the Moon’s position.',
         label: 'Electrons, protons, and alpha particles with their energy ranges',
       },
@@ -513,7 +513,7 @@ export const en = {
   fallback: {
     label: 'Static detector schematic',
     kicker: 'Detector schematic',
-    title: 'One stack, two entrances.',
+    title: 'One stack, two entrances',
     webgl:
       'Interactive 3D isn’t available in this browser. The sequence below is the same layer order used in the explorer.',
     failed: 'The interactive view could not start. The sequence below is the detector order.',
@@ -525,29 +525,29 @@ export const en = {
   howFooter: '',
   engineering: {
     material: {
-      title: 'A lighter structure. A demanding material.',
+      title: 'A lighter structure. A demanding material',
       body: 'CE-7 MATCH uses magnesium alloy to reduce structural mass. For the same volume of material, if aluminium is represented as {referenceMass}, the magnesium alloy is approximately {low}–{high}. NARIT describes this as about {lighterLow}–{lighterHigh}% lighter than aluminium. This comparison applies to the structure, not to the complete instrument with its detectors and electronics.',
       first: 'The project marks the first time magnesium-alloy components have been fabricated in Thailand for this purpose.',
     },
     precision: {
-      title: 'Precision in every component.',
+      title: 'Precision in every component',
       components: 'Structural components',
       fabricated: 'Fabricated by Thai engineers',
       inspection: 'Precision machining and dimensional inspection',
     },
     power: {
-      title: 'Sensitive measurements. Limited power.',
+      title: 'Sensitive measurements. Limited power',
       body: 'The electronics must detect small signals while using the limited electrical power available aboard the spacecraft.',
       quiet: 'Low-power readout',
       verified: '≤{watts} W average',
     },
     data: {
-      title: 'From signals to scientific information.',
+      title: 'From signals to scientific information',
       body: 'When a particle crosses CE-7 MATCH, the detector produces electrical signals. The electronics turn them into digital data for Chang’e-7 to send to Earth.',
       rate: '{rate} bit/s instrument data',
     },
     close: {
-      title: 'Engineering makes the measurement possible.',
+      title: 'Engineering makes the measurement possible',
       body: 'The structure, detectors, electronics, and spacecraft connections must work as one system. That integration turns a scientific question into reliable data.',
     },
   },
@@ -634,7 +634,7 @@ export const en = {
       'Matipon Tangmatitham',
     ],
     memory: 'In Memory of',
-    memoryName: 'Jullada Kaosa-ard (1967-2026)',
+    memoryName: 'Jullada Kaosa-ard 1967-2026',
     copyright: '©2026 SPACETH.CO. ALL RIGHTS RESERVED.',
   },
 } as const

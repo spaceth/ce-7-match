@@ -449,16 +449,15 @@ function Scene({ selection, reduced }: { selection: CraftSelection; reduced: boo
   )
 }
 
-const FRAME_LABEL = copy.change7.frames
-
 export function CraftView({ selection }: { selection: CraftSelection }) {
   const reduced = useReducedMotion()
   const { ref, seen, shown } = useStageActivity<HTMLDivElement>()
+  const frameLabel = copy.change7.frames
 
   return (
     <div ref={ref} className="craft-view">
       <StageFrame className="craft-frame" screen={false}>
-        <div className="craft-canvas" role="img" aria-label={FRAME_LABEL[selection]}>
+        <div className="craft-canvas" role="img" aria-label={frameLabel[selection]}>
           {seen ? (
             <Canvas
               frameloop={shown ? 'always' : 'demand'}

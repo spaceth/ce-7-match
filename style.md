@@ -39,7 +39,7 @@ The spacecraft material is matte: roughness `0.82`, metalness `0`. The transfer 
 
 Poppins, then `"Avenir Next"`, `"Segoe UI"`, sans-serif. Loaded from `@fontsource/poppins`.
 
-Titles use weight `600` and letter-spacing `-0.04em`. Body uses weight `400`. Kickers are `12px`, weight `500`, letter-spacing `0.16em`, uppercase, color `--faint`.
+Titles use weight `600`. Body uses weight `400`. Kickers are `12px`, weight `500`, uppercase, color `--faint`.
 
 | Token | Size |
 | --- | --- |

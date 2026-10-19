@@ -31,10 +31,10 @@ function SchematicFigure() {
   ]
   return (
     <svg className="schematic" viewBox="0 0 880 280" role="img" aria-label={copy.fallback.diagram}>
-      <text x="36" y="78" fill="#f4f4f5" fontSize="14" fontFamily="Poppins, sans-serif">
+      <text x="36" y="78" fill="#f4f4f5" fontSize="14" fontFamily="Poppins, aktiv-grotesk-thai, sans-serif">
         {copy.fallback.space}
       </text>
-      <text x="760" y="78" fill="#f4f4f5" fontSize="14" fontFamily="Poppins, sans-serif">
+      <text x="760" y="78" fill="#f4f4f5" fontSize="14" fontFamily="Poppins, aktiv-grotesk-thai, sans-serif">
         {copy.fallback.moon}
       </text>
       <line x1="70" y1="148" x2="810" y2="148" stroke="rgba(255,255,255,0.28)" />
@@ -45,7 +45,7 @@ function SchematicFigure() {
             <g key={`${layer.name}-${index}`}>
               <rect x={x} y="96" width="8" height="104" fill="#d5d8df" />
               <rect x={x + 14} y="96" width="8" height="104" fill="#aeb6c2" />
-              <text x={x + 4} y="224" fill="#b5b5bd" fontSize="13" fontFamily="Poppins, sans-serif">
+              <text x={x + 4} y="224" fill="#b5b5bd" fontSize="13" fontFamily="Poppins, aktiv-grotesk-thai, sans-serif">
                 {layer.name}
               </text>
             </g>
@@ -62,7 +62,7 @@ function SchematicFigure() {
               rx="6"
               fill={layer.kind === 'energy' ? '#c6b48a' : '#7f97a8'}
             />
-            <text x={x - 2} y="224" fill="#b5b5bd" fontSize="13" fontFamily="Poppins, sans-serif">
+            <text x={x - 2} y="224" fill="#b5b5bd" fontSize="13" fontFamily="Poppins, aktiv-grotesk-thai, sans-serif">
               {layer.name}
             </text>
           </g>

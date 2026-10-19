@@ -17,7 +17,7 @@ export const engineeringSpec = {
   },
   manufacturing: {
     structuralComponents: '70+',
-    thaiFabrication: 'Over 60%',
+    thaiFabrication: '> 60%',
   },
   power: {
     /** NARIT ILRS lists this average. Confirm against the final flight specification before showing it. */

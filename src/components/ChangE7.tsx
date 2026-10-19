@@ -23,17 +23,11 @@ type Payload = {
   match?: boolean
 }
 
-const text = copy.change7
-const PARTS = text.parts
-const MATCH_COPY = text.matchBody
-const OVERVIEW_COPY = text.overviewBody
-const CHINA = text.chinaPayloads
-const INTERNATIONAL = text.internationalPayloads
-const HOST = text.hosts
-
 export function ChangE7() {
+  const text = copy.change7
+  const parts = text.parts
   const [selection, setSelection] = useState<Selection>('overview')
-  const part = PARTS.find((item) => item.id === selection)
+  const part = parts.find((item) => item.id === selection)
   const activeHost: PartId | null = selection === 'match' ? 'orbiter' : selection === 'overview' ? null : selection
 
   return (
@@ -45,12 +39,12 @@ export function ChangE7() {
             <button type="button" aria-pressed={selection === 'overview'} onClick={() => setSelection('overview')}>
               {text.overview}
             </button>
-            {PARTS.map((item) => (
+            {parts.map((item) => (
               <button
                 key={item.id}
                 type="button"
                 aria-pressed={selection === item.id}
-                onClick={() => setSelection(item.id)}
+                onClick={() => setSelection(item.id as Selection)}
               >
                 {item.label}
               </button>
@@ -61,7 +55,7 @@ export function ChangE7() {
           </div>
           <div className="craft-selection">
             <h3>{selection === 'match' ? text.match : selection === 'overview' ? text.overview : part?.label}</h3>
-            <p>{selection === 'match' ? MATCH_COPY : selection === 'overview' ? OVERVIEW_COPY : part?.body}</p>
+            <p>{selection === 'match' ? text.matchBody : selection === 'overview' ? text.overviewBody : part?.body}</p>
           </div>
         </div>
       </div>
@@ -70,10 +64,10 @@ export function ChangE7() {
         <section className="craft-manifest" aria-label={text.manifestLabel}>
           <h4>{text.manifestTitle}</h4>
           <div className="craft-lists">
-            <PayloadList title={text.china} items={CHINA} activeHost={activeHost} focusMatch={selection === 'match'} />
+            <PayloadList title={text.china} items={text.chinaPayloads as readonly Payload[]} activeHost={activeHost} focusMatch={selection === 'match'} />
             <PayloadList
               title={text.international}
-              items={INTERNATIONAL}
+              items={text.internationalPayloads as readonly Payload[]}
               activeHost={activeHost}
               focusMatch={selection === 'match'}
               showCountry
@@ -95,7 +89,7 @@ function FlagMark({ flag, labelled = true }: { flag: Flag; labelled?: boolean })
   if (flag.code === 'iloa') {
     return (
       <span className="craft-org" title={flag.name}>
-        <span aria-hidden="true">{text.iloaShort}</span>
+        <span aria-hidden="true">{copy.change7.iloaShort}</span>
         {labelled ? <span className="sr-only">{flag.name}</span> : null}
       </span>
     )
@@ -153,11 +147,11 @@ function PayloadList({
             </span>
             {showCountry ? (
               <span className="craft-country" title={item.flags.map((flag) => flag.name).join(', ')}>
-                {item.flags.map((flag) => (flag.code === 'iloa' ? text.iloaShort : flag.name)).join(', ')}
+                {item.flags.map((flag) => (flag.code === 'iloa' ? copy.change7.iloaShort : flag.name)).join(', ')}
               </span>
             ) : null}
             <span className="craft-name">{item.name}</span>
-            <span className="craft-host">{HOST[item.host]}</span>
+            <span className="craft-host">{copy.change7.hosts[item.host]}</span>
           </li>
         ))}
       </ul>

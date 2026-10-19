@@ -11,18 +11,19 @@ import { MeasureNotes } from './components/MeasureNotes'
 import { OrbitSection } from './components/OrbitSection'
 import { hasWebGL } from './lib/webgl'
 import { copy } from './content'
+import { useLanguage } from './content/Language'
 
-const CHAPTERS = copy.chapters
-
-type ChapterId = (typeof CHAPTERS)[number]['id']
+type ChapterId = 'mission-overview' | 'cosmic-rays' | 'change-7' | 'orbit' | 'how-match-works' | 'engineering' | 'people' | 'conclusion'
 
 export function App() {
+  const { lang, choose } = useLanguage()
+  const chapters = copy.chapters
   const webgl = useMemo(() => hasWebGL(), [])
-  const [active, setActive] = useState<ChapterId>(CHAPTERS[0].id)
+  const [active, setActive] = useState<ChapterId>(chapters[0].id as ChapterId)
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
-    const nodes = CHAPTERS.map((chapter) => document.getElementById(chapter.id)).filter(
+    const nodes = chapters.map((chapter) => document.getElementById(chapter.id)).filter(
       (node): node is HTMLElement => node !== null,
     )
     const markChapter = () => {
@@ -71,6 +72,10 @@ export function App() {
           <span className="sr-only">{menuOpen ? copy.ui.closeChapters : copy.ui.openChapters}</span>
         </button>
         <img src={logo} alt={copy.ui.logoAlt} />
+        <div className="lang-switch" role="group" aria-label={copy.ui.language}>
+          <button type="button" aria-pressed={lang === 'th'} onClick={() => choose('th')}>TH</button>
+          <button type="button" aria-pressed={lang === 'en'} onClick={() => choose('en')}>EN</button>
+        </div>
       </header>
 
       {menuOpen ? (
@@ -81,7 +86,7 @@ export function App() {
         <nav id="chapter-menu" className="chapters-nav" data-open={menuOpen} aria-label={copy.ui.chapters}>
           <p>{copy.ui.chapters}</p>
           <ol>
-            {CHAPTERS.map((chapter) => (
+            {chapters.map((chapter) => (
               <li key={chapter.id}>
                 <a
                   href={`#${chapter.id}`}
@@ -96,16 +101,16 @@ export function App() {
         </nav>
 
         <div className="content">
-          <section id={CHAPTERS[0].id} className={`chapter chapter-stage voice-${CHAPTERS[0].voice}`} aria-labelledby={`${CHAPTERS[0].id}-title`} tabIndex={-1}>
+          <section id={chapters[0].id} className={`chapter chapter-stage voice-${chapters[0].voice}`} aria-labelledby={`${chapters[0].id}-title`} tabIndex={-1}>
             <MissionOverview
               webgl={webgl}
-              number={CHAPTERS[0].number}
-              title={CHAPTERS[0].title}
-              description={CHAPTERS[0].description}
+              number={chapters[0].number}
+              title={chapters[0].title}
+              description={chapters[0].description}
             />
           </section>
         <main className="page">
-          {CHAPTERS.slice(1).map((chapter) => (
+          {chapters.slice(1).map((chapter) => (
             <section key={chapter.id} id={chapter.id} className={`chapter voice-${chapter.voice}`} aria-labelledby={`${chapter.id}-title`} tabIndex={-1}>
               <p className="kicker">{copy.ui.chapter} {chapter.number}</p>
               <h2 id={`${chapter.id}-title`}>{chapter.title}</h2>

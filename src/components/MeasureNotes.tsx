@@ -2,12 +2,6 @@ import type { ReactNode } from 'react'
 import { useReducedMotion } from '../lib/useReducedMotion'
 import { copy } from '../content'
 
-const SPECIES = [
-  { ...copy.notes.species[0], min: 4, max: 120, color: '#7fd0ee', delay: '-0.2s' },
-  { ...copy.notes.species[1], min: 25, max: 150, color: '#f4f4f5', delay: '-0.55s' },
-  { ...copy.notes.species[2], min: 60, max: 400, color: '#8fe3cf', delay: '-0.9s' },
-] as const
-
 const ENERGY_MAX = 400
 const STRIPS = 8
 
@@ -99,12 +93,21 @@ function EnergyMark() {
   )
 }
 
+function speciesMarks() {
+  const species = copy.notes.species
+  return [
+    { ...species[0], min: 4, max: 120, color: '#7fd0ee', delay: '-0.2s' },
+    { ...species[1], min: 25, max: 150, color: '#f4f4f5', delay: '-0.55s' },
+    { ...species[2], min: 60, max: 400, color: '#8fe3cf', delay: '-0.9s' },
+  ]
+}
+
 function SpeciesMark({ reduced }: { reduced: boolean }) {
   const rows = [34, 100, 166]
 
   return (
     <svg className="note-svg" viewBox="0 0 320 200" aria-hidden="true">
-      {SPECIES.map((species, index) => (
+      {speciesMarks().map((species, index) => (
         <g
           key={species.name}
           className={reduced ? undefined : 'env-streak'}
@@ -130,7 +133,7 @@ function SpeciesMark({ reduced }: { reduced: boolean }) {
 function SpeciesReadout() {
   return (
     <ul className="env-readout">
-      {SPECIES.map((species) => (
+      {speciesMarks().map((species) => (
         <li key={species.name}>
           <span style={{ color: species.color }}>{species.name}</span>
           <strong>{species.range}</strong>

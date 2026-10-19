@@ -1,19 +1,18 @@
 import { useState } from 'react'
 import { copy } from '../content'
 
-const TEAMS = copy.people.teams
-
 export function People() {
+  const teams = copy.people.teams
   return (
     <div className="people">
-      {TEAMS.map((team) => (
+      {teams.map((team) => (
         <TeamList key={team.name} team={team} />
       ))}
     </div>
   )
 }
 
-function TeamList({ team }: { team: (typeof TEAMS)[number] }) {
+function TeamList({ team }: { team: (typeof copy.people.teams)[number] }) {
   const [open, setOpen] = useState(false)
   const id = team.name.replace(/\s+/g, '-').toLowerCase()
 

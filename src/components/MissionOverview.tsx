@@ -8,8 +8,6 @@ import { useReducedMotion } from '../lib/useReducedMotion'
 import { copy } from '../content'
 import { StageFrame } from './StageScreen'
 
-const STEPS = copy.mission.steps
-
 const NEAR = 478
 const FAR = 1560
 const NARROW_NEAR = 904
@@ -29,6 +27,7 @@ export function MissionOverview({
   description: string
 }) {
   const reduced = useReducedMotion()
+  const steps = copy.mission.steps
   const pinRef = useRef<HTMLDivElement>(null)
   const progressRef = useRef(0)
   const visibleRef = useRef(true)
@@ -46,7 +45,8 @@ export function MissionOverview({
       const travel = Math.max(pin.offsetHeight - sticky.clientHeight, 1)
       const progress = Math.min(1, Math.max(0, (top - rect.top) / travel))
       progressRef.current = reduced ? 0.45 : progress
-      setStep(reduced ? 0 : Math.min(STEPS.length - 1, Math.floor(progress * STEPS.length)))
+      const count = copy.mission.steps.length
+      setStep(reduced ? 0 : Math.min(count - 1, Math.floor(progress * count)))
     }
     measure()
     const observer = new IntersectionObserver(
@@ -76,7 +76,7 @@ export function MissionOverview({
         <div className="mission-copy">
           <p className="mission-tag">{copy.mission.placeholder}</p>
           {reduced ? (
-            STEPS.map((item) => (
+            steps.map((item) => (
               <article key={item.title}>
                 <p className="kicker">{item.kicker}</p>
                 <h3>{item.title}</h3>
@@ -84,7 +84,7 @@ export function MissionOverview({
               </article>
             ))
           ) : (
-            STEPS.map((item, index) => (
+            steps.map((item, index) => (
               <article key={item.title} data-on={index === step} aria-hidden={index !== step}>
                 <p className="kicker">{item.kicker}</p>
                 <h3>{item.title}</h3>

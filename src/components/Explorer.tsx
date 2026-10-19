@@ -1,6 +1,6 @@
 import { Component, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
-  LAYERS,
+  detectorLayers,
   STEP_COUNT,
   layersActiveAt,
   stepCopy,
@@ -16,11 +16,11 @@ import { StageFrame } from './StageScreen'
 import { LoadState, Viewport, type ViewHandle } from './Viewport'
 import { copy, fill } from '../content'
 
-const MODES = copy.explorer.modes
-const text = copy.explorer
-
 export function Explorer() {
   const reduced = useReducedMotion()
+  const text = copy.explorer
+  const modes = text.modes
+  const layers = detectorLayers()
   const { ref: viewerRef, seen } = useStageActivity<HTMLElement>()
   const [mode, setMode] = useState<Mode>('overview')
   const [selected, setSelected] = useState('si1')
@@ -142,7 +142,7 @@ export function Explorer() {
     if (progressEl.current) progressEl.current.style.transform = 'scaleX(0)'
   }
 
-  const layer = LAYERS.find((item) => item.id === selected) ?? LAYERS[0]
+  const layer = layers.find((item) => item.id === selected) ?? layers[0]
   const eventStep = stepCopy(step, entrance)
   const active = new Set(layersActiveAt(step, entrance))
   const badge = text.badges[mode]
@@ -152,7 +152,7 @@ export function Explorer() {
       <section ref={viewerRef} className="viewer" aria-label={text.label}>
         <div className="toolbar">
           <div className="modes" role="tablist" aria-label={text.modeLabel}>
-            {MODES.map((item) => (
+            {modes.map((item) => (
               <button
                 key={item.id}
                 type="button"
@@ -160,7 +160,7 @@ export function Explorer() {
                 id={`tab-${item.id}`}
                 aria-selected={mode === item.id}
                 aria-controls="viewer-copy"
-                onClick={() => changeMode(item.id)}
+                onClick={() => changeMode(item.id as Mode)}
               >
                 {item.label}
               </button>
@@ -196,7 +196,7 @@ export function Explorer() {
               {text.inside.note ? <p className="note">{text.inside.note}</p> : null}
               <p className="axis-note">{text.inside.axis}</p>
               <div className="pips" role="listbox" aria-label={text.inside.layersLabel}>
-                {LAYERS.map((item) => (
+                {layers.map((item) => (
                   <button
                     key={item.id}
                     type="button"
@@ -259,7 +259,7 @@ export function Explorer() {
                 ))}
               </div>
               <ul className="status" aria-hidden="true">
-                {LAYERS.map((item) => (
+                {layers.map((item) => (
                   <li key={item.id} data-on={active.has(item.id) ? 'true' : 'false'}>
                     {item.pip}
                   </li>
@@ -327,6 +327,7 @@ export function Explorer() {
 }
 
 function Legend() {
+  const text = copy.explorer
   return (
     <ul className="legend">
       <li>

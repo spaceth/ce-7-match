@@ -13,7 +13,7 @@ import {
   type Playback,
 } from '../lib/instrument'
 import { useMatchModel } from '../lib/model'
-import { copy, fill } from '../content'
+import { copy, fill, getLang } from '../content'
 import { DetectorAssembly } from './Stack'
 
 export type ViewHandle = {
@@ -297,6 +297,7 @@ type SideLabel = {
 }
 
 function OverviewLabels({ visible }: { visible: boolean }) {
+  const lang = getLang()
   const labels = useMemo<SideLabel[]>(() => {
     return overviewCallouts().map((callout) => {
       const geometry = new THREE.BufferGeometry()
@@ -317,7 +318,7 @@ function OverviewLabels({ visible }: { visible: boolean }) {
         id: callout.id,
       }
     })
-  }, [])
+  }, [lang])
 
   useEffect(() => {
     return () => {

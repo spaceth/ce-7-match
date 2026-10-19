@@ -6,7 +6,7 @@ import { orbitScene } from '../lib/orbit'
 import {
   ENERGY_THICKNESS,
   DELTA_THICKNESS,
-  LAYERS,
+  detectorLayers,
   PLANE_OFFSET,
   SCINT_SIZE,
   SILICON_SIZE,
@@ -133,7 +133,7 @@ export function DetectorAssembly({ motion, progressEl, onStep, onEnded }: StackP
   return (
     <group position={[TELESCOPE_WORLD.x, TELESCOPE_WORLD.y, TELESCOPE_WORLD.z]}>
       <Line points={[[0, 0, -86], [0, 0, 86]]} color="#ffffff" transparent opacity={0.16} lineWidth={1} />
-      {LAYERS.map((layer, index) => {
+      {detectorLayers().map((layer, index) => {
         const thickness = layer.kind === 'silicon' ? SILICON_SLOT : layer.kind === 'deltaE' ? DELTA_THICKNESS : ENERGY_THICKNESS
         return (
           <group
@@ -292,7 +292,7 @@ function createMaterials() {
   const materials: Record<string, THREE.MeshStandardMaterial[]> = {}
   const hits: Record<string, THREE.MeshBasicMaterial> = {}
 
-  for (const layer of LAYERS) {
+  for (const layer of detectorLayers()) {
     if (layer.kind === 'silicon') {
       materials[layer.id] = [siliconMaterial(-1), siliconMaterial(-2)]
       hits[layer.id] = new THREE.MeshBasicMaterial({

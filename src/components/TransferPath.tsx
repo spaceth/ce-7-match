@@ -2,8 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useReducedMotion } from '../lib/useReducedMotion'
 import { copy } from '../content'
 
-const STEPS = copy.transfer.steps
-
 const EARTH = { x: 230, y: 500, r: 52 }
 const MOON = { x: 690, y: 156, r: EARTH.r / 4 }
 const PARK = 98
@@ -156,6 +154,7 @@ function polyline(points: Pt[], count: number) {
 }
 
 export function TransferPath() {
+  const steps = copy.transfer.steps
   const reduced = useReducedMotion()
   const pinRef = useRef<HTMLElement>(null)
   const [progress, setProgress] = useState(reduced ? 1 : 0)
@@ -188,7 +187,7 @@ export function TransferPath() {
   const index = Math.round(progress * (route.points.length - 1))
   const craft = route.points[index]
   const phase = craft.phase
-  const step = STEPS[phase]
+  const step = steps[phase]
   const landingIndex = Math.max(0, index - (route.points.length - route.landing.length))
   const lander = phase === 6 ? route.landing[Math.min(landingIndex, route.landing.length - 1)] : null
 
@@ -200,7 +199,7 @@ export function TransferPath() {
           <h3 id="transfer-title">{copy.transfer.title}</h3>
           {reduced ? (
             <ol className="transfer-steps">
-              {STEPS.map((item) => (
+              {steps.map((item) => (
                 <li key={item.title}>
                   <strong>{item.title}</strong>
                   <span>{item.body}</span>

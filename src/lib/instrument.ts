@@ -49,12 +49,14 @@ const LAYER_KIND = {
   de2: 'deltaE',
   si3: 'silicon',
   si4: 'silicon',
-} as const satisfies Record<(typeof copy.explorer.layers)[number]['id'], LayerKind>
+} as const
 
-export const LAYERS: LayerDef[] = copy.explorer.layers.map((layer) => ({
-  ...layer,
-  kind: LAYER_KIND[layer.id],
-}))
+export function detectorLayers(): LayerDef[] {
+  return copy.explorer.layers.map((layer) => ({
+    ...layer,
+    kind: LAYER_KIND[layer.id as keyof typeof LAYER_KIND],
+  }))
+}
 
 export type PlacedLayer = LayerDef & { z: number; thickness: number }
 
@@ -64,14 +66,15 @@ const GAP_SPREAD = 12.6
 export function layoutLayers(spread: number): PlacedLayer[] {
   const t = clamp(spread, 0, 1)
   const gap = GAP_GATHERED + (GAP_SPREAD - GAP_GATHERED) * t
-  const thicknesses = LAYERS.map((layer) =>
+  const layers = detectorLayers()
+  const thicknesses = layers.map((layer) =>
     layer.kind === 'silicon' ? SILICON_SLOT : layer.kind === 'deltaE' ? DELTA_THICKNESS : ENERGY_THICKNESS,
   )
-  const total = thicknesses.reduce((sum, value) => sum + value, 0) + gap * (LAYERS.length - 1)
+  const total = thicknesses.reduce((sum, value) => sum + value, 0) + gap * (layers.length - 1)
   const spaceToMoon = lowZIsSpace ? 1 : -1
   let cursor = -spaceToMoon * (total / 2)
 
-  return LAYERS.map((layer, index) => {
+  return layers.map((layer, index) => {
     const thickness = thicknesses[index]
     const z = cursor + spaceToMoon * (thickness / 2)
     cursor += spaceToMoon * (thickness + gap)

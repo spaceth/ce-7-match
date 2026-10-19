@@ -7,7 +7,9 @@ import { useStageActivity } from '../lib/useStageActivity'
 import { hasWebGL } from '../lib/webgl'
 import { copy, fill } from '../content'
 
-const SOURCES = copy.cosmic.sources
+function sources() {
+  return copy.cosmic.sources
+}
 const SPACE_PARTICLE = orbitScene.spaceFacing
 const MOON_PARTICLE = orbitScene.moonFacing
 const TRAIL_LIFE = 0.16
@@ -63,7 +65,7 @@ export function CosmicRays() {
           ))}
         </div>
         <div className="ray-grid">
-          {SOURCES.map((source) => (
+          {sources().map((source) => (
             <article key={source.id}>
               {source.id === 'solar' ? (
                 <SunFrame reduced={reduced} />
@@ -183,14 +185,14 @@ function SunFrame({ reduced }: { reduced: boolean }) {
 
   if (!webgl) {
     return (
-      <ImagePlaceholder title={SOURCES[0].title} />
+      <ImagePlaceholder title={sources()[0].title} />
     )
   }
 
   const playing = shown && !reduced
 
   return (
-    <div ref={frameRef} className="ray-frame ray-sun" role="img" aria-label={SOURCES[0].diagram}>
+    <div ref={frameRef} className="ray-frame ray-sun" role="img" aria-label={sources()[0].diagram}>
       {seen ? <Canvas
         dpr={[1, 1.5]}
         camera={{ fov: 30, position: [0, 0, 4.1] }}
@@ -278,14 +280,14 @@ function PulsarFrame({ reduced }: { reduced: boolean }) {
 
   if (!webgl) {
     return (
-      <ImagePlaceholder title={SOURCES[1].title} />
+      <ImagePlaceholder title={sources()[1].title} />
     )
   }
 
   const playing = shown && !reduced
 
   return (
-    <div ref={frameRef} className="ray-frame ray-pulsar" role="img" aria-label={SOURCES[1].diagram}>
+    <div ref={frameRef} className="ray-frame ray-pulsar" role="img" aria-label={sources()[1].diagram}>
       {seen ? <Canvas
         dpr={[1, 1.5]}
         camera={{ fov: 30, position: [0.4, 0.35, 4.2] }}
@@ -424,14 +426,14 @@ function JupiterFrame({ reduced }: { reduced: boolean }) {
 
   if (!webgl) {
     return (
-      <ImagePlaceholder title={SOURCES[2].title} />
+      <ImagePlaceholder title={sources()[2].title} />
     )
   }
 
   const playing = shown && !reduced
 
   return (
-    <div ref={frameRef} className="ray-frame ray-jupiter" role="img" aria-label={SOURCES[2].diagram}>
+    <div ref={frameRef} className="ray-frame ray-jupiter" role="img" aria-label={sources()[2].diagram}>
       {seen ? <Canvas
         dpr={[1, 1.5]}
         camera={{ fov: 30, position: [0.45, 0.28, 5.55] }}
@@ -621,7 +623,7 @@ function LunarFrame({ reduced }: { reduced: boolean }) {
 
   if (!webgl) {
     return (
-      <ImagePlaceholder title={SOURCES[3].title} />
+      <ImagePlaceholder title={sources()[3].title} />
     )
   }
 
@@ -632,7 +634,7 @@ function LunarFrame({ reduced }: { reduced: boolean }) {
       ref={frameRef}
       className="ray-frame ray-moon"
       role="img"
-      aria-label={SOURCES[3].diagram}
+      aria-label={sources()[3].diagram}
     >
       {seen ? <Canvas
         dpr={[1, 1.5]}

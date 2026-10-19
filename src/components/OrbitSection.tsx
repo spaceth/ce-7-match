@@ -160,8 +160,8 @@ function OrbitStill() {
         <circle cx="300" cy="132" r="5" fill="#fff" />
         <path d="M300 132 L268 168 L332 168 Z" fill="rgba(143,227,207,0.28)" stroke="#8fe3cf" strokeWidth="1" />
         <path d="M300 132 L274 78 L326 78 Z" fill="rgba(127,208,238,0.22)" stroke="#7fd0ee" strokeWidth="1" />
-        <text x="248" y="520" fill="#f4f4f5" fontSize="14" fontFamily="Poppins, sans-serif">{copy.ui.moon}</text>
-        <text x="316" y="128" fill="#f4f4f5" fontSize="13" fontFamily="Poppins, sans-serif">{copy.ui.match}</text>
+        <text x="248" y="520" fill="#f4f4f5" fontSize="14" fontFamily="Poppins, aktiv-grotesk-thai, sans-serif">{copy.ui.moon}</text>
+        <text x="316" y="128" fill="#f4f4f5" fontSize="13" fontFamily="Poppins, aktiv-grotesk-thai, sans-serif">{copy.ui.match}</text>
       </svg>
     </div>
   )
