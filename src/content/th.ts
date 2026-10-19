@@ -52,7 +52,7 @@ export const th = {
       number: '01',
       voice: 'display',
       title: 'CE-7 MATCH',
-      description: 'เครื่องตรวจวัดอนุภาคไทย-จีน สู่ดวงจันทร์',
+      description: 'Moon-Aiming Thai-Chinese Hodoscope',
     },
     {
       id: 'cosmic-rays',
